@@ -1,23 +1,19 @@
 package com.restaurant.rms.controller;
 
-import com.restaurant.rms.util.error.IdInvalidException;
 import com.restaurant.rms.dto.request.LoginDTO;
 import com.restaurant.rms.dto.request.UserDTO;
 import com.restaurant.rms.dto.response.ResLoginDTO;
 import com.restaurant.rms.entity.User;
-//import com.math.mathcha.service.OtpService;
 import com.restaurant.rms.service.authService.AuthService;
 import com.restaurant.rms.service.userService.UserService;
+import com.restaurant.rms.util.error.IdInvalidException;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
