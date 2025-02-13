@@ -8,15 +8,11 @@ import java.util.List;
 public interface FoodService {
     FoodDTO createFood(FoodDTO foodDTO) throws IdInvalidException;
 
-    FoodDTO getFoodById ( Integer food_id) throws IdInvalidException;
+    FoodDTO getFoodById(Integer foodId) throws IdInvalidException;
 
-    List<FoodDTO> getFoodAll();
+    List<FoodDTO> getAllFood();
 
-    FoodDTO updateFood(FoodDTO updateFood, Integer food_id);
+    FoodDTO updateFood(FoodDTO updateFood, Integer foodId) throws IdInvalidException;
 
-    void deleteFood (Integer food_id) throws IdInvalidException;
-
-    FoodDTO handleGetFoodByName(String name);
-
-    boolean isFoodNameExist (String name);
+    void deleteFood(Integer foodId) throws IdInvalidException;
 }

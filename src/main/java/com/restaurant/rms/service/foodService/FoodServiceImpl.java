@@ -6,54 +6,59 @@ import com.restaurant.rms.mapper.FoodMapper;
 import com.restaurant.rms.repository.FoodRepository;
 import com.restaurant.rms.util.error.IdInvalidException;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FoodServiceImpl implements FoodService {
-    private FoodRepository foodRepository;
-
+    private final FoodRepository foodRepository;
 
     @Override
     public FoodDTO createFood(FoodDTO foodDTO) throws IdInvalidException {
-        if (foodRepository.existsByName(foodDTO.getName())) {
-            throw new IdInvalidException("Name " + foodDTO.getName() + " đã tồn tại, vui lòng sử dụng tên khác.");
-        }
         Food food = FoodMapper.mapToFood(foodDTO);
-        food.setStatus(foodDTO.getStatus());
-        Food savedFood= foodRepository.save(food);
+        Food savedFood = foodRepository.save(food);
         return FoodMapper.mapToFoodDTO(savedFood);
     }
 
     @Override
-    public FoodDTO getFoodById(Integer food_id) throws IdInvalidException {
-        return null;
+    public FoodDTO getFoodById(Integer foodId) throws IdInvalidException {
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new IdInvalidException("Food ID not found"));
+        return FoodMapper.mapToFoodDTO(food);
     }
 
     @Override
-    public List<FoodDTO> getFoodAll() {
-        return List.of();
+    public List<FoodDTO> getAllFood() {
+        return foodRepository.findAll()
+                .stream()
+                .map(FoodMapper::mapToFoodDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
-    public FoodDTO updateFood(FoodDTO updateFood, Integer food_id) {
-        return null;
+    public FoodDTO updateFood(FoodDTO updateFood, Integer foodId) throws IdInvalidException {
+        Food existingFood = foodRepository.findById(foodId)
+                .orElseThrow(() -> new IdInvalidException("Food ID not found"));
+        existingFood.setName(updateFood.getName());
+        existingFood.setDescription(updateFood.getDescription());
+        existingFood.setPrice(updateFood.getPrice());
+        existingFood.setImage_url(updateFood.getImage_url());
+        existingFood.setCategory_id(updateFood.getCategory_id());
+        existingFood.setStatus(updateFood.getStatus());
+
+        Food updatedFood = foodRepository.save(existingFood);
+        return FoodMapper.mapToFoodDTO(updatedFood);
     }
 
     @Override
-    public void deleteFood(Integer food_id) throws IdInvalidException {
-
-    }
-
-    @Override
-    public FoodDTO handleGetFoodByName(String name) {
-        return null;
-    }
-
-    @Override
-    public boolean isFoodNameExist(String name) {
-        return false;
+    public void deleteFood(Integer foodId) throws IdInvalidException {
+        if (!foodRepository.existsById(foodId)) {
+            throw new IdInvalidException("Food ID not found");
+        }
+        foodRepository.deleteById(foodId);
     }
 }
