@@ -4,9 +4,9 @@ package com.restaurant.rms.service.userService;
 
 import com.restaurant.rms.util.error.IdInvalidException;
 import com.restaurant.rms.dto.request.UserDTO;
-//import com.math.mathcha.dto.response.ResCreateUserDTO;
-//import com.math.mathcha.dto.response.ResUpdateUserDTO;
-//import com.math.mathcha.dto.response.ResUserDTO;
+import com.restaurant.rms.dto.response.ResCreateUserDTO;
+import com.restaurant.rms.dto.response.ResUpdateUserDTO;
+import com.restaurant.rms.dto.response.ResUserDTO;
 import com.restaurant.rms.entity.User;
 //import com.math.mathcha.mapper.TopicMapper;
 import com.restaurant.rms.mapper.UserMapper;
@@ -50,11 +50,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDTO> getUserAll() {
+    public List<ResUserDTO> getUserAll() {
         List<User> users = userRepository.findAll();
         return users.stream()
                 .map(UserMapper::mapToUserDTO)
-//                .map(this::convertToResUserDTO)
+                .map(this::convertToResUserDTO)
                 .collect(Collectors.toList());
     }
 
@@ -88,47 +88,38 @@ public class UserServiceImpl implements UserService {
     public boolean isUsernameExist(String username) {
         return this.userRepository.existsByUsername(username);
     }
-//    @Override
-//    public ResCreateUserDTO convertToResCreateUserDTO(UserDTO user) {
-//        ResCreateUserDTO res = new ResCreateUserDTO();
-//        res.setUser_id(user.getUser_id());
-//        res.setFirst_name(user.getFirst_name());
-//        res.setLast_name(user.getLast_name());
-//        res.setPhone(user.getPhone());
-//        res.setEmail(user.getEmail());
-//        res.setAddress(user.getAddress());
-//        res.setImage(user.getImage());
-//        res.setUsername(user.getUsername());
-//        res.setRole(user.getRole());
-//        return res;
-//    }
-//    @Override
-//    public ResUpdateUserDTO convertToResUpdateUserDTO(UserDTO user) {
-//        ResUpdateUserDTO res = new ResUpdateUserDTO();
-//        res.setUser_id(user.getUser_id());
-//        res.setFirst_name(user.getFirst_name());
-//        res.setLast_name(user.getLast_name());
-//        res.setPhone(user.getPhone());
-//        res.setEmail(user.getEmail());
-//        res.setAddress(user.getAddress());
-//        res.setImage(user.getImage());
-//        res.setUsername(user.getUsername());
-//        res.setRole(user.getRole());
-//        return res;
-//    }
-//    @Override
-//    public ResUserDTO convertToResUserDTO(UserDTO user) {
-//        ResUserDTO res = new ResUserDTO();
-//        res.setUser_id(user.getUser_id());
-//        res.setFirst_name(user.getFirst_name());
-//        res.setLast_name(user.getLast_name());
-//        res.setPhone(user.getPhone());
-//        res.setEmail(user.getEmail());
-//        res.setAddress(user.getAddress());
-//        res.setImage(user.getImage());
-//        res.setUsername(user.getUsername());
-//        res.setRole(user.getRole());
+    @Override
+    public ResCreateUserDTO convertToResCreateUserDTO(UserDTO user) {
+        ResCreateUserDTO res = new ResCreateUserDTO();
+        res.setUser_id(user.getUser_id());
+        res.setName(user.getName());
+        res.setRestaurant_name(user.getRestaurant_name());
+        res.setEmail(user.getEmail());
+        res.setUsername(user.getUsername());
+        res.setRole(user.getRole());
+        return res;
+    }
+    @Override
+    public ResUpdateUserDTO convertToResUpdateUserDTO(UserDTO user) {
+        ResUpdateUserDTO res = new ResUpdateUserDTO();
+        res.setUser_id(user.getUser_id());
+        res.setName(user.getName());
+        res.setEmail(user.getEmail());
+        res.setRestaurant_name(user.getRestaurant_name());
+        res.setUsername(user.getUsername());
+        res.setRole(user.getRole());
+        return res;
+    }
+    @Override
+    public ResUserDTO convertToResUserDTO(UserDTO user) {
+        ResUserDTO res = new ResUserDTO();
+        res.setUser_id(user.getUser_id());
+        res.setName(user.getName());
+        res.setEmail(user.getEmail());
+        res.setRestaurant_name(user.getRestaurant_name());
+        res.setUsername(user.getUsername());
+        res.setRole(user.getRole());
 //        res.setDelete(user.getDelete() != null ? user.getDelete() : false);
-//        return res;
-//    }
+        return res;
+    }
 }
