@@ -14,7 +14,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@RequestMapping("api")
+@RequestMapping("/food")
 @SecurityRequirement(name = "api")
 public class FoodController {
 
