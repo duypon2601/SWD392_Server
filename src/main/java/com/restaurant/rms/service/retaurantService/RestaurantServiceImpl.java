@@ -32,6 +32,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         // Chuyển DTO thành Entity
         Restaurant restaurant = RestaurantMapper.mapToRestaurant(restaurantDTO);
 
+
         // Lưu vào database, Hibernate sẽ tự động sinh ID
         Restaurant savedRestaurant = restaurantRepository.save(restaurant);
 

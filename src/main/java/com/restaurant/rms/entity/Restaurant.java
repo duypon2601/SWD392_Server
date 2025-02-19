@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -23,6 +25,10 @@ public class Restaurant {
     private String name;
     @Column(name = "location")
     private String location;
+
+    //relationship
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    private List<User> users;
 //    @ManyToOne
 //    @JoinColumn(name = "course_id", nullable = false)
 //    @JsonIgnore

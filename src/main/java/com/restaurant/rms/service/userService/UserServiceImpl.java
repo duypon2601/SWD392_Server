@@ -2,6 +2,8 @@ package com.restaurant.rms.service.userService;
 
 
 
+import com.restaurant.rms.entity.Restaurant;
+import com.restaurant.rms.repository.RestaurantRepository;
 import com.restaurant.rms.util.error.IdInvalidException;
 import com.restaurant.rms.dto.request.UserDTO;
 import com.restaurant.rms.dto.response.ResCreateUserDTO;
@@ -26,14 +28,21 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private RestaurantRepository restaurantRepository;
 
     @Override
     public UserDTO createUser(UserDTO userDTO) throws IdInvalidException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new IdInvalidException("Username " + userDTO.getUsername() + " đã tồn tại, vui lòng sử dụng email khác.");
         }
+        Restaurant restaurant = restaurantRepository.findById(userDTO.getRestaurant_id())
+                .orElseThrow(() -> new IdInvalidException("Restaurant ID không tồn tại"));
+
+        userDTO.setRestaurant_name(restaurant.getName());
+
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = UserMapper.mapToUser(userDTO);
+        user.setRestaurant(restaurant);
         user.setRole(userDTO.getRole());
         User savedUser= userRepository.save(user);
         return UserMapper.mapToUserDTO(savedUser);

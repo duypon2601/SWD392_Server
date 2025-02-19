@@ -41,4 +41,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     Role role;
 
+    //relationship
+    @ManyToOne
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonIgnore
+    private Restaurant restaurant;
 }
