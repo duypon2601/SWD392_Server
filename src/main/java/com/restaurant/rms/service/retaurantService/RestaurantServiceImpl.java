@@ -27,15 +27,15 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws IdInvalidException {
         if (restaurantRepository.existsByName(restaurantDTO.getName())) {
             throw new IdInvalidException("Username " + restaurantDTO.getName() + " đã tồn tại, vui lòng sử dụng email khác.");
-        }else{
-            restaurantDTO.setName(restaurantDTO.getName());
         }
-        restaurantDTO.setRestaurant_id(restaurantDTO.getRestaurant_id());
-        restaurantDTO.setManager_id(restaurantDTO.getManager_id());
-        restaurantDTO.setLocation(restaurantDTO.getLocation());
 
+        // Chuyển DTO thành Entity
         Restaurant restaurant = RestaurantMapper.mapToRestaurant(restaurantDTO);
-        Restaurant savedRestaurant= restaurantRepository.save(restaurant);
+
+        // Lưu vào database, Hibernate sẽ tự động sinh ID
+        Restaurant savedRestaurant = restaurantRepository.save(restaurant);
+
+        // Trả về DTO đã có ID từ DB
         return RestaurantMapper.mapToRestaurantDTO(savedRestaurant);
     }
 
@@ -69,7 +69,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDTO, Integer restaurant_id) {
         Restaurant restaurant = restaurantRepository.findById(restaurant_id)
                 .orElseThrow(()-> new RuntimeException("Restaurant "+restaurant_id+" not found"));
-        restaurantDTO.setManager_id(restaurantDTO.getManager_id());
+
         restaurantDTO.setName(restaurantDTO.getName());
         restaurantDTO.setLocation(restaurantDTO.getLocation());
         Restaurant updateRestaurantObj = restaurantRepository.save(restaurant);

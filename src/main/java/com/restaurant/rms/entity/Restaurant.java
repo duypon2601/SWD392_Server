@@ -12,15 +12,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "retaurant")
+@Table(name = "restaurant")
 
 public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "restaurant_id")
     private int restaurant_id;
-    @Column(name = "manager_id")
-    private int manager_id;
     @Column(name = "name")
     private String name;
     @Column(name = "location")

@@ -15,7 +15,7 @@ public class RestaurantDTO {
 
     private int restaurant_id;
 
-    private int manager_id;
+
 
     private String name;
 
