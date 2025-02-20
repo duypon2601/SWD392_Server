@@ -12,7 +12,7 @@ public interface RestaurantService {
 
     RestaurantDTO getRestaurantById ( Integer restaurant_id) throws IdInvalidException;
 
-//    List<RestaurantDTO> getCourseByStudentId(int restaurant_id) throws IdInvalidException;
+    RestaurantDTO findRestaurantByUserId(int user_id) throws IdInvalidException;
 
     List<RestaurantDTO> getRestaurantAll();
 

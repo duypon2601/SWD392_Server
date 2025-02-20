@@ -53,6 +53,12 @@ public class RestaurantController {
         restaurantService.deleteRestaurant(restaurant_id);
         return ResponseEntity.ok(null);
     }
+
+    @GetMapping("user/{user_id}")
+    public ResponseEntity<RestaurantDTO> findRestaurantByUserId(@PathVariable("user_id") int user_id) throws IdInvalidException {
+        RestaurantDTO restaurantDTO = restaurantService.findRestaurantByUserId(user_id);
+        return ResponseEntity.ok(restaurantDTO);
+    }
 //    @GetMapping("/bought/{user_id}")
 //    @PreAuthorize("hasRole('PARENT')") // can xem lai
 //    public ResponseEntity<List<CourseDTO>> getCoursesBoughtByParent(@PathVariable("user_id") int user_id) {

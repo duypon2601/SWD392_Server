@@ -69,4 +69,10 @@ public class UserController {
         return ResponseEntity.ok(null);
     }
 
+    @GetMapping("/restaurant/{restaurant_id}")
+    public ResponseEntity<List<UserDTO>> findUserByRestaurantId(@PathVariable("restaurant_id") int restaurant_id) throws IdInvalidException {
+        List<UserDTO> user = userService.findUserByRestaurantId(restaurant_id);
+        return ResponseEntity.ok(user);
+    }
+
 }

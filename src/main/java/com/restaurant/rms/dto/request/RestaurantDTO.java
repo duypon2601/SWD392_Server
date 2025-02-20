@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 
 @Getter
 @Setter
@@ -15,9 +17,9 @@ public class RestaurantDTO {
 
     private int restaurant_id;
 
-    private int manager_id;
-
     private String name;
 
     private String location;
+
+//    private List<UserDTO> users;
 }
