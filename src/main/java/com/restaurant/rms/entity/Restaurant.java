@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -29,6 +30,9 @@ public class Restaurant {
     //relationship
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
     private List<User> users;
+
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<RestaurantMenuItem> menu_item;
 //    @ManyToOne
 //    @JoinColumn(name = "course_id", nullable = false)
 //    @JsonIgnore

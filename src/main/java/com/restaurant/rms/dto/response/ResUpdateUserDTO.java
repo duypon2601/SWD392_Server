@@ -26,4 +26,6 @@ public class ResUpdateUserDTO {
 //    private Boolean delete;
 
     private Role role;
+
+    private int restaurant_id;
 }

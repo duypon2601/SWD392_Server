@@ -24,7 +24,7 @@ public class RestaurantController {
 //    @PreAuthorize("hasRole('CONTENT_MANAGER')")
     public ResponseEntity<RestaurantDTO> createRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) throws IdInvalidException {
         RestaurantDTO savedRestaurant = restaurantService.createRestaurant(restaurantDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(restaurantDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(savedRestaurant);
     }
 
     @GetMapping("{restaurant_id}")

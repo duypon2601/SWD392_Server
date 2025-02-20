@@ -122,6 +122,7 @@ public class UserServiceImpl implements UserService {
         res.setEmail(user.getEmail());
         res.setUsername(user.getUsername());
         res.setRole(user.getRole());
+        res.setRestaurant_id(user.getRestaurant_id());
         return res;
     }
     @Override
@@ -133,6 +134,7 @@ public class UserServiceImpl implements UserService {
         res.setRestaurant_name(user.getRestaurant_name());
         res.setUsername(user.getUsername());
         res.setRole(user.getRole());
+        res.setRestaurant_id(user.getRestaurant_id());
         return res;
     }
     @Override
@@ -144,6 +146,7 @@ public class UserServiceImpl implements UserService {
         res.setRestaurant_name(user.getRestaurant_name());
         res.setUsername(user.getUsername());
         res.setRole(user.getRole());
+        res.setRestaurant_id(user.getRestaurant_id());
 //        res.setDelete(user.getDelete() != null ? user.getDelete() : false);
         return res;
     }
