@@ -2,8 +2,10 @@ package com.restaurant.rms.service.userService;
 
 
 
+import com.restaurant.rms.dto.request.RestaurantDTO;
 import com.restaurant.rms.entity.Restaurant;
 import com.restaurant.rms.repository.RestaurantRepository;
+import com.restaurant.rms.service.retaurantService.RestaurantService;
 import com.restaurant.rms.util.error.IdInvalidException;
 import com.restaurant.rms.dto.request.UserDTO;
 import com.restaurant.rms.dto.response.ResCreateUserDTO;
@@ -29,6 +31,7 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private RestaurantRepository restaurantRepository;
+    private RestaurantService restaurantService;
 
     @Override
     public UserDTO createUser(UserDTO userDTO) throws IdInvalidException {
@@ -70,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(UserDTO updateUser, Integer user_id) {
         User user = userRepository.findById(user_id)
-                .orElseThrow(()-> new RuntimeException("Topic "+user_id+" not found"));
+                .orElseThrow(()-> new RuntimeException("User "+user_id+" not found"));
         user.setName(updateUser.getName());
         user.setRestaurant_name(updateUser.getRestaurant_name());
         user.setEmail(updateUser.getEmail());
@@ -97,6 +100,19 @@ public class UserServiceImpl implements UserService {
     public boolean isUsernameExist(String username) {
         return this.userRepository.existsByUsername(username);
     }
+
+    @Override
+    public List<UserDTO> findUserByRestaurantId(int restaurant_id) throws IdInvalidException {
+        List<User> users = userRepository.findUserByRestaurantId(restaurant_id);
+        RestaurantDTO restaurantDTO = restaurantService.getRestaurantById(restaurant_id);
+        if (restaurantDTO == null) {
+            throw new IdInvalidException("Trong topic id = " + restaurant_id + " hiện không có lesson");
+        }
+        return users.stream().map(
+                (user) -> UserMapper.mapToUserDTO(user)).collect(Collectors.toList()
+        );
+    }
+
     @Override
     public ResCreateUserDTO convertToResCreateUserDTO(UserDTO user) {
         ResCreateUserDTO res = new ResCreateUserDTO();

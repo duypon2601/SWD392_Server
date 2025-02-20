@@ -3,11 +3,11 @@ package com.restaurant.rms.service.retaurantService;
 
 import com.restaurant.rms.dto.request.RestaurantDTO;
 import com.restaurant.rms.entity.Restaurant;
-import com.restaurant.rms.entity.User;
 import com.restaurant.rms.mapper.RestaurantMapper;
-import com.restaurant.rms.mapper.UserMapper;
 import com.restaurant.rms.repository.RestaurantRepository;
+import com.restaurant.rms.repository.UserRepository;
 import com.restaurant.rms.util.error.IdInvalidException;
+import com.restaurant.rms.util.error.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -49,14 +49,17 @@ public class RestaurantServiceImpl implements RestaurantService {
             throw new IdInvalidException("Restaurant với id = " + restaurant_id + " không tồn tại");
         }
     }
-//    @Override
-//    public List<CourseDTO> getCourseByStudentId(int student_id) throws IdInvalidException {
-//        List<Course> courses = courseRepository.findCoursesByStudentId(student_id);
-//        Optional<Student> student = studentRepository.findById(student_id);
-//        return courses.stream()
-//                .map(CourseMapper::mapToCourseDTO)
-//                .collect(Collectors.toList());
-//    }
+    @Override
+    public RestaurantDTO findRestaurantByUserId(int user_id) throws IdInvalidException {
+        Restaurant restaurant = restaurantRepository.findRestaurantByUserId(user_id);
+
+        if (restaurant == null) {
+            throw new IdInvalidException("Restaurant not found for user ID: " + user_id);
+        }
+
+        return RestaurantMapper.mapToRestaurantDTO(restaurant);
+    }
+
 
     @Override
     public List<RestaurantDTO> getRestaurantAll() {

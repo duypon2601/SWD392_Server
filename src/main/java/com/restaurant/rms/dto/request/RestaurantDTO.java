@@ -21,5 +21,5 @@ public class RestaurantDTO {
 
     private String location;
 
-    private List<UserDTO> users;
+//    private List<UserDTO> users;
 }
