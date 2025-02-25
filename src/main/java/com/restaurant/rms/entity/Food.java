@@ -24,8 +24,6 @@ public class Food {
     private String name;
     @Column(name = "description")
     private String description;
-    @Column(name = "price")
-    private double price;
     @Column(name = "image_url")
     private String image_url;
     @Column(name = "category_id")

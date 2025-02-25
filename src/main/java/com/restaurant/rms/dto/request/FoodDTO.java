@@ -14,7 +14,6 @@ public class FoodDTO {
     private int food_id;
     private String name;
     private String description;
-    private double price;
     private String image_url;
     private int category_id;
     private Status status;
