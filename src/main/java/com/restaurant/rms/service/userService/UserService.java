@@ -27,6 +27,8 @@ public interface UserService {
 
     boolean isUsernameExist (String username);
 
+    List<UserDTO> findUserByRestaurantId(int restaurant_id) throws IdInvalidException;
+
     ResCreateUserDTO convertToResCreateUserDTO(UserDTO user);
 
     ResUpdateUserDTO convertToResUpdateUserDTO(UserDTO user);

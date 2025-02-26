@@ -24,7 +24,7 @@ public class RestaurantController {
 //    @PreAuthorize("hasRole('CONTENT_MANAGER')")
     public ResponseEntity<RestaurantDTO> createRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) throws IdInvalidException {
         RestaurantDTO savedRestaurant = restaurantService.createRestaurant(restaurantDTO);
-        return ResponseEntity.status(HttpStatus.OK).body(restaurantDTO);
+        return ResponseEntity.status(HttpStatus.OK).body(savedRestaurant);
     }
 
     @GetMapping("{restaurant_id}")
@@ -52,6 +52,12 @@ public class RestaurantController {
         RestaurantDTO currentRestaurant = restaurantService.getRestaurantById(restaurant_id);
         restaurantService.deleteRestaurant(restaurant_id);
         return ResponseEntity.ok(null);
+    }
+
+    @GetMapping("user/{user_id}")
+    public ResponseEntity<RestaurantDTO> findRestaurantByUserId(@PathVariable("user_id") int user_id) throws IdInvalidException {
+        RestaurantDTO restaurantDTO = restaurantService.findRestaurantByUserId(user_id);
+        return ResponseEntity.ok(restaurantDTO);
     }
 //    @GetMapping("/bought/{user_id}")
 //    @PreAuthorize("hasRole('PARENT')") // can xem lai

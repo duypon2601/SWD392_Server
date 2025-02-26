@@ -29,5 +29,7 @@ public class ResCreateUserDTO {
 
     private Role role;
 
+    private int restaurant_id;
+
 
 }

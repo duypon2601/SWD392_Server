@@ -31,4 +31,6 @@ public class ResUserDTO {
 
     private Role role;
 
+    private int restaurant_id;
+
 }

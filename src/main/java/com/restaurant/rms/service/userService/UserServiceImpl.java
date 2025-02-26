@@ -2,6 +2,10 @@ package com.restaurant.rms.service.userService;
 
 
 
+import com.restaurant.rms.dto.request.RestaurantDTO;
+import com.restaurant.rms.entity.Restaurant;
+import com.restaurant.rms.repository.RestaurantRepository;
+import com.restaurant.rms.service.retaurantService.RestaurantService;
 import com.restaurant.rms.util.error.IdInvalidException;
 import com.restaurant.rms.dto.request.UserDTO;
 import com.restaurant.rms.dto.response.ResCreateUserDTO;
@@ -26,14 +30,22 @@ public class UserServiceImpl implements UserService {
 
     private UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private RestaurantRepository restaurantRepository;
+    private RestaurantService restaurantService;
 
     @Override
     public UserDTO createUser(UserDTO userDTO) throws IdInvalidException {
         if (userRepository.existsByUsername(userDTO.getUsername())) {
             throw new IdInvalidException("Username " + userDTO.getUsername() + " đã tồn tại, vui lòng sử dụng email khác.");
         }
+        Restaurant restaurant = restaurantRepository.findById(userDTO.getRestaurant_id())
+                .orElseThrow(() -> new IdInvalidException("Restaurant ID không tồn tại"));
+
+        userDTO.setRestaurant_name(restaurant.getName());
+
         userDTO.setPassword(passwordEncoder.encode(userDTO.getPassword()));
         User user = UserMapper.mapToUser(userDTO);
+        user.setRestaurant(restaurant);
         user.setRole(userDTO.getRole());
         User savedUser= userRepository.save(user);
         return UserMapper.mapToUserDTO(savedUser);
@@ -61,7 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDTO updateUser(UserDTO updateUser, Integer user_id) {
         User user = userRepository.findById(user_id)
-                .orElseThrow(()-> new RuntimeException("Topic "+user_id+" not found"));
+                .orElseThrow(()-> new RuntimeException("User "+user_id+" not found"));
         user.setName(updateUser.getName());
         user.setRestaurant_name(updateUser.getRestaurant_name());
         user.setEmail(updateUser.getEmail());
@@ -88,6 +100,19 @@ public class UserServiceImpl implements UserService {
     public boolean isUsernameExist(String username) {
         return this.userRepository.existsByUsername(username);
     }
+
+    @Override
+    public List<UserDTO> findUserByRestaurantId(int restaurant_id) throws IdInvalidException {
+        List<User> users = userRepository.findUserByRestaurantId(restaurant_id);
+        RestaurantDTO restaurantDTO = restaurantService.getRestaurantById(restaurant_id);
+        if (restaurantDTO == null) {
+            throw new IdInvalidException("Trong topic id = " + restaurant_id + " hiện không có lesson");
+        }
+        return users.stream().map(
+                (user) -> UserMapper.mapToUserDTO(user)).collect(Collectors.toList()
+        );
+    }
+
     @Override
     public ResCreateUserDTO convertToResCreateUserDTO(UserDTO user) {
         ResCreateUserDTO res = new ResCreateUserDTO();
@@ -97,6 +122,7 @@ public class UserServiceImpl implements UserService {
         res.setEmail(user.getEmail());
         res.setUsername(user.getUsername());
         res.setRole(user.getRole());
+        res.setRestaurant_id(user.getRestaurant_id());
         return res;
     }
     @Override
@@ -108,6 +134,7 @@ public class UserServiceImpl implements UserService {
         res.setRestaurant_name(user.getRestaurant_name());
         res.setUsername(user.getUsername());
         res.setRole(user.getRole());
+        res.setRestaurant_id(user.getRestaurant_id());
         return res;
     }
     @Override
@@ -119,6 +146,7 @@ public class UserServiceImpl implements UserService {
         res.setRestaurant_name(user.getRestaurant_name());
         res.setUsername(user.getUsername());
         res.setRole(user.getRole());
+        res.setRestaurant_id(user.getRestaurant_id());
 //        res.setDelete(user.getDelete() != null ? user.getDelete() : false);
         return res;
     }

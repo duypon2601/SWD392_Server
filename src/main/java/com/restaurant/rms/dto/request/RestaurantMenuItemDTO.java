@@ -1,25 +1,21 @@
 package com.restaurant.rms.dto.request;
 
-import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
+import java.math.BigDecimal;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class RestaurantDTO {
-
+public class RestaurantMenuItemDTO {
+    private int menu_item_id;
+    private BigDecimal price;
+    private int stock_quantity;
+    private int min_stock_threshold;
     private int restaurant_id;
-
-    private String name;
-
-    private String location;
-
-//    private List<UserDTO> users;
+    private int food_id;
 }
