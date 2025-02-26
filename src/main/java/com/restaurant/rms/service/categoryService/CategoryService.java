@@ -1,47 +1,57 @@
 package com.restaurant.rms.service.categoryService;
 
+
+import com.restaurant.rms.dto.request.CategoryDTO;
 import com.restaurant.rms.entity.Category;
+import com.restaurant.rms.mapper.CategoryMapper;
 import com.restaurant.rms.repository.CategoryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
-    public CategoryService(CategoryRepository categoryRepository) {
-        this.categoryRepository = categoryRepository;
+    public List<CategoryDTO> getAllCategories() {
+        List<Category> categories = categoryRepository.findAll();
+        return categories.stream().map(CategoryMapper::toDTO).collect(Collectors.toList());
     }
 
-    // Lấy danh sách tất cả các category
-    public List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    public CategoryDTO getCategoryById(int id) {
+        Optional<Category> category = categoryRepository.findById(id);
+        return category.map(CategoryMapper::toDTO).orElse(null);
     }
 
-    // Lấy category theo ID
-    public Optional<Category> getCategoryById(int id) {
-        return categoryRepository.findById(id);
+    public CategoryDTO createCategory(CategoryDTO categoryDTO) {
+        if (categoryRepository.existsByName(categoryDTO.getName())) {
+            throw new RuntimeException("Category name already exists!");
+        }
+        Category category = CategoryMapper.toEntity(categoryDTO);
+        category = categoryRepository.save(category);
+        return CategoryMapper.toDTO(category);
     }
 
-    // Thêm mới category
-    public Category createCategory(Category category) {
-        return categoryRepository.save(category);
+    public CategoryDTO updateCategory(int id, CategoryDTO categoryDTO) {
+        Optional<Category> existingCategory = categoryRepository.findById(id);
+        if (existingCategory.isPresent()) {
+            Category category = existingCategory.get();
+            category.setName(categoryDTO.getName());
+            categoryRepository.save(category);
+            return CategoryMapper.toDTO(category);
+        }
+        return null;
     }
 
-    // Cập nhật category
-    public Category updateCategory(int id, Category updatedCategory) {
-        return categoryRepository.findById(id)
-                .map(category -> {
-                    category.setName(updatedCategory.getName());
-                    return categoryRepository.save(category);
-                })
-                .orElseThrow(() -> new RuntimeException("Category not found with id: " + id));
-    }
-
-    // Xóa category theo ID
-    public void deleteCategory(int id) {
-        categoryRepository.deleteById(id);
+    public boolean deleteCategory(int id) {
+        if (categoryRepository.existsById(id)) {
+            categoryRepository.deleteById(id);
+            return true;
+        }
+        return false;
     }
 }
