@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Builder
@@ -26,6 +28,10 @@ public class Food {
     private String image_url;
     @Enumerated(EnumType.STRING)
     Status status;
+
+    //relationship
+    @OneToMany(mappedBy = "food", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    private List<RestaurantMenuItem> menu_item;
 
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "category_id")
