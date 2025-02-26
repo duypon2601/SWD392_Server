@@ -24,9 +24,11 @@ public class Food {
     private String description;
     @Column(name = "image_url")
     private String image_url;
-    @Column(name = "category_id")
-    private int category_id;
     @Enumerated(EnumType.STRING)
     Status status;
+
+    @ManyToOne
+    @JoinColumn(name = "category_id", referencedColumnName = "category_id")
+    private Category category;
 
 }
