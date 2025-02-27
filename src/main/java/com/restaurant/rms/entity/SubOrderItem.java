@@ -2,9 +2,7 @@ package com.restaurant.rms.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
-
 
 @Entity
 @Table(name = "sub_order_item")
@@ -29,3 +27,4 @@ public class SubOrderItem {
     private int quantity;
     private BigDecimal price;
 }
+

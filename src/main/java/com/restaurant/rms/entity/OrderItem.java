@@ -1,14 +1,15 @@
 package com.restaurant.rms.entity;
-
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
+
 @Entity
-@Table(name = "order_items")
+@Table(name = "order_item")
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
 public class OrderItem {
     @Id
@@ -19,15 +20,10 @@ public class OrderItem {
     @JoinColumn(name = "order_id", nullable = false)
     private Order order;
 
-    @Column(name = "food_id", nullable = false)
-    private int foodId;
+    @ManyToOne
+    @JoinColumn(name = "food_id", nullable = false)
+    private Food food;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "quantity")
     private int quantity;
-
-    @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 }
