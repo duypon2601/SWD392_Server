@@ -3,7 +3,7 @@ package com.restaurant.rms.enums;
 
 public enum Role {
     ADMIN,
-    PARENT,
+    STAFF,
     CONTENT_MANAGER,
     MANAGER,
     STUDENT
