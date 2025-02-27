@@ -17,8 +17,8 @@ public class DiningTable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
-    private int id;
+    @Column(name = "dining_table_Id")
+    private int diningTableId;
 
     @Column(name = "qr_code", unique = true, nullable = false, length = 255)
     private String qrCode;
