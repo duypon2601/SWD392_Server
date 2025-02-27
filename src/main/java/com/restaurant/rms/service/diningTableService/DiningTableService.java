@@ -2,6 +2,7 @@ package com.restaurant.rms.service.diningTableService;
 
 
 
+import com.google.zxing.WriterException;
 import com.restaurant.rms.dto.request.DiningTableDTO;
 import com.restaurant.rms.entity.Restaurant;
 import com.restaurant.rms.entity.DiningTable;
@@ -12,6 +13,7 @@ import com.restaurant.rms.repository.DiningTableRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +23,7 @@ public class DiningTableService {
 
     private final DiningTableRepository diningTableRepository;
     private final RestaurantRepository restaurantRepository;
+    private final QRCodeService qrCodeService;
 
     public List<DiningTableDTO> getAllDiningTables() {
         return diningTableRepository.findAll().stream()
@@ -62,5 +65,16 @@ public class DiningTableService {
         DiningTable diningTable = diningTableRepository.findByQrCode(qrCode)
                 .orElseThrow(() -> new RuntimeException("Dining Table not found"));
         return DiningTableMapper.toDTO(diningTable);
+    }
+
+    public DiningTable createDiningTable(DiningTable diningTable) throws WriterException, IOException {
+        // URL truy cập menu khi quét QR
+        String menuUrl = "https://thanh-san.github.io/Moon-HotPot/menu?table=" + diningTable.getDiningTableId();
+
+        // Tạo mã QR
+        String qrCode = qrCodeService.generateQRCode(String.valueOf(diningTable.getDiningTableId()), menuUrl);
+
+        diningTable.setQrCode(qrCode);
+        return diningTableRepository.save(diningTable);
     }
 }

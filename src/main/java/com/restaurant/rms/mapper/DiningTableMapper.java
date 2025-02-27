@@ -7,7 +7,7 @@ import com.restaurant.rms.entity.Restaurant;
 public class DiningTableMapper {
     public static DiningTableDTO toDTO(DiningTable diningTable) {
         return DiningTableDTO.builder()
-                .id(diningTable.getId())
+                .id(diningTable.getDiningTableId())
                 .qrCode(diningTable.getQrCode())
                 .status(diningTable.getStatus())
                 .restaurantId(diningTable.getRestaurant().getRestaurant_id())
@@ -16,7 +16,7 @@ public class DiningTableMapper {
 
     public static DiningTable toEntity(DiningTableDTO dto) {
         DiningTable diningTable = new DiningTable();
-        diningTable.setId(dto.getId());
+        diningTable.setDiningTableId(dto.getId());
         diningTable.setQrCode(dto.getQrCode());
         diningTable.setStatus(dto.getStatus());
 
