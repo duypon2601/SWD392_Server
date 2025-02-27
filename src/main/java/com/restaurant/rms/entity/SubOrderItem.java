@@ -2,6 +2,7 @@ package com.restaurant.rms.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+
 import java.math.BigDecimal;
 
 @Entity
@@ -21,10 +22,9 @@ public class SubOrderItem {
     private SubOrder subOrder;
 
     @ManyToOne
-    @JoinColumn(name = "food_id", nullable = false)
-    private Food food;
+    @JoinColumn(name = "menu_item_id", nullable = false)
+    private RestaurantMenuItem menuItem;
 
     private int quantity;
     private BigDecimal price;
 }
-

@@ -1,4 +1,5 @@
 package com.restaurant.rms.entity;
+
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,8 +22,8 @@ public class OrderItem {
     private Order order;
 
     @ManyToOne
-    @JoinColumn(name = "food_id", nullable = false)
-    private Food food;
+    @JoinColumn(name = "menu_item_id", nullable = false)
+    private RestaurantMenuItem menuItem;
 
     private int quantity;
     private BigDecimal price;
