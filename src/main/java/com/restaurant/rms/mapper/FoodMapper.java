@@ -1,6 +1,7 @@
 package com.restaurant.rms.mapper;
 
 import com.restaurant.rms.dto.request.FoodDTO;
+import com.restaurant.rms.entity.Category;
 import com.restaurant.rms.entity.Food;
 
 public class FoodMapper {
@@ -23,7 +24,12 @@ public class FoodMapper {
         food.setFood_id(foodDTO.getFood_id());
         food.setName(foodDTO.getName());
         food.setDescription(foodDTO.getDescription());
-        food.setImage_url(foodDTO.getImage_url());
+
+        if (foodDTO.getCategory_id() != 0) {
+            Category category = new Category();
+            category.setCategory_id(foodDTO.getCategory_id());
+            food.setCategory(category);
+        }
 
         food.setStatus(foodDTO.getStatus());
         return food;
