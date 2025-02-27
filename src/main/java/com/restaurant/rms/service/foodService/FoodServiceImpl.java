@@ -45,9 +45,8 @@ public class FoodServiceImpl implements FoodService {
                 .orElseThrow(() -> new IdInvalidException("Food ID not found"));
         existingFood.setName(updateFood.getName());
         existingFood.setDescription(updateFood.getDescription());
-        existingFood.setPrice(updateFood.getPrice());
         existingFood.setImage_url(updateFood.getImage_url());
-        existingFood.setCategory_id(updateFood.getCategory_id());
+//        existingFood.setCategory_id(updateFood.getCategory_id());
         existingFood.setStatus(updateFood.getStatus());
 
         Food updatedFood = foodRepository.save(existingFood);

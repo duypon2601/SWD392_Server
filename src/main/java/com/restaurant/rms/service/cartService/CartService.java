@@ -26,7 +26,7 @@ public class CartService {
         String key = getCartKey(tableQr);
         Map<Object, Object> cart = redisTemplate.opsForHash().entries(key);
 
-        String itemKey = String.valueOf(item.getMenu_item_id());
+        String itemKey = String.valueOf(item.getFood_id());
         if (cart.containsKey(itemKey)) {
             CartItem existingItem = objectMapper.readValue((String) cart.get(itemKey), CartItem.class);
             existingItem.setQuantity(existingItem.getQuantity() + item.getQuantity());

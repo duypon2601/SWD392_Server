@@ -9,9 +9,11 @@ public class FoodMapper {
         foodDTO.setFood_id(food.getFood_id());
         foodDTO.setName(food.getName());
         foodDTO.setDescription(food.getDescription());
-        foodDTO.setPrice(food.getPrice());
         foodDTO.setImage_url(food.getImage_url());
-        foodDTO.setCategory_id(food.getCategory_id());
+        if (food.getCategory() != null) {
+            foodDTO.setCategory_id(food.getCategory().getCategory_id());
+        }
+
         foodDTO.setStatus(food.getStatus());
 
         return foodDTO;
@@ -21,9 +23,8 @@ public class FoodMapper {
         food.setFood_id(foodDTO.getFood_id());
         food.setName(foodDTO.getName());
         food.setDescription(foodDTO.getDescription());
-        food.setPrice(foodDTO.getPrice());
         food.setImage_url(foodDTO.getImage_url());
-        food.setCategory_id(foodDTO.getCategory_id());
+
         food.setStatus(foodDTO.getStatus());
         return food;
     }
