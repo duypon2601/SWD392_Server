@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @Builder
@@ -18,6 +20,10 @@ public class CartItem {
     @Column(name = "food_id")
     private int food_id;
 
+    @ManyToOne
+    @JoinColumn(name = "menu_item_id", nullable = false) // Liên kết với RestaurantMenuItem
+    private RestaurantMenuItem menuItem;
+
     @Column(name = "name")
     private String name;
 
@@ -25,5 +31,5 @@ public class CartItem {
     private int quantity;
 
     @Column(name = "price")
-    private double price;
+    private BigDecimal price;
 }

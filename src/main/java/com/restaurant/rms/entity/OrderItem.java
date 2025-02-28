@@ -15,7 +15,8 @@ import java.math.BigDecimal;
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "order_item_id")
+    private int orderItemId;
 
     @ManyToOne
     @JoinColumn(name = "order_id", nullable = false)
@@ -25,6 +26,9 @@ public class OrderItem {
     @JoinColumn(name = "menu_item_id", nullable = false)
     private RestaurantMenuItem menuItem;
 
+    @Column(name = "quantity")
     private int quantity;
+
+    @Column(name = "price")
     private BigDecimal price;
 }
