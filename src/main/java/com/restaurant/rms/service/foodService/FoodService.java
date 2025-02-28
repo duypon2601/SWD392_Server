@@ -15,4 +15,6 @@ public interface FoodService {
     FoodDTO updateFood(FoodDTO updateFood, Integer foodId) throws IdInvalidException;
 
     void deleteFood(Integer foodId) throws IdInvalidException;
+
+    List<FoodDTO> getFoodsByRestaurant(int restaurantId);
 }

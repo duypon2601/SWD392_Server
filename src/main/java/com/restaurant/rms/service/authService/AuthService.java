@@ -50,7 +50,7 @@ public class AuthService {
 
     public User register(UserDTO userDTO) throws IdInvalidException {
         User user = new User();
-        user.setRole(Role.PARENT);
+        user.setRole(Role.STAFF);
         user.setEmail(userDTO.getEmail());
         user.setUsername(userDTO.getUsername());
         user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
