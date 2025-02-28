@@ -1,9 +1,12 @@
 package com.restaurant.rms.mapper.orderMapper;
 
 import com.restaurant.rms.dto.request.orderDTO.OrderDTO;
+import com.restaurant.rms.dto.request.orderDTO.OrderItemDTO;
 import com.restaurant.rms.entity.DiningTable;
 import com.restaurant.rms.entity.Order;
+import com.restaurant.rms.entity.RestaurantMenuItem;
 import com.restaurant.rms.enums.OrderStatus;
+import com.restaurant.rms.repository.RestaurantMenuItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +15,12 @@ import java.util.stream.Collectors;
 
 @Component
 public class OrderMapper {
+
     @Autowired
     private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private RestaurantMenuItemRepository menuItemRepository; // ✅ Thêm repository để lấy menuItem
 
     public OrderDTO toDTO(Order order) {
         if (order == null) {
@@ -47,7 +54,13 @@ public class OrderMapper {
 
         if (orderDTO.getOrderItems() != null) {
             order.setOrderItems(orderDTO.getOrderItems().stream()
-                    .map(orderItemDTO -> orderItemMapper.toEntity(orderItemDTO, order, null)) // Truyền thêm order vào
+                    .map(orderItemDTO -> {
+                        // 🔍 Truy vấn menuItem từ database
+                        RestaurantMenuItem menuItem = menuItemRepository.findById(orderItemDTO.getMenuItemId())
+                                .orElseThrow(() -> new RuntimeException("Menu item not found with ID: " + orderItemDTO.getMenuItemId()));
+
+                        return orderItemMapper.toEntity(orderItemDTO, order, menuItem);
+                    })
                     .collect(Collectors.toList()));
         }
 

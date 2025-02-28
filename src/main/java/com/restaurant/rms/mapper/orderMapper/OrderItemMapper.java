@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OrderItemMapper {
+
     public OrderItemDTO toDTO(OrderItem orderItem) {
         if (orderItem == null) {
             return null;
@@ -20,6 +21,7 @@ public class OrderItemMapper {
                 .build();
     }
 
+    // ✅ Thêm menuItem vào tham số của toEntity()
     public OrderItem toEntity(OrderItemDTO orderItemDTO, Order order, RestaurantMenuItem menuItem) {
         if (orderItemDTO == null) {
             return null;
@@ -27,9 +29,25 @@ public class OrderItemMapper {
         return OrderItem.builder()
                 .orderItemId(orderItemDTO.getId())
                 .order(order)
-                .menuItem(menuItem)
+                .menuItem(menuItem) // ✅ Bây giờ không còn null
                 .quantity(orderItemDTO.getQuantity())
                 .price(orderItemDTO.getPrice())
                 .build();
     }
 }
+
+
+
+//    public OrderItem toEntity(OrderItemDTO orderItemDTO, Order order, RestaurantMenuItem menuItem) {
+//        if (orderItemDTO == null) {
+//            return null;
+//        }
+//        return OrderItem.builder()
+//                .orderItemId(orderItemDTO.getId())
+//                .order(order)
+//                .menuItem(menuItem)
+//                .quantity(orderItemDTO.getQuantity())
+//                .price(orderItemDTO.getPrice())
+//                .build();
+//    }
+
