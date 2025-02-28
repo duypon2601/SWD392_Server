@@ -18,7 +18,8 @@ import java.util.List;
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "order_id")
+    private int orderId;
 
     @ManyToOne
     @JoinColumn(name = "table_id", nullable = false)
@@ -33,6 +34,7 @@ public class Order {
     @Enumerated(EnumType.STRING)
     private OrderStatus status = OrderStatus.PENDING;
 
+    @Column(name = "total_Price")
     private BigDecimal totalPrice;
 
     @Column(name = "created_at", updatable = false)

@@ -15,7 +15,8 @@ import java.math.BigDecimal;
 public class SubOrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "sub_order_item_id")
+    private int subOrderItemId;
 
     @ManyToOne
     @JoinColumn(name = "sub_order_id", nullable = false)
