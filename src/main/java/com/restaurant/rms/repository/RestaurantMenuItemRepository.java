@@ -8,8 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 
 public interface RestaurantMenuItemRepository extends JpaRepository<RestaurantMenuItem,Integer> {
-//    Optional<RestaurantMenuItem> findByName(String name);
-//    boolean existsByName(String name);
 
 
 }
+//    Optional<RestaurantMenuItem> findByName(String name);
+//    boolean existsByName(String name);
