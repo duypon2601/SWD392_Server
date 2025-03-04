@@ -1,47 +1,42 @@
 package com.restaurant.rms.mapper;
 
+
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
 import com.restaurant.rms.entity.Food;
-import com.restaurant.rms.entity.Restaurant;
+import com.restaurant.rms.entity.RestaurantMenu;
 import com.restaurant.rms.entity.RestaurantMenuItem;
+import org.springframework.stereotype.Component;
 
+@Component
 public class RestaurantMenuItemMapper {
-    public static RestaurantMenuItemDTO mapToRestaurantMenuItemDTO(RestaurantMenuItem restaurantMenuItem){
-        RestaurantMenuItemDTO restaurantMenuItemDTO = new RestaurantMenuItemDTO();
-        restaurantMenuItemDTO.setMenu_item_id(restaurantMenuItem.getMenu_item_id());
-        restaurantMenuItemDTO.setPrice(restaurantMenuItem.getPrice());
-        restaurantMenuItemDTO.setStock_quantity(restaurantMenuItem.getStock_quantity());
-        restaurantMenuItemDTO.setMin_stock_threshold(restaurantMenuItem.getMin_stock_threshold());
-        // Ánh xạ restaurant_id từ entity Restaurant
-        if (restaurantMenuItem.getRestaurant() != null) {
-            restaurantMenuItemDTO.setRestaurant_id(restaurantMenuItem.getRestaurant().getRestaurant_id());
+
+    public RestaurantMenuItemDTO toDTO(RestaurantMenuItem menuItem) {
+        if (menuItem == null) {
+            return null;
         }
-
-        // Ánh xạ food_id từ entity Food
-        if (restaurantMenuItem.getFood() != null) {
-            restaurantMenuItemDTO.setFood_id(restaurantMenuItem.getFood().getFood_id());
-        }
-
-        return restaurantMenuItemDTO;
-
+        return RestaurantMenuItemDTO.builder()
+                .id(menuItem.getRestaurantMenuItemId())
+                .restaurantMenuId(menuItem.getRestaurantMenu().getRestaurantMenuId())
+                .foodId(menuItem.getFood().getFood_id())
+                .price(menuItem.getPrice())
+                .stockQuantity(menuItem.getStockQuantity())
+                .minStockThreshold(menuItem.getMinStockThreshold())
+                .isAvailable(menuItem.isAvailable())
+                .build();
     }
-    public static RestaurantMenuItem mapToRestaurantMenuItem(RestaurantMenuItemDTO restaurantMenuItemDTO){
-        RestaurantMenuItem restaurantMenuItem = new RestaurantMenuItem();
-        restaurantMenuItem.setMenu_item_id(restaurantMenuItemDTO.getMenu_item_id());
-        restaurantMenuItem.setPrice(restaurantMenuItemDTO.getPrice());
-        restaurantMenuItem.setStock_quantity(restaurantMenuItemDTO.getStock_quantity());
-        restaurantMenuItem.setMin_stock_threshold(restaurantMenuItemDTO.getMin_stock_threshold());
 
-        // Gán Restaurant từ restaurant_id
-        Restaurant restaurant = new Restaurant();
-        restaurant.setRestaurant_id(restaurantMenuItemDTO.getRestaurant_id());
-        restaurantMenuItem.setRestaurant(restaurant);
-
-        // Gán Food từ food_id
-        Food food = new Food();
-        food.setFood_id(restaurantMenuItemDTO.getFood_id());
-        restaurantMenuItem.setFood(food);
-        return restaurantMenuItem;
-
+    public RestaurantMenuItem toEntity(RestaurantMenuItemDTO menuItemDTO, RestaurantMenu restaurantMenu, Food food) {
+        if (menuItemDTO == null || restaurantMenu == null || food == null) {
+            return null;
+        }
+        return RestaurantMenuItem.builder()
+                .restaurantMenuItemId(menuItemDTO.getId()) // ID nếu cập nhật, khi tạo mới ID sẽ được tự động tạo
+                .restaurantMenu(restaurantMenu)
+                .food(food)
+                .price(menuItemDTO.getPrice())
+                .stockQuantity(menuItemDTO.getStockQuantity())
+                .minStockThreshold(menuItemDTO.getMinStockThreshold())
+                .isAvailable(menuItemDTO.isAvailable())
+                .build();
     }
 }

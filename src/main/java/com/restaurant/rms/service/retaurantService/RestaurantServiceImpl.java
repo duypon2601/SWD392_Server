@@ -17,11 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
-//    private CourseRepository courseRepository;
-//    private UserRepository userRepository;
     private RestaurantRepository restaurantRepository;
-//    private CategoryRepository categoryRepository;
-//    private CategoryService categoryService;
 
     @Override
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws IdInvalidException {
@@ -41,12 +37,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantDTO getRestaurantById( Integer restaurant_id) throws IdInvalidException {
-        Optional<Restaurant> restaurant = restaurantRepository.findById(restaurant_id);
+    public RestaurantDTO getRestaurantById( Integer restaurantId) throws IdInvalidException {
+        Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
         if (restaurant.isPresent()) {
             return RestaurantMapper.mapToRestaurantDTO(restaurant.get());
         }else {
-            throw new IdInvalidException("Restaurant với id = " + restaurant_id + " không tồn tại");
+            throw new IdInvalidException("Restaurant với id = " + restaurantId + " không tồn tại");
         }
     }
     @Override

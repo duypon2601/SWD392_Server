@@ -1,20 +1,18 @@
 package com.restaurant.rms.service.RestaurantMenuItemService;
 
+import com.restaurant.rms.dto.request.RestaurantMenuDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
-import com.restaurant.rms.util.error.IdInvalidException;
 
 import java.util.List;
 
 public interface RestaurantMenuItemService {
-    RestaurantMenuItemDTO createRestaurantMenuItem(RestaurantMenuItemDTO restaurantMenuItemDTO) throws IdInvalidException;
+    RestaurantMenuItemDTO addMenuItemToMenu(int menuId, RestaurantMenuItemDTO menuItemDTO);
 
-    RestaurantMenuItemDTO getRestaurantMenuItemById ( Integer menu_item_id) throws IdInvalidException;
+    RestaurantMenuItemDTO updateMenuItem(int id, RestaurantMenuItemDTO menuItemDTO);
 
-//    RestaurantMenuItemDTO findRestaurantByUserId(int user_id) throws IdInvalidException;
+    void removeMenuItem(int id);
 
-    List<RestaurantMenuItemDTO> getRestaurantMenuItemAll();
+    RestaurantMenuItemDTO getMenuItemById(int id);
 
-    RestaurantMenuItemDTO updateRestaurantMenuItem (RestaurantMenuItemDTO restaurantDTO, Integer menu_item_id);
-
-    void deleteRestaurantMenuItem (Integer menu_item_id) throws IdInvalidException;
+    List<RestaurantMenuItemDTO> getAllMenuItemsByMenu(int menuId);
 }

@@ -21,18 +21,19 @@ public class Restaurant {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "restaurant_id")
-    private int restaurant_id;
+    private int restaurantId;
     @Column(name = "name")
     private String name;
     @Column(name = "location")
     private String location;
 
     //relationship
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY,orphanRemoval = true)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<User> users;
 
-    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL,fetch = FetchType.LAZY, orphanRemoval = true)
-    private List<RestaurantMenuItem> menu_item;
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<RestaurantMenu> menus;
+}
 //    @ManyToOne
 //    @JoinColumn(name = "course_id", nullable = false)
 //    @JsonIgnore
@@ -43,4 +44,4 @@ public class Restaurant {
 //    @OneToMany(mappedBy = "chapter", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
 //    private List<Quiz> quizs;
 
-}
+
