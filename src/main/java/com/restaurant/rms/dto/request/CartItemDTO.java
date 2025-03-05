@@ -10,9 +10,8 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @Builder
 public class CartItemDTO {
-    private int foodId;
-    private Integer menuItemId;
-    private String name;
-    private int quantity;
-    private BigDecimal price;
+    private Integer menuItemId;  // ID của món ăn trong menu
+    private String name;         // Tên món ăn
+    private int quantity;        // Số lượng
+    private BigDecimal price;    // Giá tiền cho mỗi món
 }

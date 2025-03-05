@@ -60,7 +60,7 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
 
             return new RestaurantMenuItem(
                     0, // ID tự động tạo
-                    new BigDecimal("0.00"), // Giá mặc định
+                    new BigDecimal("10.00"), // Giá mặc định
                     100, // Số lượng mặc định
                     10, // Ngưỡng tồn kho tối thiểu
                     true, // Mặc định có sẵn
