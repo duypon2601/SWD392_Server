@@ -72,23 +72,23 @@
 //        return OrderMapper.toDTO(order);
 //    }
 //
-//    @Override
-//    @Transactional
-//    public void processOrder(int diningTableId, List<OrderItemDTO> orderItemDTOs) {
-//        DiningTable table = diningTableRepository.findById(diningTableId)
-//                .orElseThrow(() -> new RuntimeException("Dining table not found"));
-//
-//        // Kiểm tra bàn đã có Order chưa
-//        orderRepository.findByDiningTableAndStatus(table, OrderStatus.PENDING)
-//                .ifPresentOrElse(
-//                        existingOrder -> createSubOrder(existingOrder.getId(), orderItemDTOs),
-//                        () -> createOrder(diningTableId, orderItemDTOs)
-//                );
-//
-//        // Cập nhật trạng thái bàn
-//        table.setStatus(DiningTableStatus.OCCUPIED);
-//        diningTableRepository.save(table);
-//    }
+////    @Override
+////    @Transactional
+////    public void processOrder(int diningTableId, List<OrderItemDTO> orderItemDTOs) {
+////        DiningTable table = diningTableRepository.findById(diningTableId)
+////                .orElseThrow(() -> new RuntimeException("Dining table not found"));
+////
+////        // Kiểm tra bàn đã có Order chưa
+////        orderRepository.findByDiningTableAndStatus(table, OrderStatus.PENDING)
+////                .ifPresentOrElse(
+////                        existingOrder -> createSubOrder(existingOrder.getId(), orderItemDTOs),
+////                        () -> createOrder(diningTableId, orderItemDTOs)
+////                );
+////
+////        // Cập nhật trạng thái bàn
+////        table.setStatus(DiningTableStatus.OCCUPIED);
+////        diningTableRepository.save(table);
+////    }
 //
 //    @Transactional
 //    public SubOrderDTO createSubOrder(int orderId, List<OrderItemDTO> orderItemDTOs) {

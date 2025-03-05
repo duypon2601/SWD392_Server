@@ -1,21 +1,20 @@
 package com.restaurant.rms.dto.request;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.math.BigDecimal;
 
-@Getter
-@Setter
-@AllArgsConstructor
+@Data
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
 public class RestaurantMenuItemDTO {
-    private int menu_item_id;
+    private int id;
+    private int restaurantMenuId;
+    private int foodId;
     private BigDecimal price;
-    private int stock_quantity;
-    private int min_stock_threshold;
-    private int restaurant_id;
-    private int food_id;
+    private int stockQuantity;
+    private int minStockThreshold;
+    private boolean isAvailable;
 }
+

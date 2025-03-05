@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 public class RestaurantDTO {
 
-    private int restaurant_id;
+    private int restaurantId;
 
     private String name;
 
