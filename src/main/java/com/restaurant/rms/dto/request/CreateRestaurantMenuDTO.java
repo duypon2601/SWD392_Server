@@ -1,21 +1,14 @@
 package com.restaurant.rms.dto.request;
 
-import lombok.*;
+import lombok.Data;
 
-import java.math.BigDecimal;
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Data
 public class CreateRestaurantMenuDTO {
-    private Integer restaurantId;
+    private int restaurantId;
     private String name;
     private String description;
     private Boolean isActive;
-    private List<CreateRestaurantMenuItemDTO> menuItems;
-
+    private List<FoodItemDTO> foodItems; // Danh sách món ăn
 }
-

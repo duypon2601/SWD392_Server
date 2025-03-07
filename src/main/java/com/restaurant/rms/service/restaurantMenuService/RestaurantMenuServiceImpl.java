@@ -16,10 +16,8 @@ import com.restaurant.rms.repository.RestaurantRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Service
 public class RestaurantMenuServiceImpl implements RestaurantMenuService {
@@ -54,31 +52,31 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
         newRestaurantMenu.setDescription(menuDTO.getDescription());
         newRestaurantMenu.setActive(menuDTO.getIsActive());
         newRestaurantMenu.setRestaurant(restaurant);
-
         final RestaurantMenu savedMenu = restaurantMenuRepository.save(newRestaurantMenu);
 
-        // Tạo danh sách menuItems từ danh sách truyền vào
-        List<RestaurantMenuItem> menuItems = menuDTO.getMenuItems().stream().map(itemDTO -> {
-            Food food = foodRepository.findById(itemDTO.getFoodId())
-                    .orElseThrow(() -> new RuntimeException("Food not found with id: " + itemDTO.getFoodId()));
+        // Tạo danh sách món ăn trong thực đơn
+        List<RestaurantMenuItem> menuItems = menuDTO.getFoodItems().stream().map(foodItem -> {
+            Food food = foodRepository.findById(foodItem.getFoodId())
+                    .orElseThrow(() -> new RuntimeException("Food not found with id: " + foodItem.getFoodId()));
 
             return new RestaurantMenuItem(
-                    0, // ID tự động tạo
-                    itemDTO.getPrice(), // Giá từ request
-                    itemDTO.getQuantity(), // Số lượng từ request
-                    10, // Ngưỡng tồn kho tối thiểu (có thể chỉnh sửa sau)
+                    0,
+                    foodItem.getPrice(), // Lấy giá từ request
+                    foodItem.getQuantity(), // Lấy số lượng từ request
+                    10, // Ngưỡng tồn kho tối thiểu
                     true, // Mặc định có sẵn
-                    savedMenu, // Liên kết với menu
+                    savedMenu,
                     food
             );
         }).collect(Collectors.toList());
 
-        // Lưu danh sách menuItems vào DB
+        // Lưu danh sách món ăn vào DB
         menuItemRepository.saveAll(menuItems);
         savedMenu.setMenuItems(menuItems);
 
         return restaurantMenuMapper.toDTO(savedMenu);
     }
+
 
     @Override
     public RestaurantMenuDTO getRestaurantMenuById(int id) {
