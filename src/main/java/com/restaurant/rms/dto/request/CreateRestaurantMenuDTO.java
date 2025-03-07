@@ -2,6 +2,7 @@ package com.restaurant.rms.dto.request;
 
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Getter
@@ -14,6 +15,7 @@ public class CreateRestaurantMenuDTO {
     private String name;
     private String description;
     private Boolean isActive;
-    private List<Integer> foodIds; // Chỉ cần truyền danh sách foodId
+    private List<CreateRestaurantMenuItemDTO> menuItems;
+
 }
 
