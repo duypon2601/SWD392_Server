@@ -1,19 +1,14 @@
 package com.restaurant.rms.dto.request;
 
-import lombok.*;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Data
 public class CreateRestaurantMenuDTO {
-    private Integer restaurantId;
+    private int restaurantId;
     private String name;
     private String description;
     private Boolean isActive;
-    private List<Integer> foodIds; // Chỉ cần truyền danh sách foodId
+    private List<FoodItemDTO> foodItems; // Danh sách món ăn
 }
-

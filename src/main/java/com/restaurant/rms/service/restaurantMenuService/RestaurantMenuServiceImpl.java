@@ -3,6 +3,7 @@ package com.restaurant.rms.service.restaurantMenuService;
 
 import com.restaurant.rms.dto.request.CreateRestaurantMenuDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuDTO;
+import com.restaurant.rms.dto.request.UpdateRestaurantMenuDTO;
 import com.restaurant.rms.entity.Food;
 import com.restaurant.rms.entity.Restaurant;
 import com.restaurant.rms.entity.RestaurantMenu;
@@ -12,9 +13,9 @@ import com.restaurant.rms.repository.FoodRepository;
 import com.restaurant.rms.repository.RestaurantMenuItemRepository;
 import com.restaurant.rms.repository.RestaurantMenuRepository;
 import com.restaurant.rms.repository.RestaurantRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -51,64 +52,70 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
         newRestaurantMenu.setDescription(menuDTO.getDescription());
         newRestaurantMenu.setActive(menuDTO.getIsActive());
         newRestaurantMenu.setRestaurant(restaurant);
-        final RestaurantMenu savedMenu = restaurantMenuRepository.save(newRestaurantMenu); // Lưu vào DB và gán giá trị mới
+        final RestaurantMenu savedMenu = restaurantMenuRepository.save(newRestaurantMenu);
 
-        // Tạo menuItem từ foodId
-        List<RestaurantMenuItem> menuItems = menuDTO.getFoodIds().stream().map(foodId -> {
-            Food food = foodRepository.findById(foodId)
-                    .orElseThrow(() -> new RuntimeException("Food not found with id: " + foodId));
+        // Tạo danh sách món ăn trong thực đơn
+        List<RestaurantMenuItem> menuItems = menuDTO.getFoodItems().stream().map(foodItem -> {
+            Food food = foodRepository.findById(foodItem.getFoodId())
+                    .orElseThrow(() -> new RuntimeException("Food not found with id: " + foodItem.getFoodId()));
 
             return new RestaurantMenuItem(
-                    0, // ID tự động tạo
-                    new BigDecimal("10.00"), // Giá mặc định
-                    100, // Số lượng mặc định
+                    0,
+                    foodItem.getPrice(), // Lấy giá từ request
+                    foodItem.getQuantity(), // Lấy số lượng từ request
                     10, // Ngưỡng tồn kho tối thiểu
                     true, // Mặc định có sẵn
-                    savedMenu, // Sử dụng menu đã lưu
+                    savedMenu,
                     food
             );
         }).collect(Collectors.toList());
 
+        // Lưu danh sách món ăn vào DB
         menuItemRepository.saveAll(menuItems);
         savedMenu.setMenuItems(menuItems);
 
-        return restaurantMenuMapper.toDTO(savedMenu); // Sử dụng instance của mapper thay vì gọi static
+        return restaurantMenuMapper.toDTO(savedMenu);
+    }
+
+
+    @Override
+    public RestaurantMenuDTO getRestaurantMenuById(int id) {
+        RestaurantMenu menu = restaurantMenuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
+        return restaurantMenuMapper.toDTO(menu);
+    }
+
+    @Override
+    public List<RestaurantMenuDTO> getAllRestaurantMenus() {
+        return restaurantMenuRepository.findAll().stream()
+                .map(restaurantMenuMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
+    public RestaurantMenuDTO updateRestaurantMenu(int id, UpdateRestaurantMenuDTO menuDTO) {
+        RestaurantMenu menu = restaurantMenuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
+
+        menu.setName(menuDTO.getName());
+        menu.setDescription(menuDTO.getDescription());
+        menu.setActive(menuDTO.getIsActive());
+
+        return restaurantMenuMapper.toDTO(restaurantMenuRepository.save(menu));
+    }
+
+    @Override
+    @Transactional
+    public void deleteRestaurantMenu(int id) {
+        RestaurantMenu menu = restaurantMenuRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Menu not found"));
+
+        restaurantMenuRepository.delete(menu);
     }
 
 
 
-//    @Override
-//    public RestaurantMenuDTO updateRestaurantMenu(int id, RestaurantMenuDTO restaurantMenuDTO) {
-//        Optional<RestaurantMenu> optionalMenu = restaurantMenuRepository.findById(id);
-//        if (optionalMenu.isPresent()) {
-//            RestaurantMenu restaurantMenu = optionalMenu.get();
-//            restaurantMenu.setName(restaurantMenuDTO.getName());
-//            restaurantMenu.setDescription(restaurantMenuDTO.getDescription());
-//            restaurantMenu.setActive(restaurantMenuDTO.isActive());
-//            restaurantMenu = restaurantMenuRepository.save(restaurantMenu);
-//            return restaurantMenuMapper.toDTO(restaurantMenu);
-//        }
-//        throw new EntityNotFoundException("Menu not found");
-//    }
-//
-//    @Override
-//    public void deleteRestaurantMenu(int id) {
-//        restaurantMenuRepository.deleteById(id);
-//    }
-//
-//    @Override
-//    public RestaurantMenuDTO getRestaurantMenuById(int id) {
-//        return restaurantMenuRepository.findById(id)
-//                .map(restaurantMenuMapper::toDTO)
-//                .orElseThrow(() -> new EntityNotFoundException("Menu not found"));
-//    }
-//
-//    @Override
-//    public List<RestaurantMenuDTO> getAllRestaurantMenus() {
-//        return restaurantMenuRepository.findAll().stream()
-//                .map(restaurantMenuMapper::toDTO)
-//                .collect(Collectors.toList());
-//    }
 }
 
 
