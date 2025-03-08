@@ -14,7 +14,7 @@
 	<name>restaurant_rms</name>
 	<description></description>
 	<properties>
-		<java.version>21</java.version>
+		<java.version>17</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -22,6 +22,7 @@
 			<artifactId>spring-boot-starter-actuator</artifactId>
 
 		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
@@ -157,7 +158,17 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.13.0</version>  <!-- Đảm bảo bản mới nhất -->
+				<configuration>
+					<release>17</release>  <!-- Xác định Java 21 -->
+				</configuration>
+			</plugin>
+
 		</plugins>
+
 	</build>
 
 </project>
