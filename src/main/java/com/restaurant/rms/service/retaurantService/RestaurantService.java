@@ -18,7 +18,7 @@ public interface RestaurantService {
 
     RestaurantDTO updateRestaurant (RestaurantDTO restaurantDTO, Integer restaurant_id);
 
-    void deleteRestaurant (Integer restaurant_id) throws IdInvalidException;
+    void deleteRestaurant (Integer restaurantId) throws IdInvalidException;
 //
 //    List<CourseDTO> getCoursesBoughtByParent(int userId);
 //

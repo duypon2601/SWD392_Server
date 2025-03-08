@@ -15,7 +15,7 @@ public class SubOrderItemMapper {
         }
         return SubOrderItemDTO.builder()
                 .id(subOrderItem.getSubOrderItemId())
-                .menuItemId(subOrderItem.getMenuItem().getMenu_item_id())
+                .menuItemId(subOrderItem.getMenuItem().getRestaurantMenuItemId())
                 .quantity(subOrderItem.getQuantity())
                 .price(subOrderItem.getPrice())
                 .build();

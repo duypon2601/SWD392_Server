@@ -1,22 +1,18 @@
 package com.restaurant.rms.controller;
 
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.restaurant.rms.dto.request.CartItemDTO;
 import com.restaurant.rms.dto.request.CheckoutCartDTO;
 import com.restaurant.rms.service.cartService.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
 @Slf4j
-@CrossOrigin("*")
 @RestController
 @AllArgsConstructor
 @RequestMapping("/cart")
@@ -32,19 +28,23 @@ public class CartController {
     }
 
     @PostMapping("/{tableQr}/add")
-    public ResponseEntity<String> addToCart(@PathVariable String tableQr, @RequestBody CartItemDTO cartItem) {
-        cartService.addToCart(tableQr, cartItem);
+    public ResponseEntity<String> addToCart(@PathVariable String tableQr,
+                                            @RequestParam int menuItemId,
+                                            @RequestParam int quantity) {
+        cartService.addToCart(tableQr, menuItemId, quantity);
         return ResponseEntity.ok("Thêm món thành công!");
     }
 
     @PutMapping("/{tableQr}/update")
-    public ResponseEntity<String> updateCart(@PathVariable String tableQr, @RequestBody List<CartItemDTO> updatedCart) {
+    public ResponseEntity<String> updateCart(@PathVariable String tableQr,
+                                             @RequestBody List<CartItemDTO> updatedCart) {
         cartService.updateCart(tableQr, updatedCart);
         return ResponseEntity.ok("Cập nhật giỏ hàng thành công!");
     }
 
     @DeleteMapping("/{tableQr}/remove/{menuItemId}")
-    public ResponseEntity<String> removeItem(@PathVariable String tableQr, @PathVariable int menuItemId) {
+    public ResponseEntity<String> removeItem(@PathVariable String tableQr,
+                                             @PathVariable int menuItemId) {
         cartService.removeItemFromCart(tableQr, menuItemId);
         return ResponseEntity.ok("Xóa món thành công!");
     }
@@ -61,4 +61,5 @@ public class CartController {
         return ResponseEntity.ok(cartService.checkoutAndCreateOrder(tableQr));
     }
 }
+
 

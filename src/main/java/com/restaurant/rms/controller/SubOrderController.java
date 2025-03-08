@@ -18,16 +18,16 @@ public class SubOrderController {
     private final SubOrderService subOrderService;
 
     // Tạo một SubOrder mới
-    @PostMapping("/create")
-    public ResponseEntity<String> createSubOrder(@RequestBody SubOrderDTO subOrderDTO) {
-        subOrderService.createSubOrder(subOrderDTO);
-        return ResponseEntity.ok("SubOrder has been created.");
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<String> createSubOrder(@RequestBody SubOrderDTO subOrderDTO) {
+//        subOrderService.createSubOrder(subOrderDTO);
+//        return ResponseEntity.ok("SubOrder has been created.");
+//    }
 
     // Hoàn tất SubOrder (gộp vào Order chính)
     @PutMapping("/{subOrderId}/complete")
     public ResponseEntity<String> completeSubOrder(@PathVariable int subOrderId) {
-        subOrderService.completeSubOrder(subOrderId);
+        subOrderService.confirmSubOrder(subOrderId);
         return ResponseEntity.ok("SubOrder has been merged into the main Order.");
     }
 }

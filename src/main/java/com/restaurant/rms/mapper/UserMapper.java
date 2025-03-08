@@ -19,7 +19,7 @@ public class UserMapper {
         userDTO.setUsername(user.getUsername());
         userDTO.setPassword(user.getPassword());
         userDTO.setRole(user.getRole());
-        userDTO.setRestaurant_id(user.getRestaurant().getRestaurant_id());
+        userDTO.setRestaurant_id(user.getRestaurant().getRestaurantId());
         return userDTO;
 
     }

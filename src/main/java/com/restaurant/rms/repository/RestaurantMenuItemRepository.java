@@ -1,15 +1,12 @@
 package com.restaurant.rms.repository;
 
-import com.restaurant.rms.entity.Restaurant;
 import com.restaurant.rms.entity.RestaurantMenuItem;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
 
-import java.util.Optional;
-
-public interface RestaurantMenuItemRepository extends JpaRepository<RestaurantMenuItem,Integer> {
-
-
+@Repository
+public interface RestaurantMenuItemRepository extends JpaRepository<RestaurantMenuItem, Integer> {
+    List<RestaurantMenuItem> findByRestaurantMenu_RestaurantMenuId(int restaurantMenuId);
 }
-//    Optional<RestaurantMenuItem> findByName(String name);
-//    boolean existsByName(String name);

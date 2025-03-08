@@ -61,11 +61,11 @@ public class FoodServiceImpl implements FoodService {
         foodRepository.deleteById(foodId);
     }
 
-    @Override
-    public List<FoodDTO> getFoodsByRestaurant(int restaurantId) {
-        List<Food> foods = foodRepository.findFoodsByRestaurantId(restaurantId);
-        return foods.stream()
-                .map(FoodMapper::mapToFoodDTO)
-                .collect(Collectors.toList());
-    }
+//    @Override
+//    public List<FoodDTO> getFoodsByRestaurant(int restaurantId) {
+//        List<Food> foods = foodRepository.findFoodsByRestaurantId(restaurantId);
+//        return foods.stream()
+//                .map(FoodMapper::mapToFoodDTO)
+//                .collect(Collectors.toList());
+//    }
 }

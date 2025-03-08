@@ -10,7 +10,7 @@ public class DiningTableMapper {
                 .id(diningTable.getDiningTableId())
                 .qrCode(diningTable.getQrCode())
                 .status(diningTable.getStatus())
-                .restaurantId(diningTable.getRestaurant().getRestaurant_id())
+                .restaurantId(diningTable.getRestaurant().getRestaurantId())
                 .build();
     }
 
@@ -21,7 +21,7 @@ public class DiningTableMapper {
         diningTable.setStatus(dto.getStatus());
 
         Restaurant restaurant = new Restaurant();
-        restaurant.setRestaurant_id(dto.getRestaurantId());
+        restaurant.setRestaurantId(dto.getRestaurantId());
         diningTable.setRestaurant(restaurant);
 
         return diningTable;

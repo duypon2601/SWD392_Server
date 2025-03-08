@@ -15,7 +15,7 @@ public class OrderItemMapper {
         }
         return OrderItemDTO.builder()
                 .id(orderItem.getOrderItemId())
-                .menuItemId(orderItem.getMenuItem().getMenu_item_id())
+                .menuItemId(orderItem.getMenuItem().getRestaurantMenuItemId())
                 .quantity(orderItem.getQuantity())
                 .price(orderItem.getPrice())
                 .build();
