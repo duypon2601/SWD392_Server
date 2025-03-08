@@ -3,11 +3,13 @@ package com.restaurant.rms.service.restaurantMenuService;
 
 import com.restaurant.rms.dto.request.CreateRestaurantMenuDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuDTO;
+import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
 import com.restaurant.rms.dto.request.UpdateRestaurantMenuDTO;
 import com.restaurant.rms.entity.Food;
 import com.restaurant.rms.entity.Restaurant;
 import com.restaurant.rms.entity.RestaurantMenu;
 import com.restaurant.rms.entity.RestaurantMenuItem;
+import com.restaurant.rms.mapper.RestaurantMenuItemMapper;
 import com.restaurant.rms.mapper.RestaurantMenuMapper;
 import com.restaurant.rms.repository.FoodRepository;
 import com.restaurant.rms.repository.RestaurantMenuItemRepository;
@@ -31,7 +33,7 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
     public RestaurantMenuServiceImpl(RestaurantMenuRepository restaurantMenuRepository,
                                      RestaurantRepository restaurantRepository,
                                      FoodRepository foodRepository,
-                                     RestaurantMenuItemRepository menuItemRepository,
+                                     RestaurantMenuItemRepository menuItemRepository, RestaurantMenuItemMapper restaurantMenuItemMapper,
                                      RestaurantMenuMapper restaurantMenuMapper) { // Inject mapper vào constructor
         this.restaurantMenuRepository = restaurantMenuRepository;
         this.restaurantRepository = restaurantRepository;
@@ -84,6 +86,7 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
                 .orElseThrow(() -> new RuntimeException("Menu not found"));
         return restaurantMenuMapper.toDTO(menu);
     }
+
 
     @Override
     public List<RestaurantMenuDTO> getAllRestaurantMenus() {

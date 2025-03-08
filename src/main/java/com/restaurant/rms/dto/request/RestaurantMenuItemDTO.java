@@ -16,5 +16,7 @@ public class RestaurantMenuItemDTO {
     private int stockQuantity;
     private int minStockThreshold;
     private boolean isAvailable;
+    private String foodName;    // 🌟 Tên món ăn
+    private String categoryName;
 }
 
