@@ -1,7 +1,9 @@
 package com.restaurant.rms.mapper;
 
 
+import com.restaurant.rms.dto.request.CategoryDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
+import com.restaurant.rms.entity.Category;
 import com.restaurant.rms.entity.Food;
 import com.restaurant.rms.entity.RestaurantMenu;
 import com.restaurant.rms.entity.RestaurantMenuItem;
@@ -22,6 +24,8 @@ public class RestaurantMenuItemMapper {
                 .stockQuantity(menuItem.getStockQuantity())
                 .minStockThreshold(menuItem.getMinStockThreshold())
                 .isAvailable(menuItem.isAvailable())
+                .foodName(menuItem.getFood().getName())   // 🌟 Lấy tên món ăn
+                .categoryName(menuItem.getFood().getCategory().getName())
                 .build();
     }
 
@@ -38,5 +42,8 @@ public class RestaurantMenuItemMapper {
                 .minStockThreshold(menuItemDTO.getMinStockThreshold())
                 .isAvailable(menuItemDTO.isAvailable())
                 .build();
+    }
+    private CategoryDTO toCategoryDTO(Category category) {
+        return new CategoryDTO(category.getCategory_id(), category.getName());
     }
 }
