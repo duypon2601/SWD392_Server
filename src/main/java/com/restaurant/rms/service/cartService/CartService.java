@@ -5,13 +5,14 @@ import com.restaurant.rms.dto.request.CartItemDTO;
 import com.restaurant.rms.dto.request.CheckoutCartDTO;
 import com.restaurant.rms.dto.request.orderDTO.OrderDTO;
 import com.restaurant.rms.dto.request.orderDTO.OrderItemDTO;
+import com.restaurant.rms.dto.request.orderDTO.SubOrderDTO;
 import com.restaurant.rms.entity.DiningTable;
 import com.restaurant.rms.entity.RestaurantMenuItem;
 import com.restaurant.rms.enums.OrderStatus;
 import com.restaurant.rms.mapper.CartItemMapper;
 import com.restaurant.rms.repository.DiningTableRepository;
 import com.restaurant.rms.repository.RestaurantMenuItemRepository;
-import com.restaurant.rms.repository.RestaurantRepository;
+
 import com.restaurant.rms.service.orderService.OrderService;
 import com.restaurant.rms.util.RedisUtil;
 import jakarta.transaction.Transactional;
@@ -65,7 +66,6 @@ public class CartService {
         redisUtil.clearCart(getCartKey(tableQr));
     }
 
-
     @Transactional
     public CheckoutCartDTO checkoutAndCreateOrder(String tableQr) throws JsonProcessingException {
         log.info("🛒 Bắt đầu checkout cho bàn: {}", tableQr);
@@ -103,17 +103,42 @@ public class CartService {
                 .orderItems(orderItemDTOs)
                 .build();
 
-        OrderDTO createdOrder = orderService.createOrderOrSubOrder(orderDTO);
+        // 🔍 Gọi service để tạo Order hoặc SubOrder
+        Object createdOrderOrSubOrder = orderService.createOrderOrSubOrder(orderDTO);
+
+        // 🎯 Kiểm tra kết quả trả về
+        int orderId;
+        List<OrderItemDTO> items;
+        if (createdOrderOrSubOrder instanceof OrderDTO) {
+            OrderDTO createdOrder = (OrderDTO) createdOrderOrSubOrder;
+            orderId = createdOrder.getId();
+            items = createdOrder.getOrderItems();
+        } else if (createdOrderOrSubOrder instanceof SubOrderDTO) {
+            SubOrderDTO createdSubOrder = (SubOrderDTO) createdOrderOrSubOrder;
+            orderId = createdSubOrder.getOrderId();  // SubOrder thuộc về một Order
+            items = createdSubOrder.getSubOrderItems().stream()
+                    .map(subOrderItem -> OrderItemDTO.builder()
+                            .menuItemId(subOrderItem.getMenuItemId())
+                            .quantity(subOrderItem.getQuantity())
+                            .price(subOrderItem.getPrice())
+                            .build())
+                    .collect(Collectors.toList());
+        } else {
+            throw new RuntimeException("🚨 Lỗi không xác định khi tạo Order/SubOrder!");
+        }
+
+        // 🛒 Xóa giỏ hàng sau khi checkout thành công
         clearCart(tableQr);
 
         return CheckoutCartDTO.builder()
-                .orderId(createdOrder.getId())
-                .diningTableId(createdOrder.getDiningTableId())
-                .status(createdOrder.getStatus())
-                .totalPrice(createdOrder.getTotalPrice())
-                .orderItems(createdOrder.getOrderItems())
+                .orderId(orderId)
+                .diningTableId(table.getDiningTableId())
+                .status(OrderStatus.PENDING.name())
+                .totalPrice(totalPrice)
+                .orderItems(items)
                 .build();
     }
+
 
 
 }
