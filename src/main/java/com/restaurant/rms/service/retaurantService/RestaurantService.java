@@ -10,13 +10,13 @@ import java.util.List;
 public interface RestaurantService {
     RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws IdInvalidException;
 
-    RestaurantDTO getRestaurantById ( Integer restaurant_id) throws IdInvalidException;
+    RestaurantDTO getRestaurantById ( Integer restaurantId) throws IdInvalidException;
 
-    RestaurantDTO findRestaurantByUserId(int user_id) throws IdInvalidException;
+    RestaurantDTO findRestaurantByUserId(int userId) throws IdInvalidException;
 
     List<RestaurantDTO> getRestaurantAll();
 
-    RestaurantDTO updateRestaurant (RestaurantDTO restaurantDTO, Integer restaurant_id);
+    RestaurantDTO updateRestaurant (RestaurantDTO restaurantDTO, Integer restaurantId);
 
     void deleteRestaurant (Integer restaurantId) throws IdInvalidException;
 //

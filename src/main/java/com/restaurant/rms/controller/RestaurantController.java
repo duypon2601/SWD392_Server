@@ -28,8 +28,8 @@ public class RestaurantController {
     }
 
     @GetMapping("{restaurant_id}")
-    public ResponseEntity<RestaurantDTO> getRestaurantById (@PathVariable("restaurant_id") Integer restaurant_id) throws IdInvalidException {
-        RestaurantDTO restaurantDTO = restaurantService.getRestaurantById(restaurant_id);
+    public ResponseEntity<RestaurantDTO> getRestaurantById (@PathVariable("restaurant_id") Integer restaurantId) throws IdInvalidException {
+        RestaurantDTO restaurantDTO = restaurantService.getRestaurantById(restaurantId);
         return ResponseEntity.status(HttpStatus.OK).body(restaurantDTO);
     }
 
@@ -41,16 +41,16 @@ public class RestaurantController {
 
     @PutMapping("/{restaurant_id}")
 //    @PreAuthorize("hasAnyRole('CONTENT_MANAGER', 'MANAGER')")
-    public ResponseEntity<RestaurantDTO> updateRestaurant (@RequestBody RestaurantDTO updatedRestaurant, @PathVariable("restaurant_id") Integer restaurant_id){
-        RestaurantDTO restaurantDTO = restaurantService.updateRestaurant(updatedRestaurant, restaurant_id);
+    public ResponseEntity<RestaurantDTO> updateRestaurant (@RequestBody RestaurantDTO updatedRestaurant, @PathVariable("restaurant_id") Integer restaurantId){
+        RestaurantDTO restaurantDTO = restaurantService.updateRestaurant(updatedRestaurant, restaurantId);
         return ResponseEntity.ok(restaurantDTO);
     }
 
     @DeleteMapping("{restaurant_id}")
 //    @PreAuthorize("hasAnyRole('CONTENT_MANAGER', 'MANAGER')")
-    public ResponseEntity<Void> deleteRestaurant( @PathVariable("restaurant_id") Integer restaurant_id) throws IdInvalidException {
-        RestaurantDTO currentRestaurant = restaurantService.getRestaurantById(restaurant_id);
-        restaurantService.deleteRestaurant(restaurant_id);
+    public ResponseEntity<Void> deleteRestaurant( @PathVariable("restaurant_id") Integer restaurantId) throws IdInvalidException {
+        RestaurantDTO currentRestaurant = restaurantService.getRestaurantById(restaurantId);
+        restaurantService.deleteRestaurant(restaurantId);
         return ResponseEntity.ok(null);
     }
 
