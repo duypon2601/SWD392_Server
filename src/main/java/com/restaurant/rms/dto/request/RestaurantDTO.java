@@ -20,6 +20,4 @@ public class RestaurantDTO {
     private String name;
 
     private String location;
-
-//    private List<UserDTO> users;
 }

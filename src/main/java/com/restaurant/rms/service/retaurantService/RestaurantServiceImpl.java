@@ -46,11 +46,11 @@ public class RestaurantServiceImpl implements RestaurantService {
         }
     }
     @Override
-    public RestaurantDTO findRestaurantByUserId(int user_id) throws IdInvalidException {
-        Restaurant restaurant = restaurantRepository.findRestaurantByUserId(user_id);
+    public RestaurantDTO findRestaurantByUserId(int userId) throws IdInvalidException {
+        Restaurant restaurant = restaurantRepository.findRestaurantByUserId(userId);
 
         if (restaurant == null) {
-            throw new IdInvalidException("Restaurant not found for user ID: " + user_id);
+            throw new IdInvalidException("Restaurant not found for user ID: " + userId);
         }
 
         return RestaurantMapper.mapToRestaurantDTO(restaurant);
@@ -66,14 +66,13 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDTO, Integer restaurant_id) {
-        Restaurant restaurant = restaurantRepository.findById(restaurant_id)
-                .orElseThrow(()-> new RuntimeException("Restaurant "+restaurant_id+" not found"));
-
-        restaurantDTO.setName(restaurantDTO.getName());
-        restaurantDTO.setLocation(restaurantDTO.getLocation());
-        Restaurant updateRestaurantObj = restaurantRepository.save(restaurant);
-        return RestaurantMapper.mapToRestaurantDTO(updateRestaurantObj);
+    public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDTO, Integer restaurantId) {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new RuntimeException("Restaurant " + restaurantId + " not found"));
+        restaurant.setName(restaurantDTO.getName());
+        restaurant.setLocation(restaurantDTO.getLocation());
+        Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
+        return RestaurantMapper.mapToRestaurantDTO(updatedRestaurant);
     }
 
     @Override
