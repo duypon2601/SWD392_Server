@@ -69,15 +69,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDTO updateRestaurant(RestaurantDTO restaurantDTO, Integer restaurantId) {
         Restaurant restaurant = restaurantRepository.findById(restaurantId)
                 .orElseThrow(() -> new RuntimeException("Restaurant " + restaurantId + " not found"));
-
-        // Cập nhật dữ liệu từ DTO vào entity
         restaurant.setName(restaurantDTO.getName());
         restaurant.setLocation(restaurantDTO.getLocation());
-
-        // Lưu entity đã cập nhật vào database
         Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
-
-        // Trả về DTO sau khi cập nhật
         return RestaurantMapper.mapToRestaurantDTO(updatedRestaurant);
     }
 
