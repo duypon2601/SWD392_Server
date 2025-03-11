@@ -74,11 +74,16 @@ public class UserServiceImpl implements UserService {
     public UserDTO updateUser(UserDTO updateUser, Integer user_id) {
         User user = userRepository.findById(user_id)
                 .orElseThrow(()-> new RuntimeException("User "+user_id+" not found"));
+
+        Restaurant restaurant = restaurantRepository.findById(updateUser.getRestaurant_id())
+                .orElseThrow(() -> new RuntimeException("Restaurant ID " + updateUser.getRestaurant_id() + " không tồn tại"));
         user.setName(updateUser.getName());
-        user.setRestaurant_name(updateUser.getRestaurant_name());
         user.setEmail(updateUser.getEmail());
         user.setUsername(updateUser.getUsername());
         user.setRole(updateUser.getRole());
+
+        user.setRestaurant(restaurant);
+        user.setRestaurant_name(restaurant.getName());
         User updateUserObj = userRepository.save(user);
         return UserMapper.mapToUserDTO(updateUserObj);
     }
