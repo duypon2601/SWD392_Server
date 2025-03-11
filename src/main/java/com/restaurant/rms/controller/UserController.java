@@ -31,13 +31,13 @@ public class UserController {
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
     private UserService userService;
     @PostMapping("/create")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     public ResponseEntity<ResCreateUserDTO> createUser(@Valid @RequestBody UserDTO userDTO) throws IdInvalidException {
         UserDTO savedUser = userService.createUser(userDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(this.userService.convertToResCreateUserDTO(savedUser));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     @GetMapping("/get/{user_id}")
     public ResponseEntity<ResUserDTO> getUserById (@PathVariable("user_id") Integer user_id) throws IdInvalidException{
         UserDTO userDTO = userService.getUserById(user_id);
@@ -54,21 +54,21 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     @PutMapping("/{user_id}")
     public ResponseEntity<ResUpdateUserDTO> updateUser(@RequestBody UserDTO updatedUser, @PathVariable("user_id") Integer user_id) throws IdInvalidException{
         UserDTO userDTO = userService.updateUser(updatedUser,user_id);
         return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(userDTO));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     @DeleteMapping("/delete/{user_id}")
     public ResponseEntity<Void> deleteUser(@PathVariable("user_id") Integer user_id) throws IdInvalidException{
         UserDTO currentUser = this.userService.getUserById(user_id);
         this.userService.deleteUser(user_id);
         return ResponseEntity.ok(null);
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     @GetMapping("/restaurant/{restaurant_id}")
     public ResponseEntity<List<UserDTO>> findUserByRestaurantId(@PathVariable("restaurant_id") int restaurant_id) throws IdInvalidException {
         List<UserDTO> user = userService.findUserByRestaurantId(restaurant_id);
