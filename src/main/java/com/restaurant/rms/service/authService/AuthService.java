@@ -43,6 +43,8 @@ public class AuthService {
         resLoginDTO.setEmail(user.getEmail());
         resLoginDTO.setName(user.getName());
         resLoginDTO.setRestaurant_name(user.getRestaurant_name());
+        resLoginDTO.setRestaurantId(user.getRestaurant().getRestaurantId());
+        resLoginDTO.setPassword(user.getPassword());
 //        resLoginDTO.setIs_deleted(user.getIs_deleted());
         resLoginDTO.setUser_id(user.getUser_id());
         return resLoginDTO;
