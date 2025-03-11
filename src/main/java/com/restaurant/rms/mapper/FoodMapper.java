@@ -24,6 +24,7 @@ public class FoodMapper {
         food.setFood_id(foodDTO.getFood_id());
         food.setName(foodDTO.getName());
         food.setDescription(foodDTO.getDescription());
+        food.setImage_url(foodDTO.getImage_url());
 
         if (foodDTO.getCategory_id() != 0) {
             Category category = new Category();
