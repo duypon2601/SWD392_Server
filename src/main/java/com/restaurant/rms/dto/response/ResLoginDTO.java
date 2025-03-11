@@ -12,5 +12,5 @@ import lombok.Setter;
 @Setter
 public class ResLoginDTO extends User {
     private String token;
-
+    private int restaurantId;
 }

@@ -25,7 +25,7 @@ public class ResUserDTO {
 
     private String username;
 
-//    private String password;
+    private String password;
 
 //    private Boolean delete;
 
