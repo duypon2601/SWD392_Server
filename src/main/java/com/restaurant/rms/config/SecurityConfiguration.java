@@ -40,8 +40,8 @@ public class SecurityConfiguration {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/ws/**",  // Bỏ qua authentication cho WebSocket
-            "/topic/**",  // Cho phép client subscribe
+//            "/ws/**",  // Bỏ qua authentication cho WebSocket
+//            "/topic/**",  // Cho phép client subscribe
             "/app/**"
 
 
@@ -58,8 +58,8 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         http
                 .csrf(c -> c.disable())
-                .cors(cors -> cors.disable()) // 🚀 Cho phép tất cả request CORS
-                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
+//                .cors(cors -> cors.disable()) // 🚀 Cho phép tất cả request CORS
+//                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests(
                         authz -> authz
                                 .requestMatchers(PUBLIC_ENDPOINTS).permitAll()
