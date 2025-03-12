@@ -1,6 +1,7 @@
 package com.restaurant.rms.service.restaurantMenuService;
 
 
+import com.restaurant.rms.controller.NotificationController;
 import com.restaurant.rms.dto.request.CreateRestaurantMenuDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
@@ -29,17 +30,19 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
     private final FoodRepository foodRepository;
     private final RestaurantMenuItemRepository menuItemRepository;
     private final RestaurantMenuMapper restaurantMenuMapper; // Thêm mapper vào service
+    private final NotificationController notificationController;
 
     public RestaurantMenuServiceImpl(RestaurantMenuRepository restaurantMenuRepository,
                                      RestaurantRepository restaurantRepository,
                                      FoodRepository foodRepository,
                                      RestaurantMenuItemRepository menuItemRepository, RestaurantMenuItemMapper restaurantMenuItemMapper,
-                                     RestaurantMenuMapper restaurantMenuMapper) { // Inject mapper vào constructor
+                                     RestaurantMenuMapper restaurantMenuMapper, NotificationController notificationController) { // Inject mapper vào constructor
         this.restaurantMenuRepository = restaurantMenuRepository;
         this.restaurantRepository = restaurantRepository;
         this.foodRepository = foodRepository;
         this.menuItemRepository = menuItemRepository;
         this.restaurantMenuMapper = restaurantMenuMapper;
+        this.notificationController = notificationController;
     }
 
     @Override
@@ -105,6 +108,10 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
         menu.setDescription(menuDTO.getDescription());
         menu.setActive(menuDTO.getIsActive());
 
+        // Gửi thông báo sau khi lưu thành công
+        String message = " Menu của nhà hàng ID " + id + " đã được cập nhật!";
+        notificationController.sendMenuUpdate(message);
+        System.out.println(" Đã gửi thông báo: " + message);
         return restaurantMenuMapper.toDTO(restaurantMenuRepository.save(menu));
     }
 
