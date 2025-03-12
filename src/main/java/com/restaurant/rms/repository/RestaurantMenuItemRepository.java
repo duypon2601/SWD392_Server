@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface RestaurantMenuItemRepository extends JpaRepository<RestaurantMenuItem, Integer> {
     List<RestaurantMenuItem> findByRestaurantMenu_RestaurantMenuId(int restaurantMenuId);
+    void deleteByFood_foodId(Integer foodId);
 }

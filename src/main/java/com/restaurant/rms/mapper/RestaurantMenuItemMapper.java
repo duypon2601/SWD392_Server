@@ -19,7 +19,7 @@ public class RestaurantMenuItemMapper {
         return RestaurantMenuItemDTO.builder()
                 .id(menuItem.getRestaurantMenuItemId())
                 .restaurantMenuId(menuItem.getRestaurantMenu().getRestaurantMenuId())
-                .foodId(menuItem.getFood().getFood_id())
+                .foodId(menuItem.getFood().getFoodId())
                 .price(menuItem.getPrice())
                 .stockQuantity(menuItem.getStockQuantity())
                 .minStockThreshold(menuItem.getMinStockThreshold())

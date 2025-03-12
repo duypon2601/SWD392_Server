@@ -7,7 +7,7 @@ import com.restaurant.rms.entity.Food;
 public class FoodMapper {
     public static FoodDTO mapToFoodDTO(Food food){
         FoodDTO foodDTO = new FoodDTO();
-        foodDTO.setFood_id(food.getFood_id());
+        foodDTO.setFoodId(food.getFoodId());
         foodDTO.setName(food.getName());
         foodDTO.setDescription(food.getDescription());
         foodDTO.setImage_url(food.getImage_url());
@@ -21,7 +21,7 @@ public class FoodMapper {
     }
     public static Food mapToFood(FoodDTO foodDTO){
         Food food = new Food();
-        food.setFood_id(foodDTO.getFood_id());
+        food.setFoodId(foodDTO.getFoodId());
         food.setName(foodDTO.getName());
         food.setDescription(foodDTO.getDescription());
         food.setImage_url(foodDTO.getImage_url());
