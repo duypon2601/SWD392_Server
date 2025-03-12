@@ -4,18 +4,22 @@ import com.restaurant.rms.dto.request.FoodDTO;
 import com.restaurant.rms.entity.Food;
 import com.restaurant.rms.mapper.FoodMapper;
 import com.restaurant.rms.repository.FoodRepository;
+import com.restaurant.rms.repository.RestaurantMenuItemRepository;
 import com.restaurant.rms.util.error.IdInvalidException;
+import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class FoodServiceImpl implements FoodService {
     private final FoodRepository foodRepository;
+    private final RestaurantMenuItemRepository restaurantMenuItemRepository;
 
     @Override
     public FoodDTO createFood(FoodDTO foodDTO) throws IdInvalidException {
@@ -53,12 +57,21 @@ public class FoodServiceImpl implements FoodService {
     }
 
     @Override
+    @Transactional
     public void deleteFood(Integer foodId) throws IdInvalidException {
-        if (!foodRepository.existsById(foodId)) {
-            throw new IdInvalidException("Food ID not found");
-        }
-        foodRepository.deleteById(foodId);
+        // Kiểm tra xem Food có tồn tại không
+        Food food = foodRepository.findById(foodId)
+                .orElseThrow(() -> new IdInvalidException("Food ID not found"));
+
+        // Xóa tất cả RestaurantMenuItem liên quan đến món ăn này
+        restaurantMenuItemRepository.deleteByFood_foodId(foodId);
+        log.info("Đã xóa tất cả mục menu liên quan đến Food ID {}", foodId);
+
+        // Xóa luôn món ăn
+        foodRepository.delete(food);
+        log.info("Food ID {} đã bị xóa khỏi hệ thống", foodId);
     }
+
 
 //    @Override
 //    public List<FoodDTO> getFoodsByRestaurant(int restaurantId) {

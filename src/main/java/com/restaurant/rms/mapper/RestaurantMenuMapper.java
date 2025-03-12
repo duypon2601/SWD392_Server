@@ -53,7 +53,7 @@ public class RestaurantMenuMapper {
             menuItems = menuDTO.getMenuItems().stream()
                     .map(itemDTO -> {
                         Food food = availableFoods.stream()
-                                .filter(f -> f.getFood_id() == itemDTO.getFoodId())
+                                .filter(f -> f.getFoodId() == itemDTO.getFoodId())
                                 .findFirst()
                                 .orElse(null);
                         return food != null ? menuItemMapper.toEntity(itemDTO, restaurantMenu, food) : null;

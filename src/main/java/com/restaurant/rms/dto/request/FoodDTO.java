@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class FoodDTO {
-    private int food_id;
+    private int foodId;
     private String name;
     private String description;
     private String image_url;
