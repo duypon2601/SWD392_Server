@@ -17,11 +17,11 @@ public class RestaurantMenu {
     @Column(name = "restaurant_menu_id")
     private int restaurantMenuId;
 
-    @Column(name = "name", nullable = false)
-    private String name;
-
-    @Column(name = "description")
-    private String description;
+//    @Column(name = "name", nullable = false)
+//    private String name;
+//
+//    @Column(name = "description")
+//    private String description;
 
     @Column(name = "is_active", nullable = false)
     private boolean isActive = true;

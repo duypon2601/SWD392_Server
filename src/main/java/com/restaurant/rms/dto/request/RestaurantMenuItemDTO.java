@@ -13,10 +13,11 @@ public class RestaurantMenuItemDTO {
     private int restaurantMenuId;
     private int foodId;
     private BigDecimal price;
-    private int stockQuantity;
-    private int minStockThreshold;
+
     private boolean isAvailable;
     private String foodName;    // 🌟 Tên món ăn
     private String categoryName;
 }
+//    private int stockQuantity;
+//    private int minStockThreshold;
 

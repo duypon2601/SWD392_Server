@@ -15,8 +15,8 @@ import java.util.List;
 public class RestaurantMenuDTO {
     private int id;
     private int restaurantId;
-    private String name;
-    private String description;
+//    private String name;
+//    private String description;
     private boolean isActive;
     private List<RestaurantMenuItemDTO> menuItems;
 }

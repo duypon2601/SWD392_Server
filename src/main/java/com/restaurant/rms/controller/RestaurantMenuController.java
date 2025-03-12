@@ -4,7 +4,7 @@ package com.restaurant.rms.controller;
 import com.restaurant.rms.dto.request.CreateRestaurantMenuDTO;
 import com.restaurant.rms.dto.request.FoodItemDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuDTO;
-import com.restaurant.rms.dto.request.UpdateRestaurantMenuDTO;
+
 import com.restaurant.rms.service.restaurantMenuService.RestaurantMenuService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
@@ -33,8 +33,8 @@ public class RestaurantMenuController {
 
         // Kiểm tra từng món ăn có đủ thông tin không
         for (FoodItemDTO foodItem : menuDTO.getFoodItems()) {
-            if (foodItem.getFoodId() == null || foodItem.getPrice() == null || foodItem.getQuantity() == null) {
-                return ResponseEntity.badRequest().body("Mỗi món ăn phải có foodId, price và quantity!");
+            if (foodItem.getFoodId() == null || foodItem.getPrice() == null) {
+                return ResponseEntity.badRequest().body("Mỗi món ăn phải có foodId, price !");
             }
         }
 
@@ -44,11 +44,28 @@ public class RestaurantMenuController {
     }
 
 
-
     // ✅ Lấy thông tin thực đơn theo ID
     @GetMapping("/{id}")
-    public ResponseEntity<RestaurantMenuDTO> getRestaurantMenuById(@PathVariable int id) {
-        return ResponseEntity.ok(restaurantMenuService.getRestaurantMenuById(id));
+    public ResponseEntity<?> getRestaurantMenuById(@PathVariable int id) {
+        try {
+            return ResponseEntity.ok(restaurantMenuService.getRestaurantMenuById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thực đơn với ID: " + id);
+        }
+    }
+
+    // ✅ Lấy thông tin thực đơn theo nhà hàng
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<?> getMenuByRestaurantId(@PathVariable Integer restaurantId) {
+        try {
+            List<RestaurantMenuDTO> menus = restaurantMenuService.getMenuByRestaurantId(restaurantId);
+            if (menus.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nhà hàng này chưa có thực đơn!");
+            }
+            return ResponseEntity.ok(menus);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lỗi khi lấy thực đơn: " + e.getMessage());
+        }
     }
 
     // ✅ Lấy danh sách tất cả thực đơn
@@ -57,17 +74,34 @@ public class RestaurantMenuController {
         return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
     }
 
-    // ✅ Cập nhật thực đơn theo ID
-    @PutMapping("/{id}")
-    public ResponseEntity<RestaurantMenuDTO> updateRestaurantMenu(@PathVariable int id, @RequestBody UpdateRestaurantMenuDTO menuDTO) {
-        return ResponseEntity.ok(restaurantMenuService.updateRestaurantMenu(id, menuDTO));
-    }
-
     // ✅ Xóa thực đơn theo ID
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteRestaurantMenu(@PathVariable int id) {
-        restaurantMenuService.deleteRestaurantMenu(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<?> deleteRestaurantMenu(@PathVariable int id) {
+        try {
+            restaurantMenuService.deleteRestaurantMenu(id);
+            return ResponseEntity.ok("🗑️ Thực đơn đã được xóa thành công!");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
     }
 }
+//    @PutMapping("/restaurant/{restaurantId}/menu/{menuId}")
+//    public ResponseEntity<?> updateMenuByRestaurantId(
+//            @PathVariable Integer restaurantId,
+//            @PathVariable Integer menuId,
+//            @RequestBody RestaurantMenuDTO menuDTO) {
+//        try {
+//            RestaurantMenuDTO updatedMenu = restaurantMenuService.updateMenuByRestaurantId(restaurantId, menuId, menuDTO);
+//            return ResponseEntity.ok(updatedMenu);
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+//        }
+//    }
+
+    //    // ✅ Cập nhật thực đơn theo ID
+//    @PutMapping("/{id}")
+//    public ResponseEntity<RestaurantMenuDTO> updateRestaurantMenu(@PathVariable int id, @RequestBody UpdateRestaurantMenuDTO menuDTO) {
+//        return ResponseEntity.ok(restaurantMenuService.updateRestaurantMenu(id, menuDTO));
+//    }
+
 
