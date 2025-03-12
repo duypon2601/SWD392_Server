@@ -17,23 +17,23 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RestaurantMenuMapper {
 
-    private final RestaurantMenuItemMapper menuItemMapper; // ✅ Không sử dụng static nữa
+    private final RestaurantMenuItemMapper menuItemMapper;
 
-    public RestaurantMenuDTO toDTO(RestaurantMenu restaurantMenu) { // ✅ Bỏ static
+    public RestaurantMenuDTO toDTO(RestaurantMenu restaurantMenu) {
         if (restaurantMenu == null) {
             return null;
         }
         return RestaurantMenuDTO.builder()
                 .id(restaurantMenu.getRestaurantMenuId())
                 .restaurantId(restaurantMenu.getRestaurant().getRestaurantId())
-                .name(restaurantMenu.getName())
-                .description(restaurantMenu.getDescription())
+//                .name(restaurantMenu.getName())
+//                .description(restaurantMenu.getDescription())
                 .isActive(restaurantMenu.isActive())
                 .menuItems(restaurantMenu.getMenuItems() != null
                         ? restaurantMenu.getMenuItems().stream()
-                        .map(menuItemMapper::toDTO) // ✅ Không còn lỗi static
+                        .map(menuItemMapper::toDTO)
                         .collect(Collectors.toList())
-                        : new ArrayList<>()) // ✅ Tránh lỗi null
+                        : new ArrayList<>())
                 .build();
     }
 
@@ -43,8 +43,8 @@ public class RestaurantMenuMapper {
         }
         RestaurantMenu restaurantMenu = new RestaurantMenu();
         restaurantMenu.setRestaurantMenuId(menuDTO.getId());
-        restaurantMenu.setName(menuDTO.getName());
-        restaurantMenu.setDescription(menuDTO.getDescription());
+//        restaurantMenu.setName(menuDTO.getName());
+//        restaurantMenu.setDescription(menuDTO.getDescription());
         restaurantMenu.setActive(menuDTO.isActive());
         restaurantMenu.setRestaurant(restaurant);
 
@@ -58,7 +58,7 @@ public class RestaurantMenuMapper {
                                 .orElse(null);
                         return food != null ? menuItemMapper.toEntity(itemDTO, restaurantMenu, food) : null;
                     })
-                    .filter(Objects::nonNull) // Loại bỏ các item null nếu không tìm thấy food
+                    .filter(Objects::nonNull)
                     .collect(Collectors.toList());
         }
         restaurantMenu.setMenuItems(menuItems);

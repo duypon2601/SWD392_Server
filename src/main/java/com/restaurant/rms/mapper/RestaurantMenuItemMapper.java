@@ -21,10 +21,8 @@ public class RestaurantMenuItemMapper {
                 .restaurantMenuId(menuItem.getRestaurantMenu().getRestaurantMenuId())
                 .foodId(menuItem.getFood().getFoodId())
                 .price(menuItem.getPrice())
-                .stockQuantity(menuItem.getStockQuantity())
-                .minStockThreshold(menuItem.getMinStockThreshold())
                 .isAvailable(menuItem.isAvailable())
-                .foodName(menuItem.getFood().getName())   // 🌟 Lấy tên món ăn
+                .foodName(menuItem.getFood().getName())   // Lấy tên món ăn
                 .categoryName(menuItem.getFood().getCategory().getName())
                 .build();
     }
@@ -38,8 +36,6 @@ public class RestaurantMenuItemMapper {
                 .restaurantMenu(restaurantMenu)
                 .food(food)
                 .price(menuItemDTO.getPrice())
-                .stockQuantity(menuItemDTO.getStockQuantity())
-                .minStockThreshold(menuItemDTO.getMinStockThreshold())
                 .isAvailable(menuItemDTO.isAvailable())
                 .build();
     }

@@ -20,12 +20,6 @@ public class RestaurantMenuItem {
     @Column(name = "price", precision = 10, scale = 2, nullable = false)
     private BigDecimal price;
 
-    @Column(name = "stock_quantity", nullable = false)
-    private int stockQuantity;
-
-    @Column(name = "min_stock_threshold", nullable = false)
-    private int minStockThreshold;
-
     @Column(name = "is_available", nullable = false)
     private boolean isAvailable = true;
 
@@ -37,3 +31,8 @@ public class RestaurantMenuItem {
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
 }
+//    @Column(name = "stock_quantity", nullable = false)
+//    private int stockQuantity;
+//
+//    @Column(name = "min_stock_threshold", nullable = false)
+//    private int minStockThreshold;
