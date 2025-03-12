@@ -1,7 +1,6 @@
 package com.restaurant.rms.service.restaurantMenuService;
 
 
-import com.restaurant.rms.controller.NotificationController;
 import com.restaurant.rms.dto.request.CreateRestaurantMenuDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuDTO;
 import com.restaurant.rms.entity.Food;
@@ -28,7 +27,7 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
     private final FoodRepository foodRepository;
     private final RestaurantMenuItemRepository menuItemRepository;
     private final RestaurantMenuMapper restaurantMenuMapper; // Thêm mapper vào service
-    private final NotificationController notificationController;
+//    private final NotificationController notificationController;
     private final RestaurantMenuItemMapper restaurantMenuItemMapper;
     private final RestaurantMenuItemRepository restaurantMenuItemRepository;
 
@@ -36,13 +35,13 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
                                      RestaurantRepository restaurantRepository,
                                      FoodRepository foodRepository,
                                      RestaurantMenuItemRepository menuItemRepository, RestaurantMenuItemMapper restaurantMenuItemMapper,
-                                     RestaurantMenuMapper restaurantMenuMapper, NotificationController notificationController, RestaurantMenuItemMapper restaurantMenuItemMapper1, RestaurantMenuItemRepository restaurantMenuItemRepository) { // Inject mapper vào constructor
+                                     RestaurantMenuMapper restaurantMenuMapper, RestaurantMenuItemMapper restaurantMenuItemMapper1, RestaurantMenuItemRepository restaurantMenuItemRepository) { // Inject mapper vào constructor
         this.restaurantMenuRepository = restaurantMenuRepository;
         this.restaurantRepository = restaurantRepository;
         this.foodRepository = foodRepository;
         this.menuItemRepository = menuItemRepository;
         this.restaurantMenuMapper = restaurantMenuMapper;
-        this.notificationController = notificationController;
+//        this.notificationController = notificationController;
         this.restaurantMenuItemMapper = restaurantMenuItemMapper1;
         this.restaurantMenuItemRepository = restaurantMenuItemRepository;
     }
