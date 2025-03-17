@@ -1,10 +1,12 @@
 package com.restaurant.rms.controller;
 
 
+import com.restaurant.rms.dto.request.CreateDiningTableDTO;
 import com.restaurant.rms.dto.request.DiningTableDTO;
 import com.restaurant.rms.service.diningTableService.DiningTableService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,10 +31,17 @@ public class DiningTableController {
         return ResponseEntity.ok(diningTableService.getDiningTableById(id));
     }
 
+//    @PostMapping
+//    public ResponseEntity<DiningTableDTO> createDiningTable(@RequestBody DiningTableDTO diningTableDTO) {
+//        return ResponseEntity.ok(diningTableService.createDiningTable(diningTableDTO));
+//    }
+
     @PostMapping
-    public ResponseEntity<DiningTableDTO> createDiningTable(@RequestBody DiningTableDTO diningTableDTO) {
-        return ResponseEntity.ok(diningTableService.createDiningTable(diningTableDTO));
+    public ResponseEntity<CreateDiningTableDTO> createDiningTable(@RequestBody CreateDiningTableDTO createDiningTableDTO) {
+        CreateDiningTableDTO createdDiningTable = diningTableService.createDiningTable(createDiningTableDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdDiningTable);
     }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<DiningTableDTO> updateDiningTable(@PathVariable int id, @RequestBody DiningTableDTO diningTableDTO) {
