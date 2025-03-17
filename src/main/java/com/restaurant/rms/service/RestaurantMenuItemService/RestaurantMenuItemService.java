@@ -1,5 +1,6 @@
 package com.restaurant.rms.service.RestaurantMenuItemService;
 
+import com.restaurant.rms.dto.request.CreateRestaurantMenuItemDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
 
 import java.util.List;
@@ -9,11 +10,13 @@ public interface RestaurantMenuItemService {
 
     RestaurantMenuItemDTO getMenuItemById(int id);
 
-    RestaurantMenuItemDTO createMenuItem(RestaurantMenuItemDTO menuItemDTO);
+    RestaurantMenuItemDTO createMenuItem(CreateRestaurantMenuItemDTO menuItemDTO);
 
     RestaurantMenuItemDTO updateMenuItem(int id, RestaurantMenuItemDTO menuItemDTO);
 
     void deleteMenuItem(int id);
+
+
 }
 
 

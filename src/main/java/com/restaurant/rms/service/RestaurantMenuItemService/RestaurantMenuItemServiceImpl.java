@@ -1,13 +1,12 @@
 package com.restaurant.rms.service.RestaurantMenuItemService;
 
+import com.restaurant.rms.dto.request.CreateRestaurantMenuItemDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
 import com.restaurant.rms.entity.Food;
 import com.restaurant.rms.entity.RestaurantMenu;
 import com.restaurant.rms.entity.RestaurantMenuItem;
 import com.restaurant.rms.mapper.RestaurantMenuItemMapper;
-import com.restaurant.rms.repository.FoodRepository;
-import com.restaurant.rms.repository.RestaurantMenuItemRepository;
-import com.restaurant.rms.repository.RestaurantMenuRepository;
+import com.restaurant.rms.repository.*;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -23,6 +22,8 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
     private final RestaurantMenuRepository restaurantMenuRepository;
     private final FoodRepository foodRepository;
     private final RestaurantMenuItemMapper menuItemMapper;
+    private final OrderItemRepository orderItemRepository;       // Thêm repository
+    private final SubOrderItemRepository subOrderItemRepository;
 
     @Override
     public List<RestaurantMenuItemDTO> getMenuItemsByRestaurantMenuId(int restaurantMenuId) {
@@ -39,7 +40,7 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
 
     @Override
     @Transactional
-    public RestaurantMenuItemDTO createMenuItem(RestaurantMenuItemDTO menuItemDTO) {
+    public RestaurantMenuItemDTO createMenuItem(CreateRestaurantMenuItemDTO menuItemDTO) {
         // Tìm menu theo ID
         RestaurantMenu restaurantMenu = restaurantMenuRepository.findById(menuItemDTO.getRestaurantMenuId())
                 .orElseThrow(() -> new RuntimeException("Restaurant menu not found!"));
@@ -59,13 +60,13 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
                 .restaurantMenu(restaurantMenu)
                 .food(food)
                 .price(menuItemDTO.getPrice())
-                .isAvailable(true)
+                .isAvailable(true) // Mặc định true
                 .build();
 
         // Lưu vào database
         menuItem = menuItemRepository.save(menuItem);
 
-        // Trả về DTO bao gồm `foodName` và `categoryName`
+        // Trả về DTO bao gồm `foodName` và `categoryName` lấy từ Food
         return RestaurantMenuItemDTO.builder()
                 .id(menuItem.getRestaurantMenuItemId())
                 .restaurantMenuId(restaurantMenu.getRestaurantMenuId())
@@ -91,12 +92,32 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
         return menuItemMapper.toDTO(menuItem);
     }
 
-    @Override
-    @Transactional
-    public void deleteMenuItem(int id) {
-        if (!menuItemRepository.existsById(id)) {
-            throw new RuntimeException("Menu item not found with ID: " + id);
-        }
-        menuItemRepository.deleteById(id);
+//    @Override
+//    @Transactional
+//    public void deleteMenuItem(int id) {
+//        if (!menuItemRepository.existsById(id)) {
+//            throw new RuntimeException("Menu item not found with ID: " + id);
+//        }
+//        menuItemRepository.deleteById(id);
+//    }
+@Override
+@Transactional
+public void deleteMenuItem(int id) {
+    // Kiểm tra xem menuItem có tồn tại không
+    if (!menuItemRepository.existsById(id)) {
+        throw new RuntimeException("Menu item not found with ID: " + id);
     }
+
+    // Xóa tất cả các OrderItem liên quan đến menuItem
+    orderItemRepository.deleteByMenuItem_RestaurantMenuItemId(id);
+
+    // Xóa tất cả các SubOrderItem liên quan đến menuItem
+    subOrderItemRepository.deleteByMenuItem_RestaurantMenuItemId(id);
+
+    // Sau khi xóa các bản ghi liên quan, xóa RestaurantMenuItem
+    menuItemRepository.deleteById(id);
 }
+}
+
+
+
