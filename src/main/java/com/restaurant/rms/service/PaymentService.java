@@ -3,6 +3,7 @@ package com.restaurant.rms.service;
 import com.restaurant.rms.dto.request.RechargeRequestDTO;
 import com.restaurant.rms.entity.Order;
 import com.restaurant.rms.entity.Payment;
+import com.restaurant.rms.enums.OrderStatus;
 import com.restaurant.rms.enums.PaymentMethod;
 import com.restaurant.rms.enums.PaymentStatus;
 import com.restaurant.rms.repository.OrderRepository;
@@ -130,6 +131,9 @@ public class PaymentService {
                 .orElseThrow(() -> new RuntimeException("Order ID không hợp lệ: " + rechargeRequestDTO.getOrderId()));
 
         if (order != null) {
+            order.setStatus(OrderStatus.COMPLETED);
+            orderRepository.save(order);
+
             Payment payment = new Payment();
             payment.setPaymentMethod(PaymentMethod.CREDIT_CARD);
             payment.setPaymentStatus(PaymentStatus.PAID);
