@@ -16,7 +16,9 @@ import com.restaurant.rms.repository.RestaurantRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -107,18 +109,17 @@ public class RestaurantMenuServiceImpl implements RestaurantMenuService {
     public List<RestaurantMenuDTO> getMenuByRestaurantId(Integer restaurantId) {
         List<RestaurantMenu> menus = restaurantMenuRepository.findByRestaurant_RestaurantId(restaurantId);
 
-        if (menus.isEmpty()) {
-            throw new RuntimeException(" Không tìm thấy menu nào cho nhà hàng ID: " + restaurantId);
+        if (menus == null || menus.isEmpty()) {
+            throw new NoSuchElementException("Không tìm thấy menu nào cho nhà hàng ID: " + restaurantId);
         }
 
         return menus.stream().map(menu -> RestaurantMenuDTO.builder()
                 .id(menu.getRestaurantMenuId())
-//                .name(menu.getName())
-//                .description(menu.getDescription())
+                .restaurantId(menu.getRestaurant().getRestaurantId())
                 .isActive(menu.isActive())
-                .menuItems(menu.getMenuItems().stream()
+                .menuItems(menu.getMenuItems() != null ? menu.getMenuItems().stream()
                         .map(restaurantMenuItemMapper::toDTO)
-                        .collect(Collectors.toList()))
+                        .collect(Collectors.toList()) : new ArrayList<>()) // ✅ Xử lý menuItems rỗng
                 .build()).collect(Collectors.toList());
     }
 

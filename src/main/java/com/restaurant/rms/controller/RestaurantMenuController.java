@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @CrossOrigin("*")
 @RestController
@@ -59,12 +60,12 @@ public class RestaurantMenuController {
     public ResponseEntity<?> getMenuByRestaurantId(@PathVariable Integer restaurantId) {
         try {
             List<RestaurantMenuDTO> menus = restaurantMenuService.getMenuByRestaurantId(restaurantId);
-            if (menus.isEmpty()) {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nhà hàng này chưa có thực đơn!");
-            }
             return ResponseEntity.ok(menus);
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Lỗi khi lấy thực đơn: " + e.getMessage());
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Nhà hàng này chưa có thực đơn!");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Lỗi khi lấy thực đơn: " + e.getMessage());
         }
     }
 
