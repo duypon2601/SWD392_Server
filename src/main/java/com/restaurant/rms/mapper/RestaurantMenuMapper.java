@@ -26,8 +26,6 @@ public class RestaurantMenuMapper {
         return RestaurantMenuDTO.builder()
                 .id(restaurantMenu.getRestaurantMenuId())
                 .restaurantId(restaurantMenu.getRestaurant().getRestaurantId())
-//                .name(restaurantMenu.getName())
-//                .description(restaurantMenu.getDescription())
                 .isActive(restaurantMenu.isActive())
                 .menuItems(restaurantMenu.getMenuItems() != null
                         ? restaurantMenu.getMenuItems().stream()

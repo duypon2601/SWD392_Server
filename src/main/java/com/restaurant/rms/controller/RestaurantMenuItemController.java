@@ -30,11 +30,6 @@ public class RestaurantMenuItemController {
         return ResponseEntity.ok(menuItemService.getMenuItemById(id));
     }
 
-//    @PostMapping
-//    public ResponseEntity<RestaurantMenuItemDTO> createMenuItem(@RequestBody RestaurantMenuItemDTO menuItemDTO) {
-//        RestaurantMenuItemDTO createdMenuItem = menuItemService.createMenuItem(menuItemDTO);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(createdMenuItem);
-//    }
 @PostMapping
 public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO menuItemDTO) {
     try {

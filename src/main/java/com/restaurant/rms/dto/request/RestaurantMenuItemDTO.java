@@ -10,6 +10,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 public class RestaurantMenuItemDTO {
     private int id;
+    private int restaurantId;
     private int restaurantMenuId;
     private int foodId;
     private BigDecimal price;

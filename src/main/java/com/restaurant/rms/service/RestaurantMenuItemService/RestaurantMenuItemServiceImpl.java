@@ -92,29 +92,14 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
         return menuItemMapper.toDTO(menuItem);
     }
 
-//    @Override
-//    @Transactional
-//    public void deleteMenuItem(int id) {
-//        if (!menuItemRepository.existsById(id)) {
-//            throw new RuntimeException("Menu item not found with ID: " + id);
-//        }
-//        menuItemRepository.deleteById(id);
-//    }
 @Override
 @Transactional
 public void deleteMenuItem(int id) {
-    // Kiểm tra xem menuItem có tồn tại không
     if (!menuItemRepository.existsById(id)) {
         throw new RuntimeException("Menu item not found with ID: " + id);
     }
-
-    // Xóa tất cả các OrderItem liên quan đến menuItem
     orderItemRepository.deleteByMenuItem_RestaurantMenuItemId(id);
-
-    // Xóa tất cả các SubOrderItem liên quan đến menuItem
     subOrderItemRepository.deleteByMenuItem_RestaurantMenuItemId(id);
-
-    // Sau khi xóa các bản ghi liên quan, xóa RestaurantMenuItem
     menuItemRepository.deleteById(id);
 }
 }
