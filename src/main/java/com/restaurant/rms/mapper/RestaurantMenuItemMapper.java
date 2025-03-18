@@ -18,6 +18,7 @@ public class RestaurantMenuItemMapper {
         }
         return RestaurantMenuItemDTO.builder()
                 .id(menuItem.getRestaurantMenuItemId())
+                .restaurantId(menuItem.getRestaurantMenu().getRestaurant().getRestaurantId())
                 .restaurantMenuId(menuItem.getRestaurantMenu().getRestaurantMenuId())
                 .foodId(menuItem.getFood().getFoodId())
                 .price(menuItem.getPrice())
