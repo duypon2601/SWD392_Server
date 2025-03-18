@@ -30,6 +30,7 @@ public class RestaurantMenuItem {
     @ManyToOne
     @JoinColumn(name = "food_id", nullable = false)
     private Food food;
+
 }
 //    @Column(name = "stock_quantity", nullable = false)
 //    private int stockQuantity;

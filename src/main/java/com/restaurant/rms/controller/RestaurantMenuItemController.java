@@ -1,5 +1,6 @@
 package com.restaurant.rms.controller;
 
+import com.restaurant.rms.dto.request.CreateRestaurantMenuItemDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
 import com.restaurant.rms.service.RestaurantMenuItemService.RestaurantMenuItemService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -29,11 +30,33 @@ public class RestaurantMenuItemController {
         return ResponseEntity.ok(menuItemService.getMenuItemById(id));
     }
 
-    @PostMapping
-    public ResponseEntity<RestaurantMenuItemDTO> createMenuItem(@RequestBody RestaurantMenuItemDTO menuItemDTO) {
+//    @PostMapping
+//    public ResponseEntity<RestaurantMenuItemDTO> createMenuItem(@RequestBody RestaurantMenuItemDTO menuItemDTO) {
+//        RestaurantMenuItemDTO createdMenuItem = menuItemService.createMenuItem(menuItemDTO);
+//        return ResponseEntity.status(HttpStatus.CREATED).body(createdMenuItem);
+//    }
+@PostMapping
+public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO menuItemDTO) {
+    try {
         RestaurantMenuItemDTO createdMenuItem = menuItemService.createMenuItem(menuItemDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMenuItem);
+    } catch (RuntimeException e) {
+        String errorMessage = e.getMessage();
+        if (errorMessage.contains("Restaurant menu not found")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy menu nhà hàng với ID: " + menuItemDTO.getRestaurantMenuId());
+        } else if (errorMessage.contains("Food not found")) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Không tìm thấy món ăn với ID: " + menuItemDTO.getFoodId());
+        } else if (errorMessage.contains("Món ăn này đã tồn tại trong menu")) {
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Món ăn với ID " + menuItemDTO.getFoodId() + " đã tồn tại trong menu!");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Đã xảy ra lỗi khi tạo món ăn: " + errorMessage);
+        }
     }
+}
 
 
     @PutMapping("/{id}")
@@ -45,7 +68,7 @@ public class RestaurantMenuItemController {
     public ResponseEntity<?> deleteMenuItem(@PathVariable int id) {
         try {
             menuItemService.deleteMenuItem(id);
-            return ResponseEntity.ok("Món ăn đã được xóa thành công!");
+            return ResponseEntity.ok("Món ăn và các bản ghi liên quan đã được xóa thành công!");
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không thể xóa món ăn: " + e.getMessage());
         }

@@ -5,11 +5,8 @@ import java.math.BigDecimal;
 
 @Data
 public class CreateRestaurantMenuItemDTO {
-    private Long id;
-    private Long menuId;
+    private Integer restaurantMenuId; // Thay Long thành Integer cho đồng nhất với entity
     private Integer foodId;
     private BigDecimal price;
-    private Integer stockQuantity;
-    private Boolean isAvailable;
 }
 
