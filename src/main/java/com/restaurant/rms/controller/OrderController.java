@@ -47,4 +47,10 @@ public class OrderController {
         orderService.completeOrder(orderId);
         return ResponseEntity.ok("Order has been completed.");
     }
+
+    @GetMapping("/{orderId}/receipt/completed")
+    public ResponseEntity<OrderDTO> getReceiptByOrderId(@PathVariable Integer orderId) {
+        OrderDTO orderDTO = orderService.getCompletedOrderReceipt(orderId);
+        return ResponseEntity.ok(orderDTO);
+    }
 }

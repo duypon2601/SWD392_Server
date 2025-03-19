@@ -1,6 +1,7 @@
 package com.restaurant.rms.service.orderService;
 
 import com.restaurant.rms.dto.request.orderDTO.OrderDTO;
+import com.restaurant.rms.dto.request.orderDTO.OrderItemDTO;
 import com.restaurant.rms.dto.request.orderDTO.SubOrderDTO;
 import com.restaurant.rms.dto.request.orderDTO.SubOrderItemDTO;
 import com.restaurant.rms.entity.DiningTable;
@@ -198,4 +199,25 @@ public class OrderService {
 //
 //        subOrderRepository.save(subOrder);
 //    }
+
+    public OrderDTO getCompletedOrderReceipt(Integer orderId) {
+        Order order = orderRepository.findCompletedOrderById(orderId)
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy hóa đơn hoàn thành cho Order ID: " + orderId));
+
+        return OrderDTO.builder()
+                .id(order.getOrderId())
+                .diningTableId(order.getDiningTable().getDiningTableId())
+                .status(order.getStatus().toString())
+                .totalPrice(order.getTotalPrice())
+                .orderItems(order.getOrderItems().stream().map(item ->
+                        OrderItemDTO.builder()
+                                .id(item.getOrderItemId())
+                                .menuItemId(item.getMenuItem().getRestaurantMenuItemId())
+                                .menuItemName(item.getMenuItem().getFood().getName())
+                                .quantity(item.getQuantity())
+                                .price(item.getPrice())
+                                .build()
+                ).collect(Collectors.toList()))
+                .build();
+    }
 }
