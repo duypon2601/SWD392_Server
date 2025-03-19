@@ -49,7 +49,7 @@ public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningT
             + "&tableId="
             + UUID.randomUUID(); // Tạo mã QR duy nhất
 
-    String qrCodePath = "qrcodes/table_" + UUID.randomUUID() + ".png";
+    String qrCodePath = "qrtable_" + UUID.randomUUID() + ".png";
 
     try {
         QRCodeGenerator.generateQRCode(qrContent, qrCodePath);
