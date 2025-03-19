@@ -13,5 +13,6 @@ public class OrderItemDTO {
     private int menuItemId;
     private int quantity;
     private BigDecimal price;
+    private String menuItemName;
 }
 
