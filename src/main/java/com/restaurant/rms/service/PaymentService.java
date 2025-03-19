@@ -8,6 +8,8 @@ import com.restaurant.rms.enums.PaymentMethod;
 import com.restaurant.rms.enums.PaymentStatus;
 import com.restaurant.rms.repository.OrderRepository;
 import com.restaurant.rms.repository.PaymentRepository;
+import com.restaurant.rms.service.orderService.OrderService;
+import com.restaurant.rms.service.orderService.SubOrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,10 +35,10 @@ public class PaymentService {
     PaymentRepository paymentRepository;
     @Autowired
     OrderRepository orderRepository;
-//    @Autowired
-//    EnrollmentRepository enrollmentRepository;
-//    @Autowired
-//    CourseRepository   courseRepository;
+    @Autowired
+    private OrderService orderService;
+    @Autowired
+    SubOrderService subOrderService;
 
     public String createUrl(RechargeRequestDTO rechargeRequestDTO) throws NoSuchAlgorithmException, InvalidKeyException, Exception{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -130,9 +132,18 @@ public class PaymentService {
         Order order = orderRepository.findById(rechargeRequestDTO.getOrderId())
                 .orElseThrow(() -> new RuntimeException("Order ID không hợp lệ: " + rechargeRequestDTO.getOrderId()));
 
-        if (order != null) {
-            order.setStatus(OrderStatus.COMPLETED);
-            orderRepository.save(order);
+        boolean hasPendingSubOrders = order.getSubOrders().stream()
+                .anyMatch(subOrder -> subOrder.getStatus() == OrderStatus.PENDING);
+
+        if (hasPendingSubOrders) {
+
+            order.getSubOrders().forEach(subOrder -> {
+                if (subOrder.getStatus() == OrderStatus.PENDING) {
+                    subOrderService.confirmSubOrder(subOrder.getSubOrderId());
+                }
+            });
+        }
+        orderService.completeOrder(order.getOrderId());
 
             Payment payment = new Payment();
             payment.setPaymentMethod(PaymentMethod.CREDIT_CARD);
@@ -142,7 +153,7 @@ public class PaymentService {
             payment.setOrder(order);
             paymentRepository.save(payment);
         }
-    }
+
 //    public List<PaymentDTO> getPaymetsByUserId(int user_id) throws RuntimeException {
 //        User user = userRepository.findById(user_id)
 //                .orElseThrow(() ->  new RuntimeException("User ID is invalid"));
