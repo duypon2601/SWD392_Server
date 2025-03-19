@@ -44,4 +44,17 @@ public class Order {
     @Column(name = "updated_at")
     @Temporal(TemporalType.TIMESTAMP)
     private Date updatedAt = new Date();
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) { // Chỉ thiết lập nếu chưa có giá trị
+            createdAt = new Date();
+        }
+        updatedAt = new Date();
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = new Date();
+    }
 }

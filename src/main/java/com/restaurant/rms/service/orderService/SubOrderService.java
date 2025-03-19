@@ -53,8 +53,13 @@ public class SubOrderService {
         BigDecimal totalSubOrderPrice = subOrder.getTotalPrice();
         order.setTotalPrice(order.getTotalPrice().add(totalSubOrderPrice));
 
+        // Đặt trạng thái SubOrder thành CONFIRMED
         subOrder.setStatus(OrderStatus.CONFIRMED);
+
+        // Lưu SubOrder trước
         subOrderRepository.save(subOrder);
+
+        // Lưu Order (các trường createdAt và updatedAt sẽ được tự động cập nhật bởi @PrePersist/@PreUpdate)
         orderRepository.save(order);
     }
 }
