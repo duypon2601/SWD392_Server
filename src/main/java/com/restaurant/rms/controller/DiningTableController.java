@@ -31,10 +31,11 @@ public class DiningTableController {
         return ResponseEntity.ok(diningTableService.getDiningTableById(id));
     }
 
-//    @PostMapping
-//    public ResponseEntity<DiningTableDTO> createDiningTable(@RequestBody DiningTableDTO diningTableDTO) {
-//        return ResponseEntity.ok(diningTableService.createDiningTable(diningTableDTO));
-//    }
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<DiningTableDTO>> getDiningTablesByRestaurantId(@PathVariable int restaurantId) {
+        List<DiningTableDTO> diningTables = diningTableService.getDiningTablesByRestaurantId(restaurantId);
+        return ResponseEntity.ok(diningTables);
+    }
 
     @PostMapping
     public ResponseEntity<CreateDiningTableDTO> createDiningTable(@RequestBody CreateDiningTableDTO createDiningTableDTO) {

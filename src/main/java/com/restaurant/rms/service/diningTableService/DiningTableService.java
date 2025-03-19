@@ -2,7 +2,7 @@ package com.restaurant.rms.service.diningTableService;
 
 
 
-import com.google.zxing.WriterException;
+
 import com.restaurant.rms.dto.request.CreateDiningTableDTO;
 import com.restaurant.rms.dto.request.DiningTableDTO;
 import com.restaurant.rms.entity.Restaurant;
@@ -14,12 +14,6 @@ import com.restaurant.rms.repository.DiningTableRepository;
 import com.restaurant.rms.util.QRCodeGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -44,29 +38,6 @@ public class DiningTableService {
         return DiningTableMapper.toDTO(diningTable);
     }
 
-
-//    public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningTableDTO) {
-//        Restaurant restaurant = restaurantRepository.findById(createDiningTableDTO.getRestaurantId())
-//                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
-//
-//        // Generate a temporary QR code using UUID
-//        String qrCode = generateQRCode(restaurant.getRestaurantId());
-//
-//        // Create entity
-//        DiningTable diningTable = new DiningTable();
-//        diningTable.setStatus(createDiningTableDTO.getStatus());
-//        diningTable.setRestaurant(restaurant);
-//        diningTable.setQrCode(qrCode); // ✅ Set QR before saving
-//
-//        // Save table with QR code
-//        DiningTable savedDiningTable = diningTableRepository.save(diningTable);
-//
-//        return new CreateDiningTableDTO(
-//                savedDiningTable.getDiningTableId(),
-//                savedDiningTable.getStatus(),
-//                savedDiningTable.getRestaurant().getRestaurantId()
-//        );
-//    }
 public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningTableDTO) {
     // Tìm nhà hàng theo ID
     Restaurant restaurant = restaurantRepository.findById(createDiningTableDTO.getRestaurantId())
@@ -125,14 +96,17 @@ public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningT
         return DiningTableMapper.toDTO(diningTable);
     }
 
-//    public DiningTable createDiningTable(DiningTable diningTable) throws WriterException, IOException {
-//        // URL truy cập menu khi quét QR
-//        String menuUrl = "https://thanh-san.github.io/Moon-HotPot/menu?table=" + diningTable.getDiningTableId();
-//
-//        // Tạo mã QR
-//        String qrCode = qrCodeService.generateQRCode(String.valueOf(diningTable.getDiningTableId()), menuUrl);
-//
-//        diningTable.setQrCode(qrCode);
-//        return diningTableRepository.save(diningTable);
-//    }
+    public List<DiningTableDTO> getDiningTablesByRestaurantId(int restaurantId) {
+        List<DiningTable> diningTables = diningTableRepository.findByRestaurant_RestaurantId(restaurantId);
+
+        if (diningTables.isEmpty()) {
+            throw new RuntimeException("Không có bàn nào trong nhà hàng ID: " + restaurantId);
+        }
+
+        return diningTables.stream()
+                .map(DiningTableMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }
