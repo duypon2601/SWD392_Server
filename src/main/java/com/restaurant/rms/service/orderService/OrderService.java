@@ -221,6 +221,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -354,5 +356,38 @@ public class OrderService {
                                 .build()
                 ).collect(Collectors.toList()))
                 .build();
+    }
+
+
+    // ✅ Doanh thu **tất cả nhà hàng**
+    public BigDecimal getTotalRevenueByDay(int year, int month, int day) {
+        return orderRepository.getTotalRevenueByDay(year, month, day);
+    }
+    public BigDecimal getTotalRevenueByMonth(int year, int month) {
+        return orderRepository.getTotalRevenueByMonth(year, month);
+    }
+    public BigDecimal getTotalRevenueByYear(int year) {
+        return orderRepository.getTotalRevenueByYear(year);
+    }
+
+    // ✅ Doanh thu **từng nhà hàng**
+    public BigDecimal getRestaurantRevenueByDay(int restaurantId, int year, int month, int day) {
+        return orderRepository.getRestaurantRevenueByDay(restaurantId, year, month, day);
+    }
+    public BigDecimal getRestaurantRevenueByMonth(int restaurantId, int year, int month) {
+        return orderRepository.getRestaurantRevenueByMonth(restaurantId, year, month);
+    }
+    public BigDecimal getRestaurantRevenueByYear(int restaurantId, int year) {
+        return orderRepository.getRestaurantRevenueByYear(restaurantId, year);
+    }
+
+    // ✅ Doanh thu **tất cả nhà hàng** từ ngày đến ngày
+    public BigDecimal getTotalRevenueBetweenDates(LocalDate startDate, LocalDate endDate) {
+        return orderRepository.getTotalRevenueBetweenDates(startDate, endDate);
+    }
+
+    // ✅ Doanh thu **từng nhà hàng** từ ngày đến ngày
+    public BigDecimal getRestaurantRevenueBetweenDates(int restaurantId, LocalDate startDate, LocalDate endDate) {
+        return orderRepository.getRestaurantRevenueBetweenDates(restaurantId, startDate, endDate);
     }
 }
