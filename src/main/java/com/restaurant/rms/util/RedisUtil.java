@@ -2,9 +2,9 @@ package com.restaurant.rms.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import com.restaurant.rms.dto.request.CartItemDTO;
 import com.restaurant.rms.dto.request.UpdateCartItemDTO;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -76,6 +76,20 @@ public class RedisUtil {
     }
 
     /**
+     * Lưu giỏ hàng vào Redis
+     */
+    public void saveCart(String key, List<CartItemDTO> cart) {
+        try {
+            // Sử dụng updateCart để lưu giỏ hàng dưới dạng danh sách
+            updateCart(key, cart);
+            log.info("Đã lưu giỏ hàng với key: {}", key);
+        } catch (Exception e) {
+            log.error("Lỗi khi lưu giỏ hàng với key: {}. Chi tiết: {}", key, e.getMessage());
+            throw new RuntimeException("Lỗi khi lưu giỏ hàng", e);
+        }
+    }
+
+    /**
      * Cập nhật một CartItem cụ thể trong giỏ hàng
      */
     public void updateCartItem(String key, UpdateCartItemDTO updatedItem) {
@@ -89,34 +103,26 @@ public class RedisUtil {
 
             // Tìm và cập nhật CartItem
             boolean itemFound = false;
-            for (int i = 0; i < currentCart.size(); i++) {
-                CartItemDTO item = currentCart.get(i);
+            for (CartItemDTO item : currentCart) {
                 if (item.getMenuItemId() == updatedItem.getMenuItemId()) {
-                    // Giữ nguyên price, chỉ cập nhật quantity
-                    CartItemDTO updatedCartItem = new CartItemDTO();
-                    updatedCartItem.setMenuItemId(item.getMenuItemId());
-                    updatedCartItem.setQuantity(updatedItem.getQuantity()); // Cập nhật quantity từ UpdateCartItemDTO
-
-                    currentCart.set(i, updatedCartItem);
+                    // Cập nhật trực tiếp quantity, giữ nguyên name và price
+                    item.setQuantity(updatedItem.getQuantity());
                     itemFound = true;
                     break;
                 }
             }
 
             if (!itemFound) {
-                log.warn("Không tìm thấy item với menuItemId: {} để cập nhật", updatedItem.getMenuItemId());
+                log.warn("Không tìm thấy CartItem với menuItemId: {}", updatedItem.getMenuItemId());
                 return;
             }
 
-            // Cập nhật lại danh sách trên Redis
-            redisTemplate.delete(key); // Xóa danh sách cũ
-            for (CartItemDTO item : currentCart) {
-                addToCart(key, item); // Thêm lại từng item
-            }
-            redisTemplate.expire(key, 1, TimeUnit.HOURS); // Đặt lại TTL
-            log.info("Đã cập nhật CartItem với menuItemId: {}", updatedItem.getMenuItemId());
+            // Lưu giỏ hàng sau khi cập nhật
+            saveCart(key, currentCart);
+            log.info("Đã cập nhật CartItem với menuItemId: {} trong giỏ hàng", updatedItem.getMenuItemId());
         } catch (Exception e) {
-            log.error("❌ Lỗi khi cập nhật CartItem trong giỏ hàng", e);
+            log.error("Lỗi khi cập nhật CartItem với menuItemId: {}. Chi tiết: {}", updatedItem.getMenuItemId(), e.getMessage());
+            throw new RuntimeException("Lỗi khi cập nhật CartItem", e);
         }
     }
 
@@ -139,4 +145,3 @@ public class RedisUtil {
         log.info("🗑 Đã xóa giỏ hàng với key: {}", key);
     }
 }
-
