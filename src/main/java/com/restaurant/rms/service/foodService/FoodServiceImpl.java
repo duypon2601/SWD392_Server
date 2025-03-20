@@ -1,5 +1,6 @@
 package com.restaurant.rms.service.foodService;
 
+import com.restaurant.rms.dto.request.CreateFoodDTO;
 import com.restaurant.rms.dto.request.FoodDTO;
 import com.restaurant.rms.entity.Food;
 import com.restaurant.rms.mapper.FoodMapper;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 @Slf4j
@@ -22,8 +24,9 @@ public class FoodServiceImpl implements FoodService {
     private final RestaurantMenuItemRepository restaurantMenuItemRepository;
 
     @Override
-    public FoodDTO createFood(FoodDTO foodDTO) throws IdInvalidException {
-        Food food = FoodMapper.mapToFood(foodDTO);
+    public FoodDTO createFood(CreateFoodDTO createFoodDTO) throws IdInvalidException {
+        Food food = FoodMapper.mapToFood(createFoodDTO); // Sử dụng phương thức mới trong FoodMapper
+        food.setDeleted(false); // Đảm bảo isDeleted là false khi tạo mới
         Food savedFood = foodRepository.save(food);
         return FoodMapper.mapToFoodDTO(savedFood);
     }
@@ -63,21 +66,64 @@ public class FoodServiceImpl implements FoodService {
         Food food = foodRepository.findById(foodId)
                 .orElseThrow(() -> new IdInvalidException("Food ID not found"));
 
-        // Xóa tất cả RestaurantMenuItem liên quan đến món ăn này
+        // Đánh dấu xóa mềm cho Food
+        food.setDeleted(true);
+        foodRepository.save(food);
+        log.info("Food ID {} đã được đánh dấu xóa mềm", foodId);
+
+        // Xóa mềm hoặc xóa cứng các RestaurantMenuItem liên quan
         restaurantMenuItemRepository.deleteByFood_foodId(foodId);
         log.info("Đã xóa tất cả mục menu liên quan đến Food ID {}", foodId);
+    }
+//    xóa vĩnh viễn food
+//    @Override
+//    @Transactional
+//    public void deleteFood(Integer foodId) throws IdInvalidException {
+//        // Kiểm tra xem Food có tồn tại không
+//        Food food = foodRepository.findById(foodId)
+//                .orElseThrow(() -> new IdInvalidException("Food ID not found"));
+//
+//        // Xóa tất cả RestaurantMenuItem liên quan đến món ăn này
+//        restaurantMenuItemRepository.deleteByFood_foodId(foodId);
+//        log.info("Đã xóa tất cả mục menu liên quan đến Food ID {}", foodId);
+//
+//        // Xóa luôn món ăn
+//        foodRepository.delete(food);
+//        log.info("Food ID {} đã bị xóa khỏi hệ thống", foodId);
+//    }
 
-        // Xóa luôn món ăn
-        foodRepository.delete(food);
-        log.info("Food ID {} đã bị xóa khỏi hệ thống", foodId);
+    @Override
+    public List<FoodDTO> getAllDeletedFood() {
+        log.info("Bắt đầu lấy danh sách Food đã bị xóa mềm");
+        List<Food> deletedFoods = foodRepository.findAllDeleted();
+
+        if (deletedFoods == null || deletedFoods.isEmpty()) {
+            log.info("Không tìm thấy Food nào đã bị xóa mềm");
+            return Collections.emptyList();
+        }
+
+        List<FoodDTO> foodDTOs = deletedFoods.stream()
+                .map(FoodMapper::mapToFoodDTO)
+                .collect(Collectors.toList());
+
+        log.info("Tìm thấy {} Food đã bị xóa mềm", foodDTOs.size());
+        return foodDTOs;
     }
 
+    @Override
+    @Transactional
+    public FoodDTO restoreFood(Integer foodId) throws IdInvalidException {
+        Food food = foodRepository.findByIdIncludingDeleted(foodId)
+                .orElseThrow(() -> new IdInvalidException("Food ID not found"));
 
-//    @Override
-//    public List<FoodDTO> getFoodsByRestaurant(int restaurantId) {
-//        List<Food> foods = foodRepository.findFoodsByRestaurantId(restaurantId);
-//        return foods.stream()
-//                .map(FoodMapper::mapToFoodDTO)
-//                .collect(Collectors.toList());
-//    }
+        if (!food.isDeleted()) {
+            throw new IdInvalidException("Food ID " + foodId + " chưa bị xóa mềm, không thể khôi phục");
+        }
+
+        food.setDeleted(false);
+        Food restoredFood = foodRepository.save(food);
+        log.info("Food ID {} đã được khôi phục", foodId);
+        return FoodMapper.mapToFoodDTO(restoredFood);
+    }
+
 }
