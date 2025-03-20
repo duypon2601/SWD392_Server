@@ -4,6 +4,7 @@ package com.restaurant.rms.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.restaurant.rms.dto.request.CartItemDTO;
 import com.restaurant.rms.dto.request.CheckoutCartDTO;
+import com.restaurant.rms.dto.request.UpdateCartItemDTO;
 import com.restaurant.rms.service.cartService.CartService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
@@ -41,6 +42,15 @@ public class CartController {
         cartService.updateCart(tableQr, updatedCart);
         return ResponseEntity.ok("Cập nhật giỏ hàng thành công!");
     }
+
+    @PutMapping("/{tableQr}/update-item")
+    public ResponseEntity<String> updateCartItem(@PathVariable String tableQr,
+                                                 @RequestBody UpdateCartItemDTO updatedItem) {
+        log.info("🔄 Yêu cầu cập nhật CartItem với menuItemId: {}. Lưu ý: Price không được phép thay đổi.", updatedItem.getMenuItemId());
+        cartService.updateCartItem(tableQr, updatedItem);
+        return ResponseEntity.ok("Cập nhật CartItem thành công! Price không được thay đổi.");
+    }
+
 
     @DeleteMapping("/{tableQr}/remove/{menuItemId}")
     public ResponseEntity<String> removeItem(@PathVariable String tableQr,

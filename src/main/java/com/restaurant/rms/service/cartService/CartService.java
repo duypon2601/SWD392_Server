@@ -3,6 +3,7 @@ package com.restaurant.rms.service.cartService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.restaurant.rms.dto.request.CartItemDTO;
 import com.restaurant.rms.dto.request.CheckoutCartDTO;
+import com.restaurant.rms.dto.request.UpdateCartItemDTO;
 import com.restaurant.rms.dto.request.orderDTO.OrderDTO;
 import com.restaurant.rms.dto.request.orderDTO.OrderItemDTO;
 import com.restaurant.rms.dto.request.orderDTO.SubOrderDTO;
@@ -54,6 +55,10 @@ public class CartService {
     public void updateCart(String tableQr, List<CartItemDTO> updatedCart) {
         log.info("🔄 Cập nhật giỏ hàng: {}", updatedCart);
         redisUtil.updateCart(getCartKey(tableQr), updatedCart);
+    }
+    public void updateCartItem(String tableQr, UpdateCartItemDTO updatedItem) {
+        log.info("🔄 Cập nhật CartItem với menuItemId: {} trong giỏ hàng của bàn: {}", updatedItem.getMenuItemId(), tableQr);
+        redisUtil.updateCartItem(getCartKey(tableQr), updatedItem);
     }
 
     public void removeItemFromCart(String tableQr, int menuItemId) {
