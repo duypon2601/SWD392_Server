@@ -1,10 +1,13 @@
 package com.restaurant.rms.mapper;
 
+import com.restaurant.rms.dto.request.CreateFoodDTO;
 import com.restaurant.rms.dto.request.FoodDTO;
 import com.restaurant.rms.entity.Category;
 import com.restaurant.rms.entity.Food;
+import com.restaurant.rms.enums.Status;
 
 public class FoodMapper {
+
     public static FoodDTO mapToFoodDTO(Food food){
         FoodDTO foodDTO = new FoodDTO();
         foodDTO.setFoodId(food.getFoodId());
@@ -16,6 +19,7 @@ public class FoodMapper {
         }
 
         foodDTO.setStatus(food.getStatus());
+        foodDTO.setDeleted(food.isDeleted());
 
         return foodDTO;
     }
@@ -33,6 +37,22 @@ public class FoodMapper {
         }
 
         food.setStatus(foodDTO.getStatus());
+        food.setDeleted(foodDTO.isDeleted());
+        return food;
+    }
+
+    public static Food mapToFood(CreateFoodDTO createFoodDTO) {
+        Food food = new Food();
+        food.setName(createFoodDTO.getName());
+        food.setDescription(createFoodDTO.getDescription());
+        food.setImage_url(createFoodDTO.getImage_url());
+        if (createFoodDTO.getCategory_id() != 0) {
+            Category category = new Category();
+            category.setCategory_id(createFoodDTO.getCategory_id());
+            food.setCategory(category);
+        }
+        food.setStatus(Status.AVAILABLE); // Giá trị mặc định cho status
+        food.setDeleted(false); // Giá trị mặc định cho isDeleted
         return food;
     }
 }

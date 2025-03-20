@@ -15,5 +15,13 @@ public interface FoodRepository  extends JpaRepository<Food,Integer> {
 //                "JOIN RestaurantMenuItem rmi ON f.id = rmi.food.id " +
 //                "WHERE rmi.restaurant.id = :restaurantId")
 //        List<Food> findFoodsByRestaurantId(@Param("restaurantId") int restaurantId);
+// Thêm phương thức để lấy các bản ghi đã bị xóa mềm (nếu cần)
+    @Query(value = "SELECT * FROM food WHERE is_deleted = true", nativeQuery = true)
+    List<Food> findAllDeleted();
+
+    // Lấy Food theo ID mà không quan tâm đến isDeleted
+    @Query("SELECT f FROM Food f WHERE f.foodId = :foodId")
+    Optional<Food> findByIdIncludingDeleted(Integer foodId);
+
 
 }

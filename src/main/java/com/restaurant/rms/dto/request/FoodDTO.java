@@ -17,4 +17,5 @@ public class FoodDTO {
     private String image_url;
     private int category_id;
     private Status status;
+    private boolean isDeleted;
 }

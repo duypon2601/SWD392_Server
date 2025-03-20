@@ -27,12 +27,17 @@ public class Restaurant {
     @Column(name = "location")
     private String location;
 
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     //relationship
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<User> users;
 
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<RestaurantMenu> menus;
+
+
 }
 //    @ManyToOne
 //    @JoinColumn(name = "course_id", nullable = false)
