@@ -55,11 +55,19 @@ public class CartController {
         return ResponseEntity.ok("Đã xóa giỏ hàng!");
     }
 
+//    @PostMapping("/{tableQr}/checkout")
+//    public ResponseEntity<CheckoutCartDTO> checkout(@PathVariable String tableQr) throws JsonProcessingException {
+//        log.info("🚀 Checkout giỏ hàng của bàn {}", tableQr);
+//        return ResponseEntity.ok(cartService.checkoutAndCreateOrder(tableQr));
+//    }
+
     @PostMapping("/{tableQr}/checkout")
     public ResponseEntity<CheckoutCartDTO> checkout(@PathVariable String tableQr) throws JsonProcessingException {
         log.info("🚀 Checkout giỏ hàng của bàn {}", tableQr);
-        return ResponseEntity.ok(cartService.checkoutAndCreateOrder(tableQr));
+        CheckoutCartDTO checkoutCartDTO = cartService.checkoutAndCreateOrder(tableQr);
+        return ResponseEntity.ok(checkoutCartDTO);
     }
+
 }
 
 

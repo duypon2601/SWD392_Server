@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,16 +32,68 @@ public class SubOrderService {
     private final RestaurantMenuItemRepository restaurantMenuItemRepository;
 
 
-    @Transactional
-    public void confirmSubOrder(int subOrderId) {
-        SubOrder subOrder = subOrderRepository.findById(subOrderId)
-                .orElseThrow(() -> new RuntimeException("SubOrder not found"));
+//    @Transactional
+//    public void confirmSubOrder(int subOrderId) {
+//        SubOrder subOrder = subOrderRepository.findById(subOrderId)
+//                .orElseThrow(() -> new RuntimeException("SubOrder not found"));
+//
+//        Order order = subOrder.getOrder();
+//
+//        // Cộng dồn món ăn từ SubOrder vào Order chính
+//        List<SubOrderItem> subOrderItems = subOrder.getSubOrderItems();
+//        for (SubOrderItem subItem : subOrderItems) {
+//            OrderItem orderItem = new OrderItem();
+//            orderItem.setOrder(order);
+//            orderItem.setMenuItem(subItem.getMenuItem());
+//            orderItem.setQuantity(subItem.getQuantity());
+//            orderItem.setPrice(subItem.getPrice());
+//            order.getOrderItems().add(orderItem);
+//        }
+//
+//        // Cập nhật tổng giá tiền của Order chính
+//        BigDecimal totalSubOrderPrice = subOrder.getTotalPrice();
+//        order.setTotalPrice(order.getTotalPrice().add(totalSubOrderPrice));
+//
+//        // Đặt trạng thái SubOrder thành CONFIRMED
+//        subOrder.setStatus(OrderStatus.CONFIRMED);
+//
+//        // Lưu SubOrder trước
+//        subOrderRepository.save(subOrder);
+//
+//        // Lưu Order (các trường createdAt và updatedAt sẽ được tự động cập nhật bởi @PrePersist/@PreUpdate)
+//        orderRepository.save(order);
+//    }
+@Transactional
+public Order confirmSubOrder(int subOrderId) {
+    SubOrder subOrder = subOrderRepository.findById(subOrderId)
+            .orElseThrow(() -> new RuntimeException("SubOrder not found"));
 
-        Order order = subOrder.getOrder();
+    Order order = subOrder.getOrder();
 
-        // Cộng dồn món ăn từ SubOrder vào Order chính
-        List<SubOrderItem> subOrderItems = subOrder.getSubOrderItems();
-        for (SubOrderItem subItem : subOrderItems) {
+    // Kiểm tra createdAt trước khi cập nhật
+    if (order.getCreatedAt() == null) {
+        log.warn("Order {} has null createdAt before update", order.getOrderId());
+        order.setCreatedAt(new Date()); // Thiết lập lại nếu null
+    }
+
+    // Lấy danh sách OrderItem hiện có của Order
+    List<OrderItem> existingOrderItems = order.getOrderItems();
+
+    // Cộng dồn món ăn từ SubOrder vào Order chính
+    List<SubOrderItem> subOrderItems = subOrder.getSubOrderItems();
+    for (SubOrderItem subItem : subOrderItems) {
+        // Tìm OrderItem hiện có với cùng menuItem
+        Optional<OrderItem> existingOrderItem = existingOrderItems.stream()
+                .filter(orderItem -> orderItem.getMenuItem().getRestaurantMenuItemId() == subItem.getMenuItem().getRestaurantMenuItemId())
+                .findFirst();
+
+        if (existingOrderItem.isPresent()) {
+            // Nếu đã tồn tại, cộng dồn quantity và price
+            OrderItem orderItem = existingOrderItem.get();
+            orderItem.setQuantity(orderItem.getQuantity() + subItem.getQuantity());
+            orderItem.setPrice(orderItem.getPrice().add(subItem.getPrice()));
+        } else {
+            // Nếu chưa tồn tại, tạo mới OrderItem
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setMenuItem(subItem.getMenuItem());
@@ -48,18 +101,27 @@ public class SubOrderService {
             orderItem.setPrice(subItem.getPrice());
             order.getOrderItems().add(orderItem);
         }
-
-        // Cập nhật tổng giá tiền của Order chính
-        BigDecimal totalSubOrderPrice = subOrder.getTotalPrice();
-        order.setTotalPrice(order.getTotalPrice().add(totalSubOrderPrice));
-
-        // Đặt trạng thái SubOrder thành CONFIRMED
-        subOrder.setStatus(OrderStatus.CONFIRMED);
-
-        // Lưu SubOrder trước
-        subOrderRepository.save(subOrder);
-
-        // Lưu Order (các trường createdAt và updatedAt sẽ được tự động cập nhật bởi @PrePersist/@PreUpdate)
-        orderRepository.save(order);
     }
+
+    // Cập nhật tổng giá tiền của Order chính
+    BigDecimal totalSubOrderPrice = subOrder.getTotalPrice();
+    order.setTotalPrice(order.getTotalPrice().add(totalSubOrderPrice));
+
+    // Đặt trạng thái SubOrder thành CONFIRMED
+    subOrder.setStatus(OrderStatus.CONFIRMED);
+
+    // Lưu SubOrder trước
+    subOrderRepository.save(subOrder);
+
+    // Log để kiểm tra giá trị trước khi lưu
+    log.info("Before saving Order: createdAt={}, updatedAt={}", order.getCreatedAt(), order.getUpdatedAt());
+
+    // Lưu Order
+    Order updatedOrder = orderRepository.save(order);
+
+    // Log để kiểm tra giá trị sau khi lưu
+    log.info("After saving Order: createdAt={}, updatedAt={}", updatedOrder.getCreatedAt(), updatedOrder.getUpdatedAt());
+
+    return updatedOrder;
+}
 }
