@@ -17,5 +17,11 @@ public interface UserRepository extends JpaRepository<User,Integer> {
     @Query("SELECT u FROM User u WHERE u.restaurant.restaurantId = :restaurantId")
     List<User> findUserByRestaurantId(@Param("restaurantId") int restaurantId);
 
+    // Lấy danh sách user đã xóa mềm bằng native query
+    @Query(value = "SELECT * FROM user WHERE is_deleted = true", nativeQuery = true)
+    List<User> findAllByIsDeletedTrue();
 
+    // Tìm user đã xóa mềm theo ID bằng native query
+    @Query(value = "SELECT * FROM user WHERE user_id = :userId AND is_deleted = true", nativeQuery = true)
+    Optional<User> findByIdAndIsDeletedTrue(@Param("userId") Integer userId);
 }

@@ -34,4 +34,10 @@ public interface UserService {
     ResUpdateUserDTO convertToResUpdateUserDTO(UserDTO user);
 
     ResUserDTO convertToResUserDTO(UserDTO user);
+
+    // Lấy danh sách user đã xóa mềm
+    List<UserDTO> getDeletedUsers();
+
+    // Phục hồi user đã xóa mềm
+    void restoreUser(Integer userId) throws IdInvalidException;
 }

@@ -61,18 +61,40 @@ public class UserController {
         return ResponseEntity.ok(this.userService.convertToResUpdateUserDTO(userDTO));
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
+//    @DeleteMapping("/delete/{user_id}")
+//    public ResponseEntity<Void> deleteUser(@PathVariable("user_id") Integer user_id) throws IdInvalidException{
+//        UserDTO currentUser = this.userService.getUserById(user_id);
+//        this.userService.deleteUser(user_id);
+//        return ResponseEntity.ok(null);
+//    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
     @DeleteMapping("/delete/{user_id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("user_id") Integer user_id) throws IdInvalidException{
-        UserDTO currentUser = this.userService.getUserById(user_id);
-        this.userService.deleteUser(user_id);
-        return ResponseEntity.ok(null);
+    public ResponseEntity<String> deleteUser(@PathVariable("user_id") Integer user_id) throws IdInvalidException {
+        userService.deleteUser(user_id);
+        return ResponseEntity.ok("User với id = " + user_id + " đã được xóa mềm thành công");
     }
+
     @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     @GetMapping("/restaurant/{restaurant_id}")
     public ResponseEntity<List<UserDTO>> findUserByRestaurantId(@PathVariable("restaurant_id") int restaurant_id) throws IdInvalidException {
         List<UserDTO> user = userService.findUserByRestaurantId(restaurant_id);
         return ResponseEntity.ok(user);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @GetMapping("/deleted")
+    public ResponseEntity<List<UserDTO>> getDeletedUsers() {
+        List<UserDTO> deletedUsers = userService.getDeletedUsers();
+        return ResponseEntity.ok(deletedUsers);
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
+    @PutMapping("/restore/{user_id}")
+    public ResponseEntity<String> restoreUser(@PathVariable("user_id") Integer user_id) throws IdInvalidException {
+        userService.restoreUser(user_id);
+        return ResponseEntity.ok("User với id = " + user_id + " đã được phục hồi thành công");
     }
 
 }
