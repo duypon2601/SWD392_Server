@@ -60,4 +60,10 @@ public class SubOrderController {
         subOrderService.deleteSubOrder(subOrderId);
         return ResponseEntity.ok("SubOrder has been deleted.");
     }
+    // Thêm API: Lấy tất cả SubOrder
+    @GetMapping("/all")
+    public ResponseEntity<List<SubOrderDTO>> getAllSubOrder() {
+        List<SubOrderDTO> subOrders = subOrderService.getAllSubOrders();
+        return ResponseEntity.ok(subOrders);
+    }
 }

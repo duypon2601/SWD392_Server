@@ -163,4 +163,13 @@ public Order confirmSubOrder(int subOrderId) {
         // Giả định xóa vật lý, nếu dùng xóa mềm thì thêm trường isDeleted
         subOrderRepository.delete(subOrder);
     }
+
+    // Thêm phương thức: Lấy tất cả SubOrder
+    @Transactional(readOnly = true)
+    public List<SubOrderDTO> getAllSubOrders() {
+        List<SubOrder> subOrders = subOrderRepository.findAll();
+        return subOrders.stream()
+                .map(subOrderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }
