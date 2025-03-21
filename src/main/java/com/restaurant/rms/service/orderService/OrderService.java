@@ -213,6 +213,7 @@ import com.restaurant.rms.entity.SubOrder;
 import com.restaurant.rms.entity.SubOrderItem;
 import com.restaurant.rms.enums.DiningTableStatus;
 import com.restaurant.rms.enums.OrderStatus;
+import com.restaurant.rms.mapper.orderMapper.OrderItemMapper;
 import com.restaurant.rms.mapper.orderMapper.OrderMapper;
 import com.restaurant.rms.mapper.orderMapper.SubOrderMapper;
 import com.restaurant.rms.repository.*;
@@ -237,9 +238,9 @@ public class OrderService {
     private final DiningTableRepository diningTableRepository;
     private final OrderMapper orderMapper;
     private final SubOrderMapper subOrderMapper;
-    private final SubOrderService subOrderService;
     private final RestaurantMenuItemRepository restaurantMenuItemRepository;
     private final SubOrderItemRepository subOrderItemRepository;
+    private final OrderItemMapper orderItemMapper;
 
     public boolean hasExistingOrder(int diningTableId) {
         return orderRepository.existsByDiningTable_DiningTableIdAndStatusIn(
@@ -389,5 +390,55 @@ public class OrderService {
     // ✅ Doanh thu **từng nhà hàng** từ ngày đến ngày
     public BigDecimal getRestaurantRevenueBetweenDates(int restaurantId, LocalDate startDate, LocalDate endDate) {
         return orderRepository.getRestaurantRevenueBetweenDates(restaurantId, startDate, endDate);
+    }
+
+    // Thêm phương thức: Lấy Order theo ID
+    public OrderDTO getOrderById(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+        return orderMapper.toDTO(order);
+    }
+
+    // Thêm phương thức: Xóa Order (xóa vật lý hoặc xóa mềm tùy cấu hình)
+    @Transactional
+    public void deleteOrder(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+        // Giả định xóa vật lý, nếu dùng xóa mềm thì thêm trường isDeleted
+        orderRepository.delete(order);
+        DiningTable table = order.getDiningTable();
+        if (table != null && order.getStatus() != OrderStatus.COMPLETED) {
+            table.setStatus(DiningTableStatus.AVAILABLE);
+            diningTableRepository.save(table);
+        }
+    }
+
+    @Transactional
+    public OrderDTO updateOrder(int orderId, OrderDTO orderDTO) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+
+        // Cập nhật trạng thái nếu có
+        if (orderDTO.getStatus() != null) {
+            order.setStatus(OrderStatus.valueOf(orderDTO.getStatus()));
+        }
+
+        // Cập nhật totalPrice nếu có
+        if (orderDTO.getTotalPrice() != null) {
+            order.setTotalPrice(orderDTO.getTotalPrice());
+        }
+
+        // Cập nhật danh sách OrderItem nếu có
+        if (orderDTO.getOrderItems() != null && !orderDTO.getOrderItems().isEmpty()) {
+            order.getOrderItems().clear(); // Xóa danh sách cũ
+            order.getOrderItems().addAll(orderDTO.getOrderItems().stream()
+                    .map(itemDTO -> orderItemMapper.toEntity(itemDTO, order, // Sử dụng orderItemMapper
+                            restaurantMenuItemRepository.findById(itemDTO.getMenuItemId())
+                                    .orElseThrow(() -> new RuntimeException("MenuItem not found: " + itemDTO.getMenuItemId()))))
+                    .collect(Collectors.toList()));
+        }
+
+        Order updatedOrder = orderRepository.save(order);
+        return orderMapper.toDTO(updatedOrder);
     }
 }

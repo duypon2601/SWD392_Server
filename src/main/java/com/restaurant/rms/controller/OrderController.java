@@ -110,4 +110,27 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getRestaurantRevenueBetweenDates(restaurantId, startDate, endDate));
     }
 
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable int orderId) {
+        log.info("📥 Nhận request lấy Order với ID: {}", orderId);
+        OrderDTO orderDTO = orderService.getOrderById(orderId);
+        return ResponseEntity.ok(orderDTO);
+    }
+
+    // Thêm API: Xóa Order
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<String> deleteOrder(@PathVariable int orderId) {
+        log.info("📥 Nhận request xóa Order với ID: {}", orderId);
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.ok("Order has been deleted.");
+    }
+
+    // Thêm API: Cập nhật Order
+    @PutMapping("/{orderId}")
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable int orderId, @RequestBody OrderDTO orderDTO) {
+        log.info("📥 Nhận request cập nhật Order với ID: {}, dữ liệu: {}", orderId, orderDTO);
+        OrderDTO updatedOrder = orderService.updateOrder(orderId, orderDTO);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
 }

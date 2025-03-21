@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
@@ -29,5 +31,33 @@ public class SubOrderController {
     public ResponseEntity<String> completeSubOrder(@PathVariable int subOrderId) {
         subOrderService.confirmSubOrder(subOrderId);
         return ResponseEntity.ok("SubOrder has been merged into the main Order.");
+    }
+
+    // Thêm API: Lấy thông tin SubOrder theo ID
+    @GetMapping("/{subOrderId}")
+    public ResponseEntity<SubOrderDTO> getSubOrder(@PathVariable int subOrderId) {
+        SubOrderDTO subOrderDTO = subOrderService.getSubOrderById(subOrderId);
+        return ResponseEntity.ok(subOrderDTO);
+    }
+
+    // Thêm API: Lấy danh sách SubOrder theo DiningTable
+    @GetMapping("/dining-table/{diningTableId}")
+    public ResponseEntity<List<SubOrderDTO>> getSubOrderByDiningTable(@PathVariable int diningTableId) {
+        List<SubOrderDTO> subOrders = subOrderService.getSubOrdersByDiningTable(diningTableId);
+        return ResponseEntity.ok(subOrders);
+    }
+
+    // Thêm API: Lấy danh sách SubOrder theo Order ID
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity<List<SubOrderDTO>> getSubOrderByOrderId(@PathVariable int orderId) {
+        List<SubOrderDTO> subOrders = subOrderService.getSubOrdersByOrderId(orderId);
+        return ResponseEntity.ok(subOrders);
+    }
+
+    // Thêm API: Xóa SubOrder
+    @DeleteMapping("/{subOrderId}")
+    public ResponseEntity<String> deleteSubOrder(@PathVariable int subOrderId) {
+        subOrderService.deleteSubOrder(subOrderId);
+        return ResponseEntity.ok("SubOrder has been deleted.");
     }
 }

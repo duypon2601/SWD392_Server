@@ -124,4 +124,43 @@ public Order confirmSubOrder(int subOrderId) {
 
     return updatedOrder;
 }
+
+    // Thêm phương thức: Lấy SubOrder theo ID
+    public SubOrderDTO getSubOrderById(int subOrderId) {
+        SubOrder subOrder = subOrderRepository.findById(subOrderId)
+                .orElseThrow(() -> new RuntimeException("SubOrder not found with ID: " + subOrderId));
+        return subOrderMapper.toDTO(subOrder);
+    }
+
+    // Thêm phương thức: Lấy danh sách SubOrder theo DiningTable
+    @Transactional(readOnly = true)
+    public List<SubOrderDTO> getSubOrdersByDiningTable(int diningTableId) {
+        Order order = orderRepository.findByDiningTable_DiningTableId(diningTableId)
+                .orElseThrow(() -> new RuntimeException("No Order found for DiningTable ID: " + diningTableId));
+        List<SubOrder> subOrders = subOrderRepository.findByOrder_OrderId(order.getOrderId());
+        return subOrders.stream()
+                .map(subOrderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Thêm phương thức: Lấy danh sách SubOrder theo Order ID
+    @Transactional(readOnly = true)
+    public List<SubOrderDTO> getSubOrdersByOrderId(int orderId) {
+        List<SubOrder> subOrders = subOrderRepository.findByOrder_OrderId(orderId);
+        if (subOrders.isEmpty()) {
+            throw new RuntimeException("No SubOrders found for Order ID: " + orderId);
+        }
+        return subOrders.stream()
+                .map(subOrderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Thêm phương thức: Xóa SubOrder
+    @Transactional
+    public void deleteSubOrder(int subOrderId) {
+        SubOrder subOrder = subOrderRepository.findById(subOrderId)
+                .orElseThrow(() -> new RuntimeException("SubOrder not found with ID: " + subOrderId));
+        // Giả định xóa vật lý, nếu dùng xóa mềm thì thêm trường isDeleted
+        subOrderRepository.delete(subOrder);
+    }
 }
