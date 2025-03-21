@@ -1,6 +1,7 @@
 package com.restaurant.rms.dto.request.orderDTO;
 
 import lombok.*;
+
 import java.math.BigDecimal;
 
 @Getter
@@ -8,11 +9,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class OrderItemDTO {
-    private int id;
-    private Integer menuItemId;
+public class UpdateOrderItemDTO {
     private int quantity;
-    private BigDecimal price;
-    private String menuItemName;
 }
-

@@ -203,16 +203,11 @@
 
 package com.restaurant.rms.service.orderService;
 
-import com.restaurant.rms.dto.request.orderDTO.OrderDTO;
-import com.restaurant.rms.dto.request.orderDTO.OrderItemDTO;
-import com.restaurant.rms.dto.request.orderDTO.SubOrderDTO;
-import com.restaurant.rms.dto.request.orderDTO.SubOrderItemDTO;
-import com.restaurant.rms.entity.DiningTable;
-import com.restaurant.rms.entity.Order;
-import com.restaurant.rms.entity.SubOrder;
-import com.restaurant.rms.entity.SubOrderItem;
+import com.restaurant.rms.dto.request.orderDTO.*;
+import com.restaurant.rms.entity.*;
 import com.restaurant.rms.enums.DiningTableStatus;
 import com.restaurant.rms.enums.OrderStatus;
+import com.restaurant.rms.mapper.orderMapper.OrderItemMapper;
 import com.restaurant.rms.mapper.orderMapper.OrderMapper;
 import com.restaurant.rms.mapper.orderMapper.SubOrderMapper;
 import com.restaurant.rms.repository.*;
@@ -237,9 +232,9 @@ public class OrderService {
     private final DiningTableRepository diningTableRepository;
     private final OrderMapper orderMapper;
     private final SubOrderMapper subOrderMapper;
-    private final SubOrderService subOrderService;
     private final RestaurantMenuItemRepository restaurantMenuItemRepository;
     private final SubOrderItemRepository subOrderItemRepository;
+    private final OrderItemMapper orderItemMapper;
 
     public boolean hasExistingOrder(int diningTableId) {
         return orderRepository.existsByDiningTable_DiningTableIdAndStatusIn(
@@ -390,4 +385,107 @@ public class OrderService {
     public BigDecimal getRestaurantRevenueBetweenDates(int restaurantId, LocalDate startDate, LocalDate endDate) {
         return orderRepository.getRestaurantRevenueBetweenDates(restaurantId, startDate, endDate);
     }
+
+    // Thêm phương thức: Lấy Order theo ID
+    public OrderDTO getOrderById(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+        return orderMapper.toDTO(order);
+    }
+
+    // Thêm phương thức: Xóa Order (xóa vật lý hoặc xóa mềm tùy cấu hình)
+    @Transactional
+    public void deleteOrder(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+        // Giả định xóa vật lý, nếu dùng xóa mềm thì thêm trường isDeleted
+        orderRepository.delete(order);
+        DiningTable table = order.getDiningTable();
+        if (table != null && order.getStatus() != OrderStatus.COMPLETED) {
+            table.setStatus(DiningTableStatus.AVAILABLE);
+            diningTableRepository.save(table);
+        }
+    }
+
+    @Transactional
+    public OrderDTO updateOrder(int orderId, OrderDTO orderDTO) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+
+        // Kiểm tra nếu Order đã COMPLETED thì không cho sửa
+        if (order.getStatus() == OrderStatus.COMPLETED) {
+            throw new RuntimeException("Cannot update Order with ID: " + orderId + " because it is already COMPLETED");
+        }
+
+        // Cập nhật trạng thái nếu có
+        if (orderDTO.getStatus() != null) {
+            order.setStatus(OrderStatus.valueOf(orderDTO.getStatus()));
+        }
+
+        // Cập nhật totalPrice nếu có
+        if (orderDTO.getTotalPrice() != null) {
+            order.setTotalPrice(orderDTO.getTotalPrice());
+        }
+
+        // Cập nhật danh sách OrderItem nếu có
+        if (orderDTO.getOrderItems() != null && !orderDTO.getOrderItems().isEmpty()) {
+            order.getOrderItems().clear();
+            order.getOrderItems().addAll(orderDTO.getOrderItems().stream()
+                    .map(itemDTO -> orderItemMapper.toEntity(itemDTO, order,
+                            restaurantMenuItemRepository.findById(itemDTO.getMenuItemId())
+                                    .orElseThrow(() -> new RuntimeException("MenuItem not found: " + itemDTO.getMenuItemId()))))
+                    .collect(Collectors.toList()));
+        }
+
+        Order updatedOrder = orderRepository.save(order);
+        return orderMapper.toDTO(updatedOrder);
+    }
+
+    // Thêm phương thức: Lấy tất cả Order
+    @Transactional(readOnly = true)
+    public List<OrderDTO> getAllOrders() {
+        List<Order> orders = orderRepository.findAll();
+        return orders.stream()
+                .map(orderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Cập nhật phương thức: Sử dụng UpdateOrderItemDTO
+    @Transactional
+    public OrderItemDTO updateOrderItem(int orderId, int orderItemId, UpdateOrderItemDTO updateOrderItemDTO) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
+
+        // Kiểm tra nếu Order đã COMPLETED thì không cho sửa
+        if (order.getStatus() == OrderStatus.COMPLETED) {
+            throw new RuntimeException("Cannot update OrderItem for Order ID: " + orderId + " because it is already COMPLETED");
+        }
+
+        OrderItem orderItem = order.getOrderItems().stream()
+                .filter(item -> item.getOrderItemId() == orderItemId)
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("OrderItem not found with ID: " + orderItemId));
+
+        // Cập nhật thông tin OrderItem từ UpdateOrderItemDTO
+        if (updateOrderItemDTO.getQuantity() > 0) {
+            orderItem.setQuantity(updateOrderItemDTO.getQuantity());
+        }
+        // Không cập nhật menuItemId vì UpdateOrderItemDTO không chứa trường này
+
+        Order updatedOrder = orderRepository.save(order);
+        return orderItemMapper.toDTO(orderItem);
+    }
+
+    // Thêm phương thức: Lấy Order theo DiningTable
+    @Transactional(readOnly = true)
+    public OrderDTO getOrderByDiningTable(int diningTableId) {
+        Order order = orderRepository.findActiveOrderByDiningTableId(diningTableId)
+                .orElseThrow(() -> new RuntimeException("No active Order found for DiningTable ID: " + diningTableId));
+        return orderMapper.toDTO(order);
+    }
+
+
+
+
+
 }

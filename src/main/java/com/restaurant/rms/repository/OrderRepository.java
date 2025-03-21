@@ -99,4 +99,10 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     BigDecimal getRestaurantRevenueBetweenDates(@Param("restaurantId") int restaurantId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
+    // Thêm phương thức: Tìm Order theo diningTableId (không giới hạn trạng thái)
+    Optional<Order> findByDiningTable_DiningTableId(int diningTableId);
+
+    @Query("SELECT o FROM Order o WHERE o.diningTable.diningTableId = :diningTableId AND o.status IN ('PENDING')")
+    Optional<Order> findActiveOrderByDiningTableId(@Param("diningTableId") int diningTableId);
+
 }

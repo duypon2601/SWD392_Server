@@ -1,7 +1,9 @@
 package com.restaurant.rms.controller;
 
 import com.restaurant.rms.dto.request.orderDTO.OrderDTO;
+import com.restaurant.rms.dto.request.orderDTO.OrderItemDTO;
 import com.restaurant.rms.dto.request.orderDTO.SubOrderDTO;
+import com.restaurant.rms.dto.request.orderDTO.UpdateOrderItemDTO;
 import com.restaurant.rms.service.orderService.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @CrossOrigin("*")
@@ -109,5 +112,59 @@ public class OrderController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
         return ResponseEntity.ok(orderService.getRestaurantRevenueBetweenDates(restaurantId, startDate, endDate));
     }
+
+    @GetMapping("/{orderId}")
+    public ResponseEntity<OrderDTO> getOrder(@PathVariable int orderId) {
+        log.info("📥 Nhận request lấy Order với ID: {}", orderId);
+        OrderDTO orderDTO = orderService.getOrderById(orderId);
+        return ResponseEntity.ok(orderDTO);
+    }
+
+    // Thêm API: Xóa Order
+    @DeleteMapping("/{orderId}")
+    public ResponseEntity<String> deleteOrder(@PathVariable int orderId) {
+        log.info("📥 Nhận request xóa Order với ID: {}", orderId);
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.ok("Order has been deleted.");
+    }
+
+    // Thêm API: Cập nhật Order
+    @PutMapping("/{orderId}")
+    public ResponseEntity<OrderDTO> updateOrder(@PathVariable int orderId, @RequestBody OrderDTO orderDTO) {
+        log.info("📥 Nhận request cập nhật Order với ID: {}, dữ liệu: {}", orderId, orderDTO);
+        OrderDTO updatedOrder = orderService.updateOrder(orderId, orderDTO);
+        return ResponseEntity.ok(updatedOrder);
+    }
+
+    // Thêm API: Lấy tất cả Order
+    @GetMapping("/all")
+    public ResponseEntity<List<OrderDTO>> getAllOrder() {
+        log.info("📥 Nhận request lấy tất cả Order");
+        List<OrderDTO> orders = orderService.getAllOrders();
+        return ResponseEntity.ok(orders);
+    }
+
+    // Cập nhật API: Sử dụng UpdateOrderItemDTO
+    @PutMapping("/{orderId}/items/{orderItemId}")
+    public ResponseEntity<OrderItemDTO> updateOrderItem(
+            @PathVariable int orderId,
+            @PathVariable int orderItemId,
+            @RequestBody UpdateOrderItemDTO updateOrderItemDTO) {
+        log.info("📥 Nhận request cập nhật OrderItem với Order ID: {}, Item ID: {}, dữ liệu: {}",
+                orderId, orderItemId, updateOrderItemDTO);
+        OrderItemDTO updatedItem = orderService.updateOrderItem(orderId, orderItemId, updateOrderItemDTO);
+        return ResponseEntity.ok(updatedItem);
+    }
+
+    @GetMapping("/dining-table/{diningTableId}")
+    public ResponseEntity<OrderDTO> getOrderByDiningTable(@PathVariable int diningTableId) {
+        log.info("📥 Nhận request lấy Order theo DiningTable ID: {}", diningTableId);
+        OrderDTO orderDTO = orderService.getOrderByDiningTable(diningTableId);
+        return ResponseEntity.ok(orderDTO);
+    }
+
+
+
+
 
 }
