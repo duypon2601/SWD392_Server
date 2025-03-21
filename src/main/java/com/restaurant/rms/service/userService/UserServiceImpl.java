@@ -87,12 +87,19 @@ public class UserServiceImpl implements UserService {
         User updateUserObj = userRepository.save(user);
         return UserMapper.mapToUserDTO(updateUserObj);
     }
-
+//    xóa luôn
+//    @Override
+//    public void deleteUser(Integer user_id) throws IdInvalidException {
+//        User user = userRepository.findById(user_id)
+//                .orElseThrow(() -> new IdInvalidException("User với id = " + user_id + " không tồn tại"));
+//        userRepository.deleteById(user_id);
+//    }
     @Override
     public void deleteUser(Integer user_id) throws IdInvalidException {
         User user = userRepository.findById(user_id)
-                .orElseThrow(() -> new IdInvalidException("User với id = " + user_id + " không tồn tại"));
-        userRepository.deleteById(user_id);
+                .orElseThrow(() -> new IdInvalidException("User với id = " + user_id + " không tồn tại hoặc đã bị xóa"));
+        user.setDeleted(true); // Xóa mềm
+        userRepository.save(user);
     }
 
     @Override
@@ -154,5 +161,21 @@ public class UserServiceImpl implements UserService {
         res.setRestaurant_id(user.getRestaurant_id());
 //        res.setDelete(user.getDelete() != null ? user.getDelete() : false);
         return res;
+    }
+
+    @Override
+    public List<UserDTO> getDeletedUsers() {
+        List<User> deletedUsers = userRepository.findAllByIsDeletedTrue();
+        return deletedUsers.stream()
+                .map(UserMapper::mapToUserDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void restoreUser(Integer userId) throws IdInvalidException {
+        User user = userRepository.findByIdAndIsDeletedTrue(userId)
+                .orElseThrow(() -> new IdInvalidException("User với id = " + userId + " không tồn tại hoặc chưa bị xóa mềm"));
+        user.setDeleted(false); // Phục hồi
+        userRepository.save(user);
     }
 }

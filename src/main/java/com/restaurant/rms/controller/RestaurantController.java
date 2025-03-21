@@ -48,12 +48,10 @@ public class RestaurantController {
 
     @DeleteMapping("{restaurant_id}")
 //    @PreAuthorize("hasAnyRole('CONTENT_MANAGER', 'MANAGER')")
-    public ResponseEntity<Void> deleteRestaurant( @PathVariable("restaurant_id") Integer restaurantId) throws IdInvalidException {
-        RestaurantDTO currentRestaurant = restaurantService.getRestaurantById(restaurantId);
+    public ResponseEntity<String> deleteRestaurant(@PathVariable("restaurant_id") Integer restaurantId) throws IdInvalidException {
         restaurantService.deleteRestaurant(restaurantId);
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok("Restaurant với id = " + restaurantId + " đã được xóa mềm thành công");
     }
-
     @GetMapping("user/{user_id}")
     public ResponseEntity<RestaurantDTO> findRestaurantByUserId(@PathVariable("user_id") int user_id) throws IdInvalidException {
         RestaurantDTO restaurantDTO = restaurantService.findRestaurantByUserId(user_id);
@@ -79,5 +77,16 @@ public class RestaurantController {
 //        List<CourseDTO> courseDTOS = courseService.getCourseByCategoryId(category_id);
 //        return ResponseEntity.ok(courseDTOS);
 //    }
+    @GetMapping("/deleted")
+    public ResponseEntity<List<RestaurantDTO>> getDeletedRestaurants() {
+        List<RestaurantDTO> deletedRestaurants = restaurantService.getDeletedRestaurants();
+        return ResponseEntity.ok(deletedRestaurants);
+    }
+
+    @PutMapping("/restore/{restaurant_id}")
+    public ResponseEntity<String> restoreRestaurant(@PathVariable("restaurant_id") Integer restaurantId) throws IdInvalidException {
+        restaurantService.restoreRestaurant(restaurantId);
+        return ResponseEntity.ok("Restaurant với id = " + restaurantId + " đã được phục hồi thành công");
+    }
 
 }

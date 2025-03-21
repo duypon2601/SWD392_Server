@@ -74,13 +74,20 @@ public class RestaurantServiceImpl implements RestaurantService {
         Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
         return RestaurantMapper.mapToRestaurantDTO(updatedRestaurant);
     }
-
     @Override
-    public void deleteRestaurant(Integer restaurant_id) throws IdInvalidException{
-        Restaurant restaurant = restaurantRepository.findById(restaurant_id)
-                .orElseThrow(() -> new IdInvalidException("Restaurant với id = " + restaurant_id + " không tồn tại"));
-        restaurantRepository.deleteById(restaurant_id);
+    public void deleteRestaurant(Integer restaurantId) throws IdInvalidException {
+        Restaurant restaurant = restaurantRepository.findById(restaurantId)
+                .orElseThrow(() -> new IdInvalidException("Restaurant với id = " + restaurantId + " không tồn tại hoặc đã bị xóa"));
+        restaurant.setDeleted(true); // Xóa mềm
+        restaurantRepository.save(restaurant);
     }
+// xóa luôn
+//    @Override
+//    public void deleteRestaurant(Integer restaurant_id) throws IdInvalidException{
+//        Restaurant restaurant = restaurantRepository.findById(restaurant_id)
+//                .orElseThrow(() -> new IdInvalidException("Restaurant với id = " + restaurant_id + " không tồn tại"));
+//        restaurantRepository.deleteById(restaurant_id);
+//    }
 //    @Override
 //    public List<CourseDTO> getCoursesBoughtByParent(int user_id) {
 //        List<Course> courses = courseRepository.findCoursesBoughtByParent(user_id);
@@ -105,5 +112,20 @@ public class RestaurantServiceImpl implements RestaurantService {
 //                (course) -> CourseMapper.mapToCourseDTO(course)).collect(Collectors.toList()
 //        );
 //    }
+@Override
+public List<RestaurantDTO> getDeletedRestaurants() {
+    List<Restaurant> deletedRestaurants = restaurantRepository.findAllByIsDeletedTrue();
+    return deletedRestaurants.stream()
+            .map(RestaurantMapper::mapToRestaurantDTO)
+            .collect(Collectors.toList());
+}
+
+    @Override
+    public void restoreRestaurant(Integer restaurantId) throws IdInvalidException {
+        Restaurant restaurant = restaurantRepository.findByIdAndIsDeletedTrue(restaurantId)
+                .orElseThrow(() -> new IdInvalidException("Restaurant với id = " + restaurantId + " không tồn tại hoặc chưa bị xóa mềm"));
+        restaurant.setDeleted(false); // Phục hồi
+        restaurantRepository.save(restaurant);
+    }
 
 }

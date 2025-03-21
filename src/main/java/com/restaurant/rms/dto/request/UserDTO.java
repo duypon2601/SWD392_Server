@@ -29,7 +29,7 @@ public class UserDTO {
 
     private String password;
 
-//    private Boolean delete;
+    private boolean isDeleted;
 
     private Role role;
 

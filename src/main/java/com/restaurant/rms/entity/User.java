@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.annotations.Where;
 
 import java.util.List;
 
@@ -17,6 +18,7 @@ import java.util.List;
 @Entity
 @Table(name = "user")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Where(clause = "is_deleted = false")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,8 +38,10 @@ public class User {
     private String username;
     @Column(name = "password")
     private String password;
-//    @Column(name = "is_deleted", columnDefinition = "TINYINT(1)")
-//    private Boolean is_deleted ;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
+
     @Enumerated(EnumType.STRING)
     Role role;
 

@@ -25,4 +25,8 @@ public interface RestaurantService {
 //    List<CourseDTO> getCoursesNotBoughtByParent(int userId);
 //
 //    List<CourseDTO> getCourseByCategoryId(int category_id) throws IdInvalidException;
+
+    List<RestaurantDTO> getDeletedRestaurants();
+
+    void restoreRestaurant(Integer restaurantId) throws IdInvalidException;
 }

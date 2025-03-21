@@ -44,41 +44,41 @@ public class CartService {
 
     public void addToCart(String tableQr, int menuItemId, int quantity) {
         RestaurantMenuItem menuItem = menuItemRepository.findById(menuItemId)
-                .orElseThrow(() -> new RuntimeException("🚨 Không tìm thấy món ăn với menuItemId: " + menuItemId));
+                .orElseThrow(() -> new RuntimeException("Không tìm thấy món ăn với menuItemId: " + menuItemId));
 
         CartItemDTO cartItem = CartItemMapper.toDTO(menuItem, quantity);
         redisUtil.addToCart(getCartKey(tableQr), cartItem);
 
-        log.info("➕ Đã thêm món vào giỏ hàng: {}", cartItem);
+        log.info("Đã thêm món vào giỏ hàng: {}", cartItem);
     }
 
     public void updateCart(String tableQr, List<CartItemDTO> updatedCart) {
-        log.info("🔄 Cập nhật giỏ hàng: {}", updatedCart);
+        log.info("Cập nhật giỏ hàng: {}", updatedCart);
         redisUtil.updateCart(getCartKey(tableQr), updatedCart);
     }
     public void updateCartItem(String tableQr, UpdateCartItemDTO updatedItem) {
-        log.info("🔄 Cập nhật CartItem với menuItemId: {} trong giỏ hàng của bàn: {}", updatedItem.getMenuItemId(), tableQr);
+        log.info("Cập nhật CartItem với menuItemId: {} trong giỏ hàng của bàn: {}", updatedItem.getMenuItemId(), tableQr);
         redisUtil.updateCartItem(getCartKey(tableQr), updatedItem);
     }
 
     public void removeItemFromCart(String tableQr, int menuItemId) {
-        log.info("❌ Xóa món {} khỏi giỏ hàng", menuItemId);
+        log.info("Xóa món {} khỏi giỏ hàng", menuItemId);
         redisUtil.removeItemFromCart(getCartKey(tableQr), menuItemId);
     }
 
     public void clearCart(String tableQr) {
-        log.info("🗑 Xóa toàn bộ giỏ hàng của bàn {}", tableQr);
+        log.info("Xóa toàn bộ giỏ hàng của bàn {}", tableQr);
         redisUtil.clearCart(getCartKey(tableQr));
     }
     @Transactional
     public CheckoutCartDTO checkoutAndCreateOrder(String tableQr) throws JsonProcessingException {
-        log.info("🛒 Bắt đầu checkout cho bàn: {}", tableQr);
+        log.info("Bắt đầu checkout cho bàn: {}", tableQr);
 
         String key = getCartKey(tableQr);
         List<CartItemDTO> cartItems = getCart(tableQr);
 
         if (cartItems.isEmpty()) {
-            throw new RuntimeException("🚨 Giỏ hàng trống!");
+            throw new RuntimeException("Giỏ hàng trống!");
         }
 
         DiningTable table = diningTableRepository.findByQrCode(tableQr)
@@ -97,7 +97,7 @@ public class CartService {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         if (totalPrice.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new RuntimeException("🚨 Tổng tiền không hợp lệ!");
+            throw new RuntimeException("Tổng tiền không hợp lệ!");
         }
 
         OrderDTO orderDTO = OrderDTO.builder()
@@ -107,10 +107,10 @@ public class CartService {
                 .orderItems(orderItemDTOs)
                 .build();
 
-        // 🔍 Gọi service để tạo Order hoặc SubOrder
+        // Gọi service để tạo Order hoặc SubOrder
         Object createdOrderOrSubOrder = orderService.createOrderOrSubOrder(orderDTO);
 
-        // 🎯 Xây dựng CheckoutCartDTO dựa trên kết quả
+        // Xây dựng CheckoutCartDTO dựa trên kết quả
         CheckoutCartDTO checkoutCartDTO = new CheckoutCartDTO();
 
         if (createdOrderOrSubOrder instanceof OrderDTO) {
@@ -132,7 +132,7 @@ public class CartService {
             checkoutCartDTO.setOrderItems(null); // Không có OrderItems
             checkoutCartDTO.setSubOrderItems(createdSubOrder.getSubOrderItems());
         } else {
-            throw new RuntimeException("🚨 Lỗi không xác định khi tạo Order/SubOrder!");
+            throw new RuntimeException("Lỗi không xác định khi tạo Order/SubOrder!");
         }
 
         // 🛒 Xóa giỏ hàng sau khi checkout thành công
@@ -149,7 +149,7 @@ public class CartService {
 //        List<CartItemDTO> cartItems = getCart(tableQr);
 //
 //        if (cartItems.isEmpty()) {
-//            throw new RuntimeException("🚨 Giỏ hàng trống!");
+//            throw new RuntimeException("Giỏ hàng trống!");
 //        }
 //
 //        DiningTable table = diningTableRepository.findByQrCode(tableQr)
@@ -168,7 +168,7 @@ public class CartService {
 //                .reduce(BigDecimal.ZERO, BigDecimal::add);
 //
 //        if (totalPrice.compareTo(BigDecimal.ZERO) <= 0) {
-//            throw new RuntimeException("🚨 Tổng tiền không hợp lệ!");
+//            throw new RuntimeException("Tổng tiền không hợp lệ!");
 //        }
 //
 //        OrderDTO orderDTO = OrderDTO.builder()
@@ -178,10 +178,10 @@ public class CartService {
 //                .orderItems(orderItemDTOs)
 //                .build();
 //
-//        // 🔍 Gọi service để tạo Order hoặc SubOrder
+//        // Gọi service để tạo Order hoặc SubOrder
 //        Object createdOrderOrSubOrder = orderService.createOrderOrSubOrder(orderDTO);
 //
-//        // 🎯 Kiểm tra kết quả trả về
+//        // Kiểm tra kết quả trả về
 //        int orderId;
 //        List<OrderItemDTO> items;
 //        if (createdOrderOrSubOrder instanceof OrderDTO) {
@@ -199,7 +199,7 @@ public class CartService {
 //                            .build())
 //                    .collect(Collectors.toList());
 //        } else {
-//            throw new RuntimeException("🚨 Lỗi không xác định khi tạo Order/SubOrder!");
+//            throw new RuntimeException("Lỗi không xác định khi tạo Order/SubOrder!");
 //        }
 //
 //        // 🛒 Xóa giỏ hàng sau khi checkout thành công
