@@ -484,8 +484,14 @@ public class OrderService {
         return orderMapper.toDTO(order);
     }
 
-
-
-
-
+    @Transactional(readOnly = true)
+    public List<OrderDTO> getOrdersByRestaurantId(int restaurantId) {
+        List<Order> orders = orderRepository.findByDiningTable_Restaurant_RestaurantId(restaurantId);
+        if (orders.isEmpty()) {
+            throw new RuntimeException("No Orders found for Restaurant ID: " + restaurantId);
+        }
+        return orders.stream()
+                .map(orderMapper::toDTO)
+                .collect(Collectors.toList());
+    }
 }

@@ -49,10 +49,28 @@ public class DiningTableController {
         return ResponseEntity.ok(diningTableService.updateDiningTable(id, diningTableDTO));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteDiningTable(@PathVariable int id) {
-        diningTableService.deleteDiningTable(id);
-        return ResponseEntity.ok("Dining Table deleted successfully");
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<String> deleteDiningTable(@PathVariable int id) {
+//        diningTableService.deleteDiningTable(id);
+//        return ResponseEntity.ok("Dining Table deleted successfully");
+//    }
+// Xóa mềm
+@DeleteMapping("/{id}")
+public ResponseEntity<String> deleteDiningTable(@PathVariable int id) {
+    diningTableService.deleteDiningTable(id);
+    return ResponseEntity.ok("Dining Table soft deleted successfully");
+}
+
+    // Lấy danh sách bàn đã xóa mềm
+    @GetMapping("/deleted")
+    public ResponseEntity<List<DiningTableDTO>> getAllDeletedDiningTables() {
+        return ResponseEntity.ok(diningTableService.getAllDeletedDiningTables());
+    }
+
+    // Phục hồi bàn đã xóa mềm
+    @PutMapping("/restore/{id}")
+    public ResponseEntity<DiningTableDTO> restoreDiningTable(@PathVariable int id) {
+        return ResponseEntity.ok(diningTableService.restoreDiningTable(id));
     }
 
     @GetMapping("/qr/{qrCode}")

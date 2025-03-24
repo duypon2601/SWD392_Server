@@ -11,6 +11,7 @@ public class DiningTableMapper {
                 .qrCode(diningTable.getQrCode())
                 .status(diningTable.getStatus())
                 .restaurantId(diningTable.getRestaurant().getRestaurantId())
+                .isDeleted(diningTable.isDeleted())
                 .build();
     }
 
@@ -19,6 +20,7 @@ public class DiningTableMapper {
         diningTable.setDiningTableId(dto.getId());
         diningTable.setQrCode(dto.getQrCode());
         diningTable.setStatus(dto.getStatus());
+        diningTable.setDeleted(dto.isDeleted());
 
         Restaurant restaurant = new Restaurant();
         restaurant.setRestaurantId(dto.getRestaurantId());

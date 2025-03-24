@@ -11,7 +11,8 @@ import java.math.BigDecimal;
 @Builder
 public class SubOrderItemDTO {
     private int id;
-    private int menuItemId;
+    private Integer menuItemId;
     private int quantity;
     private BigDecimal price;
+    private String menuItemName;
 }

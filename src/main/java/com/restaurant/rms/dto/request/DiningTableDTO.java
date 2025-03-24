@@ -13,4 +13,5 @@ public class DiningTableDTO {
     private String qrCode;
     private DiningTableStatus status;
     private int restaurantId;
+    private boolean isDeleted;
 }
