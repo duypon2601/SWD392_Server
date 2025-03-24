@@ -10,6 +10,11 @@ public class LoginDTO {
     @NotBlank(message = "Password can't be blank")
     private String Password;
 
+    private String TokenDevice;
+
+    public  String getTokenDevice() {return TokenDevice;}
+    public void setTokenDevice(String tokenDevice) { TokenDevice = tokenDevice;}
+
     public String getUsername() {
         return Username;
     }
