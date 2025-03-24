@@ -105,4 +105,6 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o FROM Order o WHERE o.diningTable.diningTableId = :diningTableId AND o.status IN ('PENDING')")
     Optional<Order> findActiveOrderByDiningTableId(@Param("diningTableId") int diningTableId);
 
+    List<Order> findByDiningTable_Restaurant_RestaurantId(int restaurantId);
+
 }

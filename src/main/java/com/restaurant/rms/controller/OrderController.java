@@ -163,6 +163,12 @@ public class OrderController {
         return ResponseEntity.ok(orderDTO);
     }
 
+    @GetMapping("/restaurant/{restaurantId}")
+    public ResponseEntity<List<OrderDTO>> getOrdersByRestaurantId(@PathVariable int restaurantId) {
+        log.info("📥 Nhận request lấy danh sách Order theo Restaurant ID: {}", restaurantId);
+        List<OrderDTO> orders = orderService.getOrdersByRestaurantId(restaurantId);
+        return ResponseEntity.ok(orders);
+    }
 
 
 
