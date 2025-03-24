@@ -483,9 +483,4 @@ public class OrderService {
                 .orElseThrow(() -> new RuntimeException("No active Order found for DiningTable ID: " + diningTableId));
         return orderMapper.toDTO(order);
     }
-
-
-
-
-
 }

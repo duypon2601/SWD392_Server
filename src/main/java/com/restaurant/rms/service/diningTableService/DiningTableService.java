@@ -86,14 +86,42 @@ public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningT
         return DiningTableMapper.toDTO(diningTableRepository.save(existingDiningTable));
     }
 
+//    public void deleteDiningTable(int id) {
+//        diningTableRepository.deleteById(id);
+//    }
+//
+//    public DiningTableDTO findByQrCode(String qrCode) {
+//        DiningTable diningTable = diningTableRepository.findByQrCode(qrCode)
+//                .orElseThrow(() -> new RuntimeException("Dining Table not found"));
+//        return DiningTableMapper.toDTO(diningTable);
+//    }
+public DiningTableDTO findByQrCode(String qrCode) {
+    DiningTable diningTable = diningTableRepository.findByQrCode(qrCode)
+            .orElseThrow(() -> new RuntimeException("Dining Table not found or has been deleted"));
+    return DiningTableMapper.toDTO(diningTable);
+}
+
+    // Xóa mềm
     public void deleteDiningTable(int id) {
-        diningTableRepository.deleteById(id);
+        DiningTable diningTable = diningTableRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Dining Table not found or has been deleted"));
+        diningTable.setDeleted(true);
+        diningTableRepository.save(diningTable);
     }
 
-    public DiningTableDTO findByQrCode(String qrCode) {
-        DiningTable diningTable = diningTableRepository.findByQrCode(qrCode)
-                .orElseThrow(() -> new RuntimeException("Dining Table not found"));
-        return DiningTableMapper.toDTO(diningTable);
+    // Lấy danh sách bàn đã xóa mềm
+    public List<DiningTableDTO> getAllDeletedDiningTables() {
+        return diningTableRepository.findAllDeleted().stream()
+                .map(DiningTableMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    // Phục hồi bàn đã xóa mềm
+    public DiningTableDTO restoreDiningTable(int id) {
+        DiningTable diningTable = diningTableRepository.findDeletedById(id)
+                .orElseThrow(() -> new RuntimeException("Deleted Dining Table not found"));
+        diningTable.setDeleted(false);
+        return DiningTableMapper.toDTO(diningTableRepository.save(diningTable));
     }
 
     public List<DiningTableDTO> getDiningTablesByRestaurantId(int restaurantId) {

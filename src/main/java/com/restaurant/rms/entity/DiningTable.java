@@ -4,6 +4,7 @@ import com.restaurant.rms.enums.DiningTableStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import org.hibernate.annotations.Where;
 
 @Getter
 @Setter
@@ -13,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 @Entity
 @Table(name = "dining_table")
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@Where(clause = "is_deleted = false")
 public class DiningTable {
 
     @Id
@@ -26,6 +28,9 @@ public class DiningTable {
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private DiningTableStatus status = DiningTableStatus.AVAILABLE;
+
+    @Column(name = "is_deleted", nullable = false)
+    private boolean isDeleted = false;
 
     @ManyToOne
     @JoinColumn(name = "restaurant_id", nullable = false)
