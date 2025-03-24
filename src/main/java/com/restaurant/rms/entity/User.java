@@ -39,6 +39,9 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Column(name = "token_device")
+    private String tokenDevice;
+
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
 

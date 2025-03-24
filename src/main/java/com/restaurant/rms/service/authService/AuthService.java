@@ -30,11 +30,18 @@ public class AuthService {
     SecurityUtil securityUtil;
     @Autowired
     UserService userService;
-//    @Autowired
+
+    //    @Autowired
 //    StudentRepository studentRepository ;
     public ResLoginDTO login(LoginDTO loginDTO) {
         var user = userRepository.findByUsername(loginDTO.getUsername()).orElseThrow(() -> new NotFoundException("User not found"));
-        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword())) throw new NotFoundException("Wrong password");
+        if (!passwordEncoder.matches(loginDTO.getPassword(), user.getPassword()))
+            throw new NotFoundException("Wrong password");
+
+        if (loginDTO.getTokenDevice() != null && !loginDTO.getTokenDevice().isEmpty()) {
+            user.setTokenDevice(loginDTO.getTokenDevice());
+            userRepository.save(user); // Lưu tokenDevice vào DB
+        }
         String token = securityUtil.createToken(user);
         ResLoginDTO resLoginDTO = new ResLoginDTO();
         resLoginDTO.setToken(token);
@@ -67,14 +74,17 @@ public class AuthService {
 
         try {
             return userRepository.save(user);
-        }catch (DataIntegrityViolationException e){
-            if(e.getMessage().contains("user.UK_sb8bbouer5wak8vyiiy4pf2bx")) throw new DataIntegrityViolationException("Duplicate UserName");
-            else if(e.getMessage().contains("user.UK_ob8kqyqqgmefl0aco34akdtpe"))throw new DataIntegrityViolationException("Duplicate Email");
+        } catch (DataIntegrityViolationException e) {
+            if (e.getMessage().contains("user.UK_sb8bbouer5wak8vyiiy4pf2bx"))
+                throw new DataIntegrityViolationException("Duplicate UserName");
+            else if (e.getMessage().contains("user.UK_ob8kqyqqgmefl0aco34akdtpe"))
+                throw new DataIntegrityViolationException("Duplicate Email");
             else throw new DataIntegrityViolationException("Duplicate Phone");
         }
 
 
     }
+}
 //    public ResLoginDTO loginStudent(LoginDTO loginDTO) {
 //        var student = studentRepository.findByUsername(loginDTO.getUsername()).orElseThrow(() -> new NotFoundException("User not found"));
 //        if (!passwordEncoder.matches(loginDTO.getPassword(), student.getPassword())) throw new NotFoundException("Wrong password");
@@ -93,4 +103,4 @@ public class AuthService {
 //        resLoginDTO.setUser_id(student.getStudent_id());
 //        return resLoginDTO;
 //    }
-}
+
