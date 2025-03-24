@@ -6,8 +6,9 @@ import com.google.firebase.FirebaseOptions;
 import org.springframework.context.annotation.Configuration;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
+import java.util.Objects;
 
 @Configuration
 public class FirebaseConfig {
@@ -15,7 +16,12 @@ public class FirebaseConfig {
     @PostConstruct
     public void initialize() {
         try {
-            FileInputStream serviceAccount = new FileInputStream("src/main/resources/hot-spot-c3a2d-firebase-adminsdk-fbsvc-be056c4cad.json");
+            InputStream serviceAccount = getClass().getClassLoader()
+                    .getResourceAsStream("hot-spot-c3a2d-firebase-adminsdk-fbsvc-be056c4cad.json");
+
+            if (serviceAccount == null) {
+                throw new RuntimeException("Firebase service account file not found in resources folder.");
+            }
 
             FirebaseOptions options = FirebaseOptions.builder()
                     .setCredentials(GoogleCredentials.fromStream(serviceAccount))
