@@ -3,36 +3,36 @@ package com.restaurant.rms.config;
 import com.google.auth.oauth2.GoogleCredentials;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
+import com.google.firebase.messaging.FirebaseMessaging;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.annotation.PostConstruct;
-import java.io.InputStream;
+import org.springframework.core.io.ClassPathResource;
 import java.io.IOException;
 import java.util.Objects;
 
 @Configuration
 public class FirebaseConfig {
 
-    @PostConstruct
-    public void initialize() {
-        try {
-            InputStream serviceAccount = getClass().getClassLoader()
-                    .getResourceAsStream("hot-spot-c3a2d-firebase-adminsdk-fbsvc-be056c4cad.json");
+RestaurantMenuUpdate
+    @Bean
+    public FirebaseApp firebaseApp() throws IOException {
+        // Đường dẫn đến file JSON credentials trong thư mục resources
+        ClassPathResource resource = new ClassPathResource("hot-spot-c3a2d-firebase-adminsdk-fbsvc-be056c4cad.json");
 
-            if (serviceAccount == null) {
-                throw new RuntimeException("Firebase service account file not found in resources folder.");
-            }
 
-            FirebaseOptions options = FirebaseOptions.builder()
-                    .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-                    .build();
+        FirebaseOptions options = FirebaseOptions.builder()
+                .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
+                .build();
 
-            if (FirebaseApp.getApps().isEmpty()) {
-                FirebaseApp.initializeApp(options);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Failed to initialize Firebase", e);
+        // Kiểm tra xem FirebaseApp đã được khởi tạo chưa, nếu chưa thì khởi tạo
+        if (FirebaseApp.getApps().isEmpty()) {
+            return FirebaseApp.initializeApp(options);
         }
+        return FirebaseApp.getInstance();
+    }
+
+    @Bean
+    public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
+        return FirebaseMessaging.getInstance(firebaseApp);
     }
 }

@@ -10,4 +10,6 @@ import java.util.List;
 public interface SubOrderRepository extends JpaRepository<SubOrder, Integer> {
     // Thêm phương thức: Tìm danh sách SubOrder theo Order ID
     List<SubOrder> findByOrder_OrderId(int orderId);
+
+
 }
