@@ -5,94 +5,73 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.restaurant.rms.dto.request.NotificationRequestDTO;
 import com.restaurant.rms.dto.response.NotificationResponseDTO;
+import com.restaurant.rms.entity.NotificationEntity;
 import com.restaurant.rms.entity.User;
 import com.restaurant.rms.mapper.NotificationMapper;
 import com.restaurant.rms.repository.NotificationRepository;
 import com.restaurant.rms.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class NotificationService {
-    private final UserRepository userRepository;
+
+    private final FirebaseMessaging firebaseMessaging;
     private final NotificationRepository notificationRepository;
+    private final UserRepository userRepository;
 
-    @Transactional
-    public NotificationResponseDTO sendNotification(NotificationRequestDTO requestDTO) {
-        // Tìm user theo userId
-        User user = userRepository.findById(requestDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + requestDTO.getUserId()));
+    @Autowired
+    public NotificationService(FirebaseMessaging firebaseMessaging, NotificationRepository notificationRepository, UserRepository userRepository) {
+        this.firebaseMessaging = firebaseMessaging;
+        this.notificationRepository = notificationRepository;
+        this.userRepository = userRepository;
+    }
 
-        // Kiểm tra tokenDevice
-        String tokenDevice = user.getTokenDevice();
-        if (tokenDevice == null || tokenDevice.isEmpty()) {
-            throw new RuntimeException("No device token found for user: " + user.getUsername());
-        }
-
-        // Tạo entity Notification để lưu vào DB
-        com.restaurant.rms.entity.Notification notificationEntity = NotificationMapper.toEntity(requestDTO, user);
-
-        // Gửi thông báo qua Firebase
+    public void sendNotification(String userId, String title, String body) {
         try {
-            Notification notification = Notification.builder()
-                    .setTitle(requestDTO.getTitle())
-                    .setBody(requestDTO.getBody())
-                    .build();
+            User user = userRepository.findById(Integer.parseInt(userId))
+                    .orElseThrow(() -> new RuntimeException("User not found"));
+            String tokenDevice = user.getTokenDevice();
+
+            if (tokenDevice == null || tokenDevice.isEmpty()) {
+                log.warn("User {} has no device token", userId);
+                saveNotification(user, title, body, false);
+                return;
+            }
 
             Message message = Message.builder()
-                    .setNotification(notification)
+                    .setNotification(Notification.builder()
+                            .setTitle(title)
+                            .setBody(body)
+                            .build())
                     .setToken(tokenDevice)
                     .build();
 
-            String response = FirebaseMessaging.getInstance().send(message);
-            log.info("Successfully sent notification to user {}: {}", user.getUsername(), response);
-
-            // Cập nhật trạng thái gửi thành công
-            notificationEntity.setSentAt(LocalDateTime.now());
-            notificationEntity.setIsSent(true);
+            String response = firebaseMessaging.send(message);
+            log.info("Notification sent successfully: {}", response);
+            saveNotification(user, title, body, true);
         } catch (Exception e) {
-            log.error("Failed to send notification to user {}: {}", user.getUsername(), e.getMessage());
-            notificationEntity.setIsSent(false);
-            // Lưu thông báo thất bại vào DB nhưng không ném ngoại lệ để không làm gián đoạn giao dịch
+            log.error("Failed to send notification to user {}: {}", userId, e.getMessage());
+            saveNotification(userRepository.findById(Integer.parseInt(userId)).get(), title, body, false);
+            throw new RuntimeException("Failed to send notification", e);
         }
-
-        // Lưu thông báo vào DB
-        notificationRepository.save(notificationEntity);
-
-        return NotificationMapper.toResponseDTO(notificationEntity);
     }
 
-    public void sendNotificationToUser(int userId, String title, String body) { // Thay int thành Long
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
-
-        String tokenDevice = user.getTokenDevice();
-        if (tokenDevice == null || tokenDevice.isEmpty()) {
-            log.warn("No device token found for user: {}", user.getUsername());
-            return;
-        }
-
-        Notification notification = Notification.builder()
-                .setTitle(title)
-                .setBody(body)
+    private void saveNotification(User user, String title, String body, boolean isSent) {
+        NotificationEntity notification = NotificationEntity.builder()
+                .user(user)
+                .title(title)
+                .body(body)
+                .isSent(isSent)
+                .sentAt(isSent ? new Date() : null)
                 .build();
-
-        Message message = Message.builder()
-                .setNotification(notification)
-                .setToken(tokenDevice)
-                .build();
-
-        try {
-            String response = FirebaseMessaging.getInstance().send(message);
-            log.info("Successfully sent notification to user {}: {}", user.getUsername(), response);
-        } catch (Exception e) {
-            log.error("Failed to send notification to user {}: {}", user.getUsername(), e.getMessage());
-        }
+        notificationRepository.save(notification);
     }
 }
