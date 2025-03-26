@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class RestaurantMenuItemController {
     private final RestaurantMenuItemService menuItemService;
 
     @GetMapping("/menu/{menuId}")
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<List<RestaurantMenuItemDTO>> getMenuItemsByMenuId(@PathVariable int menuId) {
         return ResponseEntity.ok(menuItemService.getMenuItemsByRestaurantMenuId(menuId));
     }
@@ -31,6 +33,7 @@ public class RestaurantMenuItemController {
     }
 
 @PostMapping
+@PreAuthorize("hasAnyRole('MANAGER') ")
 public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO menuItemDTO) {
     try {
         RestaurantMenuItemDTO createdMenuItem = menuItemService.createMenuItem(menuItemDTO);
@@ -55,11 +58,13 @@ public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO
 
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<RestaurantMenuItemDTO> updateMenuItem(@PathVariable int id, @RequestBody RestaurantMenuItemDTO menuItemDTO) {
         return ResponseEntity.ok(menuItemService.updateMenuItem(id, menuItemDTO));
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> deleteMenuItem(@PathVariable int id) {
         try {
             menuItemService.deleteMenuItem(id);

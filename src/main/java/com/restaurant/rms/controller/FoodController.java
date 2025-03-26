@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,21 +23,25 @@ public class FoodController {
     private final FoodService foodService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<FoodDTO> createFood(@RequestBody CreateFoodDTO createFoodDTO) throws IdInvalidException {
         return ResponseEntity.ok(foodService.createFood(createFoodDTO));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<FoodDTO> getFoodById(@PathVariable("id") Integer foodId) throws IdInvalidException {
         return ResponseEntity.ok(foodService.getFoodById(foodId));
     }
 
     @GetMapping
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<List<FoodDTO>> getAllFood() {
         return ResponseEntity.ok(foodService.getAllFood());
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<FoodDTO> updateFood(@RequestBody FoodDTO foodDTO, @PathVariable("id") Integer foodId) throws IdInvalidException {
         return ResponseEntity.ok(foodService.updateFood(foodDTO, foodId));
     }

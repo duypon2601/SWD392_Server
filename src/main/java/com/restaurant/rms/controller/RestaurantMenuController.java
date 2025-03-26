@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,6 +27,7 @@ public class RestaurantMenuController {
 
     // 🌟 API tạo thực đơn mới
     @PostMapping
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> createRestaurantMenu(@RequestBody CreateRestaurantMenuDTO menuDTO) {
         // Kiểm tra danh sách món ăn không được rỗng
         if (menuDTO.getFoodItems() == null || menuDTO.getFoodItems().isEmpty()) {
@@ -47,6 +49,7 @@ public class RestaurantMenuController {
 
     // ✅ Lấy thông tin thực đơn theo ID
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> getRestaurantMenuById(@PathVariable int id) {
         try {
             return ResponseEntity.ok(restaurantMenuService.getRestaurantMenuById(id));
@@ -57,6 +60,7 @@ public class RestaurantMenuController {
 
     // ✅ Lấy thông tin thực đơn theo nhà hàng
     @GetMapping("/restaurant/{restaurantId}")
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> getMenuByRestaurantId(@PathVariable Integer restaurantId) {
         try {
             List<RestaurantMenuDTO> menus = restaurantMenuService.getMenuByRestaurantId(restaurantId);
@@ -71,12 +75,14 @@ public class RestaurantMenuController {
 
     // ✅ Lấy danh sách tất cả thực đơn
     @GetMapping
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<List<RestaurantMenuDTO>> getAllRestaurantMenus() {
         return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
     }
 
     // ✅ Xóa thực đơn theo ID
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> deleteRestaurantMenu(@PathVariable int id) {
         try {
             restaurantMenuService.deleteRestaurantMenu(id);

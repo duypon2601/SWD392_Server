@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class RestaurantController {
     private RestaurantService restaurantService;
 
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
 //    @PreAuthorize("hasRole('CONTENT_MANAGER')")
     public ResponseEntity<RestaurantDTO> createRestaurant(@Valid @RequestBody RestaurantDTO restaurantDTO) throws IdInvalidException {
         RestaurantDTO savedRestaurant = restaurantService.createRestaurant(restaurantDTO);
@@ -28,18 +30,21 @@ public class RestaurantController {
     }
 
     @GetMapping("{restaurant_id}")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<RestaurantDTO> getRestaurantById (@PathVariable("restaurant_id") Integer restaurantId) throws IdInvalidException {
         RestaurantDTO restaurantDTO = restaurantService.getRestaurantById(restaurantId);
         return ResponseEntity.status(HttpStatus.OK).body(restaurantDTO);
     }
 
     @GetMapping("/get")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<List<RestaurantDTO>> getRestaurantAll(){
         List<RestaurantDTO> restaurants = restaurantService.getRestaurantAll();
         return ResponseEntity.ok(restaurants);
     }
 
     @PutMapping("/{restaurant_id}")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
 //    @PreAuthorize("hasAnyRole('CONTENT_MANAGER', 'MANAGER')")
     public ResponseEntity<RestaurantDTO> updateRestaurant (@RequestBody RestaurantDTO updatedRestaurant, @PathVariable("restaurant_id") Integer restaurantId){
         RestaurantDTO restaurantDTO = restaurantService.updateRestaurant(updatedRestaurant, restaurantId);
@@ -47,12 +52,14 @@ public class RestaurantController {
     }
 
     @DeleteMapping("{restaurant_id}")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
 //    @PreAuthorize("hasAnyRole('CONTENT_MANAGER', 'MANAGER')")
     public ResponseEntity<String> deleteRestaurant(@PathVariable("restaurant_id") Integer restaurantId) throws IdInvalidException {
         restaurantService.deleteRestaurant(restaurantId);
         return ResponseEntity.ok("Restaurant với id = " + restaurantId + " đã được xóa mềm thành công");
     }
     @GetMapping("user/{user_id}")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<RestaurantDTO> findRestaurantByUserId(@PathVariable("user_id") int user_id) throws IdInvalidException {
         RestaurantDTO restaurantDTO = restaurantService.findRestaurantByUserId(user_id);
         return ResponseEntity.ok(restaurantDTO);
