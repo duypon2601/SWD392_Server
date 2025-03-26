@@ -13,7 +13,6 @@ import java.util.Objects;
 @Configuration
 public class FirebaseConfig {
 
-RestaurantMenuUpdate
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         // Đường dẫn đến file JSON credentials trong thư mục resources
