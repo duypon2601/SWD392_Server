@@ -211,7 +211,7 @@ import com.restaurant.rms.mapper.orderMapper.OrderItemMapper;
 import com.restaurant.rms.mapper.orderMapper.OrderMapper;
 import com.restaurant.rms.mapper.orderMapper.SubOrderMapper;
 import com.restaurant.rms.repository.*;
-import com.restaurant.rms.service.notificationService.NotificationService;
+//import com.restaurant.rms.service.notificationService.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -236,7 +236,7 @@ public class OrderService {
     private final RestaurantMenuItemRepository restaurantMenuItemRepository;
     private final SubOrderItemRepository subOrderItemRepository;
     private final OrderItemMapper orderItemMapper;
-    private final NotificationService notificationService;
+//    private final NotificationService notificationService;
 
     public boolean hasExistingOrder(int diningTableId) {
         return orderRepository.existsByDiningTable_DiningTableIdAndStatusIn(
@@ -348,25 +348,25 @@ public void completeOrder(int orderId) {
     orderRepository.save(order);
 
     // Gửi thông báo sau khi hoàn tất đơn hàng
-    sendCompleteOrderNotification(orderId);
+//    sendCompleteOrderNotification(orderId);
 }
 
     // Phương thức gửi thông báo khi hoàn tất đơn hàng
-    private void sendCompleteOrderNotification(int orderId) {
-        String title = "Cập nhật doanh thu";
-        String body = "Doanh thu ngày đã được cập nhật sau khi hoàn tất đơn hàng #" + orderId;
-
-        try {
-            NotificationEntity notification = notificationService.sendNotification(
-                    "1", // Gửi tới userId cố định (có thể thay đổi theo logic)
-                    title,
-                    body
-            );
-            log.info("Gửi thông báo hoàn tất đơn hàng thành công: orderId={}", orderId);
-        } catch (Exception e) {
-            log.error("Lỗi khi gửi thông báo hoàn tất đơn hàng: orderId={}, error={}", orderId, e.getMessage(), e);
-        }
-    }
+//    private void sendCompleteOrderNotification(int orderId) {
+//        String title = "Cập nhật doanh thu";
+//        String body = "Doanh thu ngày đã được cập nhật sau khi hoàn tất đơn hàng #" + orderId;
+//
+//        try {
+//            NotificationEntity notification = notificationService.sendNotification(
+//                    "1", // Gửi tới userId cố định (có thể thay đổi theo logic)
+//                    title,
+//                    body
+//            );
+//            log.info("Gửi thông báo hoàn tất đơn hàng thành công: orderId={}", orderId);
+//        } catch (Exception e) {
+//            log.error("Lỗi khi gửi thông báo hoàn tất đơn hàng: orderId={}, error={}", orderId, e.getMessage(), e);
+//        }
+//    }
 
         public OrderDTO getCompletedOrderReceipt(Integer orderId) {
         Order order = orderRepository.findCompletedOrderById(orderId)
