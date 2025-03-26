@@ -18,7 +18,7 @@ public class FirebaseConfig {
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         try {
-            ClassPathResource resource = new ClassPathResource("hot-spot-c3a2d-firebase-adminsdk-fbsvc-10993573c0.json");
+            ClassPathResource resource = new ClassPathResource("hot-spot-c3a2d-firebase-adminsdk-fbsvc-70ead1ed32.json");
             log.info("Loading Firebase credentials from: {}", resource.getPath());
             if (!resource.exists()) {
                 log.error("Firebase credentials file not found at: {}", resource.getPath());
