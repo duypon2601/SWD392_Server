@@ -56,7 +56,7 @@ public class PaymentService {
         String vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
 //        String returnUrl = "http://mathcha.online?student_id=" + rechargeRequestDTO.getStudent_id() + "&course_id=" + rechargeRequestDTO.getCourse_id();
 //        String returnUrl = "http://159.223.39.71?student_id=" + rechargeRequestDTO.getStudent_id() + "&course_id=" + rechargeRequestDTO.getCourse_id();
-        String returnUrl = "http://localhost:3000?order_id=" + rechargeRequestDTO.getOrderId();
+        String returnUrl = "http://localhost:5173/paysuccess/" + rechargeRequestDTO.getOrderId();
         String currCode = "VND";
         Map<String, String> vnpParams = new TreeMap<>();
         vnpParams.put("vnp_Version", "2.1.0");

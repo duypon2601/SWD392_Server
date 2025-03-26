@@ -45,8 +45,8 @@ public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningT
 
     // **Tạo mã QR Code trước**
     String qrContent = "http://localhost:5173/"
-            + createDiningTableDTO.getRestaurantId()
-            + "&tableId="
+//            + createDiningTableDTO.getRestaurantId()
+//            + "&tableId="
             + UUID.randomUUID(); // Tạo mã QR duy nhất
 
     String qrCodePath = "qrtable_" + UUID.randomUUID() + ".png";
