@@ -44,7 +44,7 @@ public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningT
             .orElseThrow(() -> new RuntimeException("Restaurant not found"));
 
     // **Tạo mã QR Code trước**
-    String qrContent = "https://your-restaurant.com/menu?restaurantId="
+    String qrContent = "http://localhost:5173/"
             + createDiningTableDTO.getRestaurantId()
             + "&tableId="
             + UUID.randomUUID(); // Tạo mã QR duy nhất
