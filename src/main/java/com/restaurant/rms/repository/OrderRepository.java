@@ -21,7 +21,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     Optional<Order> findCompletedOrderById(@Param("orderId") Integer orderId);
 
 
-    // ✅ Tổng doanh thu **tất cả nhà hàng** theo ngày (year, month, day)
+    //  Tổng doanh thu **tất cả nhà hàng** theo ngày (year, month, day)
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
@@ -31,7 +31,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     BigDecimal getTotalRevenueByDay(@Param("year") int year, @Param("month") int month, @Param("day") int day);
 
-    // ✅ Tổng doanh thu **từng nhà hàng** theo ngày (year, month, day)
+    //  Tổng doanh thu **từng nhà hàng** theo ngày (year, month, day)
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
@@ -43,7 +43,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     BigDecimal getRestaurantRevenueByDay(@Param("restaurantId") int restaurantId, @Param("year") int year, @Param("month") int month, @Param("day") int day);
 
 
-    // ✅ Doanh thu của **tất cả nhà hàng** theo tháng
+    //  Doanh thu của **tất cả nhà hàng** theo tháng
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
@@ -52,7 +52,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     BigDecimal getTotalRevenueByMonth(@Param("year") int year, @Param("month") int month);
 
-    // ✅ Doanh thu của **từng nhà hàng** theo tháng
+    //  Doanh thu của **từng nhà hàng** theo tháng
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
@@ -63,7 +63,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     BigDecimal getRestaurantRevenueByMonth(@Param("restaurantId") int restaurantId, @Param("year") int year, @Param("month") int month);
 
 
-    // ✅ Doanh thu của **tất cả nhà hàng** theo năm
+    // Doanh thu của **tất cả nhà hàng** theo năm
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
@@ -71,7 +71,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     BigDecimal getTotalRevenueByYear(@Param("year") int year);
 
-    // ✅ Doanh thu của **từng nhà hàng** theo năm
+    //  Doanh thu của **từng nhà hàng** theo năm
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
@@ -82,7 +82,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
 
 
 
-    // ✅ Tổng doanh thu **tất cả nhà hàng** từ ngày bắt đầu đến ngày kết thúc
+    //  Tổng doanh thu **tất cả nhà hàng** từ ngày bắt đầu đến ngày kết thúc
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
@@ -90,7 +90,7 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     BigDecimal getTotalRevenueBetweenDates(@Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    // ✅ Tổng doanh thu **từng nhà hàng** từ ngày bắt đầu đến ngày kết thúc
+    //  Tổng doanh thu **từng nhà hàng** từ ngày bắt đầu đến ngày kết thúc
     @Query("""
         SELECT COALESCE(SUM(o.totalPrice), 0) FROM Order o
         WHERE o.status = 'COMPLETED'
