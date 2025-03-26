@@ -1,12 +1,13 @@
 package com.restaurant.rms.controller;
 
-
 import com.restaurant.rms.dto.request.NotificationDTO;
+import com.restaurant.rms.dto.request.NotificationRequestDTO;
 import com.restaurant.rms.entity.NotificationEntity;
 import com.restaurant.rms.entity.User;
 import com.restaurant.rms.repository.NotificationRepository;
 import com.restaurant.rms.repository.UserRepository;
 import com.restaurant.rms.mapper.NotificationMapper;
+import com.restaurant.rms.service.notificationService.NotificationService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,8 +27,8 @@ public class NotificationController {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final NotificationMapper notificationMapper;
+    private final NotificationService notificationService;
 
-    // Lấy tất cả thông báo (chưa xóa mềm)
     @GetMapping
     public ResponseEntity<List<NotificationDTO>> getAllNotifications() {
         List<NotificationDTO> notifications = notificationRepository.findAll().stream()
@@ -36,7 +37,6 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
-    // Lấy thông báo theo ID
     @GetMapping("/{id}")
     public ResponseEntity<NotificationDTO> getNotificationById(@PathVariable int id) {
         NotificationEntity notification = notificationRepository.findById(id)
@@ -44,7 +44,6 @@ public class NotificationController {
         return ResponseEntity.ok(notificationMapper.toDTO(notification));
     }
 
-    // Lấy thông báo theo userId
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<NotificationDTO>> getNotificationsByUserId(@PathVariable int userId) {
         List<NotificationDTO> notifications = notificationRepository.findByUser_UserId(userId).stream()
@@ -53,17 +52,21 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
-    // Tạo thông báo mới
+    // Sửa API tạo thông báo để dùng NotificationRequestDTO và gọi service
     @PostMapping
-    public ResponseEntity<NotificationDTO> createNotification(@RequestBody NotificationDTO notificationDTO) {
-        User user = userRepository.findById(notificationDTO.getUserId())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        NotificationEntity entity = notificationMapper.toEntity(notificationDTO, user);
-        NotificationEntity savedEntity = notificationRepository.save(entity);
-        return ResponseEntity.status(HttpStatus.CREATED).body(notificationMapper.toDTO(savedEntity));
+    public ResponseEntity<NotificationDTO> sendNotification(@RequestBody NotificationRequestDTO requestDTO) {
+        // Gọi service để gửi và lưu thông báo
+        NotificationEntity savedNotification = notificationService.sendNotification(
+                String.valueOf(requestDTO.getUserId()),
+                requestDTO.getTitle(),
+                requestDTO.getBody()
+        );
+
+        // Chuyển đổi sang DTO để trả về
+        NotificationDTO responseDTO = notificationMapper.toDTO(savedNotification);
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseDTO);
     }
 
-    // Xóa mềm thông báo
     @DeleteMapping("/{id}")
     public ResponseEntity<String> deleteNotification(@PathVariable int id) {
         NotificationEntity notification = notificationRepository.findById(id)
@@ -73,7 +76,6 @@ public class NotificationController {
         return ResponseEntity.ok("Notification soft deleted successfully");
     }
 
-    // Lấy danh sách thông báo đã xóa mềm
     @GetMapping("/deleted")
     public ResponseEntity<List<NotificationDTO>> getAllDeletedNotifications() {
         List<NotificationDTO> notifications = notificationRepository.findAllDeleted().stream()
@@ -82,7 +84,6 @@ public class NotificationController {
         return ResponseEntity.ok(notifications);
     }
 
-    // Phục hồi thông báo đã xóa mềm
     @PutMapping("/restore/{id}")
     public ResponseEntity<NotificationDTO> restoreNotification(@PathVariable int id) {
         NotificationEntity notification = notificationRepository.findDeletedById(id)
