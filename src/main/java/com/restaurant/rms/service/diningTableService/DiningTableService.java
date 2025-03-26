@@ -11,13 +11,15 @@ import com.restaurant.rms.entity.DiningTable;
 import com.restaurant.rms.mapper.DiningTableMapper;
 import com.restaurant.rms.repository.RestaurantRepository;
 import com.restaurant.rms.repository.DiningTableRepository;
-import com.restaurant.rms.util.QRCodeGenerator;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class DiningTableService {
@@ -38,42 +40,77 @@ public class DiningTableService {
         return DiningTableMapper.toDTO(diningTable);
     }
 
-public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningTableDTO) {
-    // Tìm nhà hàng theo ID
-    Restaurant restaurant = restaurantRepository.findById(createDiningTableDTO.getRestaurantId())
-            .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+//public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningTableDTO) {
+//    // Tìm nhà hàng theo ID
+//    Restaurant restaurant = restaurantRepository.findById(createDiningTableDTO.getRestaurantId())
+//            .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+//
+//    // **Tạo mã QR Code trước**
+//    String qrContent = "http://localhost:5173/"
+////            + createDiningTableDTO.getRestaurantId()
+////            + "&tableId="
+//            + UUID.randomUUID(); // Tạo mã QR duy nhất
+//
+//    String qrCodePath = "qrtable_" + UUID.randomUUID() + ".png";
+//
+//    try {
+//        QRCodeGenerator.generateQRCode(qrContent, qrCodePath);
+//    } catch (Exception e) {
+//        throw new RuntimeException("Failed to generate QR code", e);
+//    }
+//
+//    // **Tạo bàn ăn**
+//    DiningTable diningTable = new DiningTable();
+//    diningTable.setStatus(createDiningTableDTO.getStatus());
+//    diningTable.setRestaurant(restaurant);
+//    diningTable.setQrCode(qrCodePath); // Set QR trước khi lưu
+//
+//    // **Lưu vào DB**
+//    DiningTable savedDiningTable = diningTableRepository.save(diningTable);
+//
+//    return new CreateDiningTableDTO(
+//            savedDiningTable.getDiningTableId(),
+//            savedDiningTable.getStatus(),
+//            savedDiningTable.getRestaurant().getRestaurantId()
+//    );
+//}
 
-    // **Tạo mã QR Code trước**
-    String qrContent = "http://localhost:5173/"
-//            + createDiningTableDTO.getRestaurantId()
-//            + "&tableId="
-            + UUID.randomUUID(); // Tạo mã QR duy nhất
+    public CreateDiningTableDTO createDiningTable(CreateDiningTableDTO createDiningTableDTO) {
+        log.info("Starting createDiningTable with DTO: {}", createDiningTableDTO);
 
-    String qrCodePath = "qrtable_" + UUID.randomUUID() + ".png";
+        // Tìm nhà hàng
+        Restaurant restaurant = restaurantRepository.findById(createDiningTableDTO.getRestaurantId())
+                .orElseThrow(() -> new RuntimeException("Restaurant not found"));
+        log.info("Found restaurant: {}", restaurant.getRestaurantId());
 
-    try {
-        QRCodeGenerator.generateQRCode(qrContent, qrCodePath);
-    } catch (Exception e) {
-        throw new RuntimeException("Failed to generate QR code", e);
+        // Tạo mã QR duy nhất
+        String qrIdentifier = UUID.randomUUID().toString().replaceAll("-", ""); // Chuỗi không có dấu "-"
+        String qrCode;
+        try {
+            qrCode = qrCodeService.generateQRCode(qrIdentifier); // Tạo QR, trả về qrIdentifier
+            log.info("Generated QR code: {}", qrCode);
+        } catch (Exception e) {
+            log.error("Failed to generate QR code", e);
+            throw new RuntimeException("Failed to generate QR code", e);
+        }
+
+        // Tạo bàn ăn
+        DiningTable diningTable = new DiningTable();
+        diningTable.setStatus(createDiningTableDTO.getStatus());
+        diningTable.setRestaurant(restaurant);
+        diningTable.setQrCode(qrCode); // Lưu qrIdentifier (không có .png)
+        log.info("DiningTable prepared with qr_code: {}", diningTable.getQrCode());
+
+        // Lưu vào database
+        DiningTable savedDiningTable = diningTableRepository.save(diningTable);
+        log.info("Saved DiningTable with ID: {}", savedDiningTable.getDiningTableId());
+
+        return new CreateDiningTableDTO(
+                savedDiningTable.getDiningTableId(),
+                savedDiningTable.getStatus(),
+                savedDiningTable.getRestaurant().getRestaurantId()
+        );
     }
-
-    // **Tạo bàn ăn**
-    DiningTable diningTable = new DiningTable();
-    diningTable.setStatus(createDiningTableDTO.getStatus());
-    diningTable.setRestaurant(restaurant);
-    diningTable.setQrCode(qrCodePath); // Set QR trước khi lưu
-
-    // **Lưu vào DB**
-    DiningTable savedDiningTable = diningTableRepository.save(diningTable);
-
-    return new CreateDiningTableDTO(
-            savedDiningTable.getDiningTableId(),
-            savedDiningTable.getStatus(),
-            savedDiningTable.getRestaurant().getRestaurantId()
-    );
-}
-
-
 
 
     public DiningTableDTO updateDiningTable(int id, DiningTableDTO diningTableDTO) {

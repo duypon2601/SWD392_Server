@@ -22,7 +22,7 @@ public class DiningTable {
     @Column(name = "dining_table_Id")
     private int diningTableId;
 
-    @Column(name = "qr_code", unique = true, nullable = false, length = 255)
+    @Column(name = "qr_code", unique = true, length = 255)
     private String qrCode;
 
     @Enumerated(EnumType.STRING)

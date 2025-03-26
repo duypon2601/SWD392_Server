@@ -6,7 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class NotificationRequestDTO {
-    private int userId; // Thay int thành Long để đồng bộ với entity
+    private int userId;
     private String title;
     private String body;
 }
