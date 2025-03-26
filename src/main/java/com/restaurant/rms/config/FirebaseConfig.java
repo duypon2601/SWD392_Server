@@ -7,16 +7,18 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-
 import java.io.IOException;
+import java.util.Objects;
 
 @Configuration
 public class FirebaseConfig {
 
+RestaurantMenuUpdate
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
         // Đường dẫn đến file JSON credentials trong thư mục resources
         ClassPathResource resource = new ClassPathResource("hot-spot-c3a2d-firebase-adminsdk-fbsvc-be056c4cad.json");
+
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(resource.getInputStream()))
