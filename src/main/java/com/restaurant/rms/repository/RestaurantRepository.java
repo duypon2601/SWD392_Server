@@ -3,9 +3,11 @@ package com.restaurant.rms.repository;
 
 import com.restaurant.rms.entity.Restaurant;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -24,4 +26,9 @@ public interface RestaurantRepository extends JpaRepository<Restaurant,Integer> 
     // Tìm nhà hàng đã xóa mềm theo ID bằng native query
     @Query(value = "SELECT * FROM restaurant WHERE restaurant_id = :id AND is_deleted = true", nativeQuery = true)
     Optional<Restaurant> findByIdAndIsDeletedTrue(@Param("id") Integer id);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Restaurant r SET r.isDeleted = true WHERE r.restaurantId = :restaurantId")
+    void softDeleteRestaurant(@Param("restaurantId") int restaurantId);
 }
