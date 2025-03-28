@@ -28,8 +28,15 @@ public class FoodServiceImpl implements FoodService {
 
     @Override
     public FoodDTO createFood(CreateFoodDTO createFoodDTO) throws IdInvalidException {
-        Food food = FoodMapper.mapToFood(createFoodDTO); // Sử dụng phương thức mới trong FoodMapper
+        Category category = categoryRepository.findById(createFoodDTO.getCategory_id())
+                .orElseThrow(() -> new IdInvalidException("Category ID không tồn tại"));
+
+        // Map CreateFoodDTO sang Food
+        Food food = FoodMapper.mapToFood(createFoodDTO);
         food.setDeleted(false); // Đảm bảo isDeleted là false khi tạo mới
+        food.setCategory(category); // Gán Category vào Food
+
+        // Lưu Food
         Food savedFood = foodRepository.save(food);
         return FoodMapper.mapToFoodDTO(savedFood);
     }
