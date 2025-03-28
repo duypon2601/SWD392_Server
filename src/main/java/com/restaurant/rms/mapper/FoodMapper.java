@@ -17,7 +17,9 @@ public class FoodMapper {
         if (food.getCategory() != null) {
             foodDTO.setCategory_id(food.getCategory().getCategory_id());
         }
-
+        if (food.getCategory() != null) {
+            foodDTO.setCategoryName(food.getCategory().getName());
+        }
         foodDTO.setStatus(food.getStatus());
         foodDTO.setDeleted(food.isDeleted());
 
@@ -49,6 +51,11 @@ public class FoodMapper {
         if (createFoodDTO.getCategory_id() != 0) {
             Category category = new Category();
             category.setCategory_id(createFoodDTO.getCategory_id());
+            food.setCategory(category);
+        }
+        if (createFoodDTO.getCategory_id() != 0) {
+            Category category = new Category();
+            category.setName(createFoodDTO.getName());
             food.setCategory(category);
         }
         food.setStatus(Status.AVAILABLE); // Giá trị mặc định cho status
