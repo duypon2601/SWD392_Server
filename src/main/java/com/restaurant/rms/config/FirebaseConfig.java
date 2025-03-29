@@ -11,6 +11,7 @@ import org.springframework.core.io.ClassPathResource;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 @Slf4j
@@ -19,14 +20,16 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        String firebaseConfigBase64 = System.getenv("FIREBASE_CREDENTIALS");
+        String firebaseConfigJson = System.getenv("FIREBASE_CREDENTIALS");
 
-        if (firebaseConfigBase64 == null || firebaseConfigBase64.isEmpty()) {
+        if (firebaseConfigJson == null || firebaseConfigJson.isEmpty()) {
             throw new IOException("Firebase credentials environment variable not set");
         }
 
-        byte[] decodedBytes = Base64.getDecoder().decode(firebaseConfigBase64);
-        GoogleCredentials credentials = GoogleCredentials.fromStream(new ByteArrayInputStream(decodedBytes));
+        // Chuyển JSON thô thành stream
+        GoogleCredentials credentials = GoogleCredentials.fromStream(
+                new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8))
+        );
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(credentials)
