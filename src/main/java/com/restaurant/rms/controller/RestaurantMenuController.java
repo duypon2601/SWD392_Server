@@ -49,7 +49,7 @@ public class RestaurantMenuController {
 
     // ✅ Lấy thông tin thực đơn theo ID
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER') ")
+
     public ResponseEntity<?> getRestaurantMenuById(@PathVariable int id) {
         try {
             return ResponseEntity.ok(restaurantMenuService.getRestaurantMenuById(id));
@@ -60,7 +60,7 @@ public class RestaurantMenuController {
 
     // ✅ Lấy thông tin thực đơn theo nhà hàng
     @GetMapping("/restaurant/{restaurantId}")
-    @PreAuthorize("hasAnyRole('MANAGER') ")
+
     public ResponseEntity<?> getMenuByRestaurantId(@PathVariable Integer restaurantId) {
         try {
             List<RestaurantMenuDTO> menus = restaurantMenuService.getMenuByRestaurantId(restaurantId);
@@ -75,7 +75,7 @@ public class RestaurantMenuController {
 
     // ✅ Lấy danh sách tất cả thực đơn
     @GetMapping
-    @PreAuthorize("hasAnyRole('MANAGER') ")
+
     public ResponseEntity<List<RestaurantMenuDTO>> getAllRestaurantMenus() {
         return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
     }
