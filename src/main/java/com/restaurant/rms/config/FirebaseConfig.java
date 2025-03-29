@@ -9,10 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 @Slf4j
 @Configuration
@@ -20,29 +17,38 @@ public class FirebaseConfig {
 
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        String firebaseConfigJson = System.getenv("FIREBASE_CREDENTIALS");
+        try {
+            ClassPathResource resource = new ClassPathResource("hot-spot-c3a2d-firebase-adminsdk-fbsvc-61f7da61a8.json");
+            log.info("Loading Firebase credentials from: {}", resource.getPath());
+            if (!resource.exists()) {
+                log.error("Firebase credentials file not found at: {}", resource.getPath());
+                throw new IOException("Firebase credentials file not found");
+            }
 
-        if (firebaseConfigJson == null || firebaseConfigJson.isEmpty()) {
-            throw new IOException("Firebase credentials environment variable not set");
+            GoogleCredentials credentials = GoogleCredentials.fromStream(resource.getInputStream());
+            log.info("GoogleCredentials loaded successfully");
+
+            FirebaseOptions options = FirebaseOptions.builder()
+                    .setCredentials(credentials)
+                    .build();
+
+            if (FirebaseApp.getApps().isEmpty()) {
+                FirebaseApp app = FirebaseApp.initializeApp(options);
+                log.info("FirebaseApp initialized successfully");
+                return app;
+            }
+            log.info("FirebaseApp already initialized, returning existing instance");
+            return FirebaseApp.getInstance();
+        } catch (Exception e) {
+            log.error("Failed to initialize FirebaseApp: {}", e.getMessage(), e);
+            throw e;
         }
-
-        // Chuyển JSON thô thành stream
-        GoogleCredentials credentials = GoogleCredentials.fromStream(
-                new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8))
-        );
-
-        FirebaseOptions options = FirebaseOptions.builder()
-                .setCredentials(credentials)
-                .build();
-
-        if (FirebaseApp.getApps().isEmpty()) {
-            return FirebaseApp.initializeApp(options);
-        }
-        return FirebaseApp.getInstance();
     }
 
     @Bean
     public FirebaseMessaging firebaseMessaging(FirebaseApp firebaseApp) {
-        return FirebaseMessaging.getInstance(firebaseApp);
+        FirebaseMessaging messaging = FirebaseMessaging.getInstance(firebaseApp);
+        log.info("FirebaseMessaging bean created");
+        return messaging;
     }
 }
