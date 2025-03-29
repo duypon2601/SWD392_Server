@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @Service
 public class QRCodeService {
     private static final String QR_CODE_DIRECTORY = "qrcodes/";
-    private static final String BASE_URL = "http://localhost:5173/";
+    private static final String BASE_URL = "https://swd-392-client-indol.vercel.app/";
 
     public String generateQRCode(String qrIdentifier) throws WriterException, IOException {
         String fileName = qrIdentifier + ".png"; // Tên file: qrIdentifier + .png
