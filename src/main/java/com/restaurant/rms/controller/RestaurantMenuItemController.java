@@ -2,6 +2,7 @@ package com.restaurant.rms.controller;
 
 import com.restaurant.rms.dto.request.CreateRestaurantMenuItemDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
+import com.restaurant.rms.dto.request.UpdateRestaurantMenuItemDTO;
 import com.restaurant.rms.service.RestaurantMenuItemService.RestaurantMenuItemService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
@@ -59,8 +60,9 @@ public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO
 
     @PutMapping("/{id}")
     @PreAuthorize("hasAnyRole('MANAGER') ")
-    public ResponseEntity<RestaurantMenuItemDTO> updateMenuItem(@PathVariable int id, @RequestBody RestaurantMenuItemDTO menuItemDTO) {
-        return ResponseEntity.ok(menuItemService.updateMenuItem(id, menuItemDTO));
+    public ResponseEntity<RestaurantMenuItemDTO> updateMenuItem(@PathVariable int id, @RequestBody UpdateRestaurantMenuItemDTO menuItemDTO) {
+        RestaurantMenuItemDTO updatedMenuItem = menuItemService.updateMenuItem(id, menuItemDTO);
+        return ResponseEntity.ok(updatedMenuItem);
     }
 
     @DeleteMapping("/{id}")

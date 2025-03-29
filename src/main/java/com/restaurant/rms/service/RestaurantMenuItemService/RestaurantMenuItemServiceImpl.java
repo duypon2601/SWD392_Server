@@ -2,6 +2,7 @@ package com.restaurant.rms.service.RestaurantMenuItemService;
 
 import com.restaurant.rms.dto.request.CreateRestaurantMenuItemDTO;
 import com.restaurant.rms.dto.request.RestaurantMenuItemDTO;
+import com.restaurant.rms.dto.request.UpdateRestaurantMenuItemDTO;
 import com.restaurant.rms.entity.Food;
 import com.restaurant.rms.entity.RestaurantMenu;
 import com.restaurant.rms.entity.RestaurantMenuItem;
@@ -81,12 +82,17 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
 
     @Override
     @Transactional
-    public RestaurantMenuItemDTO updateMenuItem(int id, RestaurantMenuItemDTO menuItemDTO) {
+    public RestaurantMenuItemDTO updateMenuItem(int id, UpdateRestaurantMenuItemDTO menuItemDTO) {
         RestaurantMenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Menu item not found!"));
 
-        menuItem.setPrice(menuItemDTO.getPrice());
-        menuItem.setAvailable(menuItemDTO.isAvailable());
+        if (menuItemDTO.getPrice() != null) {
+            menuItem.setPrice(menuItemDTO.getPrice());
+        }
+
+        if (menuItemDTO.getIsAvailable() != null) {
+            menuItem.setAvailable(menuItemDTO.getIsAvailable());
+        }
 
         menuItem = menuItemRepository.save(menuItem);
         return menuItemMapper.toDTO(menuItem);
