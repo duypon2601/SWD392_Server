@@ -58,7 +58,7 @@ public class SecurityConfiguration {
     public SecurityFilterChain filterChain(HttpSecurity http, CustomAuthenticationEntryPoint customAuthenticationEntryPoint) throws Exception {
         http
                 .csrf(c -> c.disable())
-//                .cors(cors -> cors.disable()) // 🚀 Cho phép tất cả request CORS
+//                .cors(cors -> cors.disable())
 //                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.sameOrigin()))
                 .authorizeHttpRequests(
                         authz -> authz
