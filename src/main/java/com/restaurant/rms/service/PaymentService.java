@@ -28,7 +28,7 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class PaymentService {
 
 
