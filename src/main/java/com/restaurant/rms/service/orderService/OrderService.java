@@ -203,6 +203,7 @@
 
 package com.restaurant.rms.service.orderService;
 
+import com.restaurant.rms.dto.request.RechargeRequestDTO;
 import com.restaurant.rms.dto.request.orderDTO.*;
 import com.restaurant.rms.entity.*;
 import com.restaurant.rms.enums.DiningTableStatus;
@@ -211,6 +212,7 @@ import com.restaurant.rms.mapper.orderMapper.OrderItemMapper;
 import com.restaurant.rms.mapper.orderMapper.OrderMapper;
 import com.restaurant.rms.mapper.orderMapper.SubOrderMapper;
 import com.restaurant.rms.repository.*;
+import com.restaurant.rms.service.PaymentService;
 import com.restaurant.rms.service.notificationService.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -237,6 +239,7 @@ public class OrderService {
     private final SubOrderItemRepository subOrderItemRepository;
     private final OrderItemMapper orderItemMapper;
     private final NotificationService notificationService;
+    private final PaymentService paymentService;
 
     public boolean hasExistingOrder(int diningTableId) {
         return orderRepository.existsByDiningTable_DiningTableIdAndStatusIn(
@@ -350,6 +353,24 @@ public void completeOrder(int orderId) {
     // Gửi thông báo sau khi hoàn tất đơn hàng
     sendCompleteOrderNotification(orderId);
 }
+    public void completeOrder2(int orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        order.setStatus(OrderStatus.COMPLETED);
+
+        DiningTable table = order.getDiningTable();
+        table.setStatus(DiningTableStatus.AVAILABLE);
+        diningTableRepository.save(table);
+        orderRepository.save(order);
+
+
+
+        // Gửi thông báo sau khi hoàn tất đơn hàng
+        sendCompleteOrderNotification(orderId);
+        RechargeRequestDTO rechargeRequestDTO = new RechargeRequestDTO();
+        paymentService.savePayment(rechargeRequestDTO);
+    }
 
     // Phương thức gửi thông báo khi hoàn tất đơn hàng
     private void sendCompleteOrderNotification(int orderId) {
