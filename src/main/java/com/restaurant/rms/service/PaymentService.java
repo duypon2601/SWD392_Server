@@ -12,6 +12,7 @@ import com.restaurant.rms.service.orderService.OrderService;
 import com.restaurant.rms.service.orderService.SubOrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.Mac;
@@ -27,18 +28,24 @@ import java.util.TreeMap;
 import java.util.UUID;
 
 @Service
-@AllArgsConstructor
+//@AllArgsConstructor
 public class PaymentService {
 
 
-    @Autowired
-    PaymentRepository paymentRepository;
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    private OrderService orderService;
-    @Autowired
-    SubOrderService subOrderService;
+    private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+    private final OrderService orderService;
+    private final SubOrderService subOrderService;
+
+    public PaymentService(@Lazy OrderService orderService,
+                          PaymentRepository paymentRepository,
+                          OrderRepository orderRepository,
+                          SubOrderService subOrderService) {
+        this.orderService = orderService;
+        this.paymentRepository = paymentRepository;
+        this.orderRepository = orderRepository;
+        this.subOrderService = subOrderService;
+    }
 
     public String createUrl(RechargeRequestDTO rechargeRequestDTO) throws NoSuchAlgorithmException, InvalidKeyException, Exception{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");

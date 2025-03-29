@@ -203,14 +203,18 @@
 
 package com.restaurant.rms.service.orderService;
 
+import com.restaurant.rms.dto.request.RechargeRequestDTO;
 import com.restaurant.rms.dto.request.orderDTO.*;
 import com.restaurant.rms.entity.*;
 import com.restaurant.rms.enums.DiningTableStatus;
 import com.restaurant.rms.enums.OrderStatus;
+import com.restaurant.rms.enums.PaymentMethod;
+import com.restaurant.rms.enums.PaymentStatus;
 import com.restaurant.rms.mapper.orderMapper.OrderItemMapper;
 import com.restaurant.rms.mapper.orderMapper.OrderMapper;
 import com.restaurant.rms.mapper.orderMapper.SubOrderMapper;
 import com.restaurant.rms.repository.*;
+import com.restaurant.rms.service.PaymentService;
 import com.restaurant.rms.service.notificationService.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -219,9 +223,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -237,6 +243,8 @@ public class OrderService {
     private final SubOrderItemRepository subOrderItemRepository;
     private final OrderItemMapper orderItemMapper;
     private final NotificationService notificationService;
+    private final PaymentService paymentService;
+    private final PaymentRepository paymentRepository;
 
     public boolean hasExistingOrder(int diningTableId) {
         return orderRepository.existsByDiningTable_DiningTableIdAndStatusIn(
@@ -350,6 +358,43 @@ public void completeOrder(int orderId) {
     // Gửi thông báo sau khi hoàn tất đơn hàng
     sendCompleteOrderNotification(orderId);
 }
+
+    @Transactional
+    public void completeOrderWithCash(int orderId) {
+        // 1. Lấy thông tin đơn hàng
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found"));
+
+        // 2. Kiểm tra trạng thái đơn hàng (Tránh hoàn tất nhiều lần)
+        if (order.getStatus() == OrderStatus.COMPLETED) {
+            throw new IllegalStateException("Order đã được hoàn tất.");
+        }
+
+
+        // 4. Cập nhật trạng thái đơn hàng thành COMPLETED
+        order.setStatus(OrderStatus.COMPLETED);
+
+        // 5. Cập nhật trạng thái bàn ăn thành AVAILABLE
+        DiningTable table = order.getDiningTable();
+        table.setStatus(DiningTableStatus.AVAILABLE);
+        diningTableRepository.save(table);
+        orderRepository.save(order);
+
+        // 6. Lưu thông tin thanh toán bằng CASH
+        Payment payment = new Payment();
+        payment.setPaymentMethod(PaymentMethod.CASH);
+        payment.setPaymentStatus(PaymentStatus.PAID);
+        payment.setTransactionId(UUID.randomUUID().toString());
+        payment.setPaidAt(LocalDateTime.now());
+        payment.setOrder(order);
+        paymentRepository.save(payment);
+
+        // 7. Gửi thông báo sau khi hoàn tất đơn hàng
+        sendCompleteOrderNotification(orderId);
+
+        System.out.println("✅ Đơn hàng " + orderId + " đã hoàn tất thanh toán tiền mặt.");
+    }
+
 
     // Phương thức gửi thông báo khi hoàn tất đơn hàng
     private void sendCompleteOrderNotification(int orderId) {
