@@ -14,5 +14,6 @@ import java.math.BigDecimal;
 public class UpdateRestaurantMenuItemDTO {
     private BigDecimal price;
     private Boolean isAvailable;
+    private Integer restaurantMenuId;
 }
 

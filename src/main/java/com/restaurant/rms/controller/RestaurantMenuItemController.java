@@ -59,8 +59,11 @@ public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER') ")
-    public ResponseEntity<RestaurantMenuItemDTO> updateMenuItem(@PathVariable int id, @RequestBody UpdateRestaurantMenuItemDTO menuItemDTO) {
+    @PreAuthorize("hasAnyRole('MANAGER')")
+    public ResponseEntity<RestaurantMenuItemDTO> updateMenuItem(
+            @PathVariable int id,
+            @RequestBody UpdateRestaurantMenuItemDTO menuItemDTO) {
+
         RestaurantMenuItemDTO updatedMenuItem = menuItemService.updateMenuItem(id, menuItemDTO);
         return ResponseEntity.ok(updatedMenuItem);
     }

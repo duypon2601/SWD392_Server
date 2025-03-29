@@ -86,6 +86,13 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
         RestaurantMenuItem menuItem = menuItemRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Menu item not found!"));
 
+        // Kiểm tra nếu restaurantMenuId không null thì cập nhật menu
+        if (menuItemDTO.getRestaurantMenuId() != null) {
+            RestaurantMenu restaurantMenu = restaurantMenuRepository.findById(menuItemDTO.getRestaurantMenuId())
+                    .orElseThrow(() -> new RuntimeException("Restaurant menu not found!"));
+            menuItem.setRestaurantMenu(restaurantMenu);
+        }
+
         if (menuItemDTO.getPrice() != null) {
             menuItem.setPrice(menuItemDTO.getPrice());
         }
@@ -98,7 +105,8 @@ public class RestaurantMenuItemServiceImpl implements RestaurantMenuItemService 
         return menuItemMapper.toDTO(menuItem);
     }
 
-@Override
+
+    @Override
 @Transactional
 public void deleteMenuItem(int id) {
     if (!menuItemRepository.existsById(id)) {
