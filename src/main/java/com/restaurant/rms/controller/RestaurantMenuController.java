@@ -27,7 +27,6 @@ public class RestaurantMenuController {
 
     // 🌟 API tạo thực đơn mới
     @PostMapping
-    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> createRestaurantMenu(@RequestBody CreateRestaurantMenuDTO menuDTO) {
         // Kiểm tra danh sách món ăn không được rỗng
         if (menuDTO.getFoodItems() == null || menuDTO.getFoodItems().isEmpty()) {
@@ -49,7 +48,6 @@ public class RestaurantMenuController {
 
     // ✅ Lấy thông tin thực đơn theo ID
     @GetMapping("/{id}")
-
     public ResponseEntity<?> getRestaurantMenuById(@PathVariable int id) {
         try {
             return ResponseEntity.ok(restaurantMenuService.getRestaurantMenuById(id));
@@ -60,7 +58,6 @@ public class RestaurantMenuController {
 
     // ✅ Lấy thông tin thực đơn theo nhà hàng
     @GetMapping("/restaurant/{restaurantId}")
-
     public ResponseEntity<?> getMenuByRestaurantId(@PathVariable Integer restaurantId) {
         try {
             List<RestaurantMenuDTO> menus = restaurantMenuService.getMenuByRestaurantId(restaurantId);
@@ -75,14 +72,12 @@ public class RestaurantMenuController {
 
     // ✅ Lấy danh sách tất cả thực đơn
     @GetMapping
-
     public ResponseEntity<List<RestaurantMenuDTO>> getAllRestaurantMenus() {
         return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
     }
 
     // ✅ Xóa thực đơn theo ID
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> deleteRestaurantMenu(@PathVariable int id) {
         try {
             restaurantMenuService.deleteRestaurantMenu(id);

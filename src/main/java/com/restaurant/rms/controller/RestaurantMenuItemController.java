@@ -23,7 +23,6 @@ public class RestaurantMenuItemController {
     private final RestaurantMenuItemService menuItemService;
 
     @GetMapping("/menu/{menuId}")
-    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<List<RestaurantMenuItemDTO>> getMenuItemsByMenuId(@PathVariable int menuId) {
         return ResponseEntity.ok(menuItemService.getMenuItemsByRestaurantMenuId(menuId));
     }
@@ -34,7 +33,6 @@ public class RestaurantMenuItemController {
     }
 
 @PostMapping
-@PreAuthorize("hasAnyRole('MANAGER') ")
 public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO menuItemDTO) {
     try {
         RestaurantMenuItemDTO createdMenuItem = menuItemService.createMenuItem(menuItemDTO);
@@ -59,7 +57,6 @@ public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO
 
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER')")
     public ResponseEntity<RestaurantMenuItemDTO> updateMenuItem(
             @PathVariable int id,
             @RequestBody UpdateRestaurantMenuItemDTO menuItemDTO) {
@@ -69,7 +66,6 @@ public ResponseEntity<?> createMenuItem(@RequestBody CreateRestaurantMenuItemDTO
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('MANAGER') ")
     public ResponseEntity<?> deleteMenuItem(@PathVariable int id) {
         try {
             menuItemService.deleteMenuItem(id);
