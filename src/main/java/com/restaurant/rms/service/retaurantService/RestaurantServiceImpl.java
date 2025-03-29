@@ -18,6 +18,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class RestaurantServiceImpl implements RestaurantService {
     private RestaurantRepository restaurantRepository;
+    private final UserRepository userRepository;
 
     @Override
     public RestaurantDTO createRestaurant(RestaurantDTO restaurantDTO) throws IdInvalidException {
@@ -76,10 +77,8 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
     @Override
     public void deleteRestaurant(Integer restaurantId) throws IdInvalidException {
-        Restaurant restaurant = restaurantRepository.findById(restaurantId)
-                .orElseThrow(() -> new IdInvalidException("Restaurant với id = " + restaurantId + " không tồn tại hoặc đã bị xóa"));
-        restaurant.setDeleted(true); // Xóa mềm
-        restaurantRepository.save(restaurant);
+        userRepository.softDeleteUsersByRestaurantId(restaurantId);
+        restaurantRepository.softDeleteRestaurant(restaurantId);
     }
 // xóa luôn
 //    @Override

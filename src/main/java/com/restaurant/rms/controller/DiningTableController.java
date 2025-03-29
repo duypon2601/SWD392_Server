@@ -23,7 +23,7 @@ public class DiningTableController {
     private final DiningTableService diningTableService;
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER','STAFF') ")
     public ResponseEntity<List<DiningTableDTO>> getAllDiningTables() {
         return ResponseEntity.ok(diningTableService.getAllDiningTables());
     }
@@ -35,7 +35,7 @@ public class DiningTableController {
     }
 
     @GetMapping("/restaurant/{restaurantId}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER','STAFF') ")
     public ResponseEntity<List<DiningTableDTO>> getDiningTablesByRestaurantId(@PathVariable int restaurantId) {
         List<DiningTableDTO> diningTables = diningTableService.getDiningTablesByRestaurantId(restaurantId);
         return ResponseEntity.ok(diningTables);
@@ -83,7 +83,7 @@ public ResponseEntity<String> deleteDiningTable(@PathVariable int id) {
     }
 
     @GetMapping("/qr/{qrCode}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER','STAFF') ")
     public ResponseEntity<DiningTableDTO> getDiningTableByQrCode(@PathVariable String qrCode) {
         return ResponseEntity.ok(diningTableService.findByQrCode(qrCode));
     }
