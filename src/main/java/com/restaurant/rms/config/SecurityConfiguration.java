@@ -43,7 +43,8 @@ public class SecurityConfiguration {
 //            "/ws/**",  // Bỏ qua authentication cho WebSocket
 //            "/topic/**",  // Cho phép client subscribe
             "/app/**",
-            "/menu/restaurant/{restaurantId}"
+            "/menu/restaurant/{restaurantId}",
+            "/category"
 
 
     };
