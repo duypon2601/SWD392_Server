@@ -29,13 +29,13 @@ public class FoodController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN') ")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     public ResponseEntity<FoodDTO> getFoodById(@PathVariable("id") Integer foodId) throws IdInvalidException {
         return ResponseEntity.ok(foodService.getFoodById(foodId));
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN') ")
+    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     public ResponseEntity<List<FoodDTO>> getAllFood() {
         return ResponseEntity.ok(foodService.getAllFood());
     }
@@ -59,6 +59,7 @@ public class FoodController {
 //    }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<String> deleteFood(@PathVariable("id") Integer foodId) {
         try {
             foodService.deleteFood(foodId);
@@ -71,11 +72,13 @@ public class FoodController {
     }
 
     @GetMapping("/deleted")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<List<FoodDTO>> getAllDeletedFood() {
         return ResponseEntity.ok(foodService.getAllDeletedFood());
     }
 
     @PutMapping("/{id}/restore")
+    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<FoodDTO> restoreFood(@PathVariable("id") Integer foodId) throws IdInvalidException {
         try {
             FoodDTO restoredFood = foodService.restoreFood(foodId);
