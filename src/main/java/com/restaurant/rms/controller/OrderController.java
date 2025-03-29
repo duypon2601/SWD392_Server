@@ -51,7 +51,8 @@ public class OrderController {
     // API hoàn tất Order
     @PutMapping("/{orderId}/complete")
     public ResponseEntity<String> completeOrder(@PathVariable int orderId) {
-        orderService.completeOrder2(orderId);
+        orderService.completeOrder(orderId);
+
         return ResponseEntity.ok("Order has been completed.");
     }
 
