@@ -32,15 +32,20 @@ import java.util.UUID;
 public class PaymentService {
 
 
-    @Autowired
-    PaymentRepository paymentRepository;
-    @Autowired
-    OrderRepository orderRepository;
-    @Autowired
-    @Lazy
-    private OrderService orderService;
-    @Autowired
-    SubOrderService subOrderService;
+    private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
+    private final OrderService orderService;
+    private final SubOrderService subOrderService;
+
+    public PaymentService(@Lazy OrderService orderService,
+                          PaymentRepository paymentRepository,
+                          OrderRepository orderRepository,
+                          SubOrderService subOrderService) {
+        this.orderService = orderService;
+        this.paymentRepository = paymentRepository;
+        this.orderRepository = orderRepository;
+        this.subOrderService = subOrderService;
+    }
 
     public String createUrl(RechargeRequestDTO rechargeRequestDTO) throws NoSuchAlgorithmException, InvalidKeyException, Exception{
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
