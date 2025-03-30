@@ -45,6 +45,7 @@ public class SecurityConfiguration {
             "/app/**",
             "/menu/restaurant/{restaurantId}",
             "/category",
+            "/category/**",
             "/menu/{id}"
 
 
