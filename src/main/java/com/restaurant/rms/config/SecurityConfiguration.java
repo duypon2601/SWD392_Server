@@ -44,7 +44,9 @@ public class SecurityConfiguration {
 //            "/topic/**",  // Cho phép client subscribe
             "/app/**",
             "/menu/restaurant/{restaurantId}",
-            "/category"
+            "/category",
+            "/menu/{id}"
+
 
 
     };
