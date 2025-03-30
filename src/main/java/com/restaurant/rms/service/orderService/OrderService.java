@@ -525,7 +525,7 @@ public void completeOrder(int orderId) {
     // Thêm phương thức: Lấy tất cả Order
     @Transactional(readOnly = true)
     public List<OrderDTO> getAllOrders() {
-        List<Order> orders = orderRepository.findAll();
+        List<Order> orders = orderRepository.findAllOrdersWithActiveDiningTables();
         return orders.stream()
                 .map(orderMapper::toDTO)
                 .collect(Collectors.toList());

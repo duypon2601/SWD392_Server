@@ -20,6 +20,22 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderItems WHERE o.orderId = :orderId AND o.status = 'COMPLETED'")
     Optional<Order> findCompletedOrderById(@Param("orderId") Integer orderId);
 
+    // Lấy tất cả Order nhưng chỉ những bàn chưa bị xóa mềm
+    @Query("SELECT o FROM Order o WHERE o.diningTable.isDeleted = false")
+    List<Order> findAllOrdersWithActiveDiningTables();
+
+    // Tìm Order theo diningTableId nhưng chỉ lấy bàn chưa bị xóa mềm
+    @Query("SELECT o FROM Order o WHERE o.diningTable.diningTableId = :diningTableId AND o.diningTable.isDeleted = false")
+    Optional<Order> findByDiningTable_DiningTableId(@Param("diningTableId") int diningTableId);
+
+    // Tìm Order đang hoạt động của bàn ăn chưa bị xóa mềm
+    @Query("SELECT o FROM Order o WHERE o.diningTable.diningTableId = :diningTableId AND o.status IN ('PENDING') AND o.diningTable.isDeleted = false")
+    Optional<Order> findActiveOrderByDiningTableId(@Param("diningTableId") int diningTableId);
+
+    // Tìm tất cả Order của nhà hàng nhưng chỉ lấy bàn chưa bị xóa mềm
+    @Query("SELECT o FROM Order o WHERE o.diningTable.restaurant.restaurantId = :restaurantId AND o.diningTable.isDeleted = false")
+    List<Order> findByDiningTable_Restaurant_RestaurantId(@Param("restaurantId") int restaurantId);
+
 
     //  Tổng doanh thu **tất cả nhà hàng** theo ngày (year, month, day)
     @Query("""
@@ -99,12 +115,12 @@ public interface OrderRepository extends JpaRepository<Order, Integer> {
     """)
     BigDecimal getRestaurantRevenueBetweenDates(@Param("restaurantId") int restaurantId, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
 
-    // Thêm phương thức: Tìm Order theo diningTableId (không giới hạn trạng thái)
-    Optional<Order> findByDiningTable_DiningTableId(int diningTableId);
+//    // Thêm phương thức: Tìm Order theo diningTableId (không giới hạn trạng thái)
+//    Optional<Order> findByDiningTable_DiningTableId(int diningTableId);
+//
+//    @Query("SELECT o FROM Order o WHERE o.diningTable.diningTableId = :diningTableId AND o.status IN ('PENDING')")
+//    Optional<Order> findActiveOrderByDiningTableId(@Param("diningTableId") int diningTableId);
 
-    @Query("SELECT o FROM Order o WHERE o.diningTable.diningTableId = :diningTableId AND o.status IN ('PENDING')")
-    Optional<Order> findActiveOrderByDiningTableId(@Param("diningTableId") int diningTableId);
-
-    List<Order> findByDiningTable_Restaurant_RestaurantId(int restaurantId);
+//    List<Order> findByDiningTable_Restaurant_RestaurantId(int restaurantId);
 
 }
