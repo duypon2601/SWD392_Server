@@ -25,7 +25,7 @@ public class RestaurantMenuController {
 
     private final RestaurantMenuService restaurantMenuService;
 
-    // 🌟 API tạo thực đơn mới
+    //  API tạo thực đơn mới
     @PostMapping
     public ResponseEntity<?> createRestaurantMenu(@RequestBody CreateRestaurantMenuDTO menuDTO) {
         // Kiểm tra danh sách món ăn không được rỗng
@@ -45,8 +45,7 @@ public class RestaurantMenuController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdMenu);
     }
 
-
-    // ✅ Lấy thông tin thực đơn theo ID
+    //  Lấy thông tin thực đơn theo ID
     @GetMapping("/{id}")
     public ResponseEntity<?> getRestaurantMenuById(@PathVariable int id) {
         try {
@@ -56,7 +55,7 @@ public class RestaurantMenuController {
         }
     }
 
-    // ✅ Lấy thông tin thực đơn theo nhà hàng
+    //  Lấy thông tin thực đơn theo nhà hàng
     @GetMapping("/restaurant/{restaurantId}")
     public ResponseEntity<?> getMenuByRestaurantId(@PathVariable Integer restaurantId) {
         try {
@@ -70,13 +69,13 @@ public class RestaurantMenuController {
         }
     }
 
-    // ✅ Lấy danh sách tất cả thực đơn
+    //  Lấy danh sách tất cả thực đơn
     @GetMapping
     public ResponseEntity<List<RestaurantMenuDTO>> getAllRestaurantMenus() {
         return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
     }
 
-    // ✅ Xóa thực đơn theo ID
+    //  Xóa thực đơn theo ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRestaurantMenu(@PathVariable int id) {
         try {
@@ -100,7 +99,7 @@ public class RestaurantMenuController {
 //        }
 //    }
 
-    //    // ✅ Cập nhật thực đơn theo ID
+    //    //  Cập nhật thực đơn theo ID
 //    @PutMapping("/{id}")
 //    public ResponseEntity<RestaurantMenuDTO> updateRestaurantMenu(@PathVariable int id, @RequestBody UpdateRestaurantMenuDTO menuDTO) {
 //        return ResponseEntity.ok(restaurantMenuService.updateRestaurantMenu(id, menuDTO));

@@ -25,6 +25,7 @@ public class RestaurantMenuItemMapper {
                 .isAvailable(menuItem.isAvailable())
                 .foodName(menuItem.getFood().getName())   // Lấy tên món ăn
                 .categoryName(menuItem.getFood().getCategory().getName())
+                .imageUrl(menuItem.getFood().getImage_url())
                 .build();
     }
 
