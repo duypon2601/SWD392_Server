@@ -392,7 +392,7 @@ public void completeOrder(int orderId) {
         // 7. Gửi thông báo sau khi hoàn tất đơn hàng
         sendCompleteOrderNotification(orderId);
 
-        System.out.println("✅ Đơn hàng " + orderId + " đã hoàn tất thanh toán tiền mặt.");
+        System.out.println(" Đơn hàng " + orderId + " đã hoàn tất thanh toán tiền mặt.");
     }
 
 
@@ -435,7 +435,7 @@ public void completeOrder(int orderId) {
     }
 
 
-    // ✅ Doanh thu **tất cả nhà hàng**
+    //  Doanh thu **tất cả nhà hàng**
     public BigDecimal getTotalRevenueByDay(int year, int month, int day) {
         return orderRepository.getTotalRevenueByDay(year, month, day);
     }
@@ -446,7 +446,7 @@ public void completeOrder(int orderId) {
         return orderRepository.getTotalRevenueByYear(year);
     }
 
-    // ✅ Doanh thu **từng nhà hàng**
+    //  Doanh thu **từng nhà hàng**
     public BigDecimal getRestaurantRevenueByDay(int restaurantId, int year, int month, int day) {
         return orderRepository.getRestaurantRevenueByDay(restaurantId, year, month, day);
     }
@@ -457,12 +457,12 @@ public void completeOrder(int orderId) {
         return orderRepository.getRestaurantRevenueByYear(restaurantId, year);
     }
 
-    // ✅ Doanh thu **tất cả nhà hàng** từ ngày đến ngày
+    //  Doanh thu **tất cả nhà hàng** từ ngày đến ngày
     public BigDecimal getTotalRevenueBetweenDates(LocalDate startDate, LocalDate endDate) {
         return orderRepository.getTotalRevenueBetweenDates(startDate, endDate);
     }
 
-    // ✅ Doanh thu **từng nhà hàng** từ ngày đến ngày
+    //  Doanh thu **từng nhà hàng** từ ngày đến ngày
     public BigDecimal getRestaurantRevenueBetweenDates(int restaurantId, LocalDate startDate, LocalDate endDate) {
         return orderRepository.getRestaurantRevenueBetweenDates(restaurantId, startDate, endDate);
     }
@@ -531,13 +531,11 @@ public void completeOrder(int orderId) {
                 .collect(Collectors.toList());
     }
 
-    // Cập nhật phương thức: Sử dụng UpdateOrderItemDTO
-    @Transactional
     public OrderItemDTO updateOrderItem(int orderId, int orderItemId, UpdateOrderItemDTO updateOrderItemDTO) {
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new RuntimeException("Order not found with ID: " + orderId));
 
-        // Kiểm tra nếu Order đã COMPLETED thì không cho sửa
+        // Không cho cập nhật nếu Order đã hoàn thành
         if (order.getStatus() == OrderStatus.COMPLETED) {
             throw new RuntimeException("Cannot update OrderItem for Order ID: " + orderId + " because it is already COMPLETED");
         }
@@ -547,15 +545,28 @@ public void completeOrder(int orderId) {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("OrderItem not found with ID: " + orderItemId));
 
-        // Cập nhật thông tin OrderItem từ UpdateOrderItemDTO
+        // Cập nhật số lượng
         if (updateOrderItemDTO.getQuantity() > 0) {
             orderItem.setQuantity(updateOrderItemDTO.getQuantity());
         }
-        // Không cập nhật menuItemId vì UpdateOrderItemDTO không chứa trường này
 
-        Order updatedOrder = orderRepository.save(order);
+        // Tính tổng tiền mới cho Order
+        BigDecimal newTotalPrice = calculateTotalPrice(order);
+
+        // Cập nhật totalPrice cho Order
+        order.setTotalPrice(newTotalPrice);
+        orderRepository.save(order);
+
         return orderItemMapper.toDTO(orderItem);
     }
+
+    // Hàm tính tổng tiền của Order dựa trên các OrderItem
+    private BigDecimal calculateTotalPrice(Order order) {
+        return order.getOrderItems().stream()
+                .map(item -> item.getMenuItem().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
 
     // Thêm phương thức: Lấy Order theo DiningTable
     @Transactional(readOnly = true)

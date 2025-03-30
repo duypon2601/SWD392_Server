@@ -14,5 +14,10 @@ public class OrderItemDTO {
     private int quantity;
     private BigDecimal price;
     private String menuItemName;
+    private BigDecimal totalPrice; // 🟢 Không cần lưu vào DB, tính toán khi trả về DTO
+
+    public BigDecimal getTotalPrice() {
+        return price.multiply(BigDecimal.valueOf(quantity));
+    }
 }
 
