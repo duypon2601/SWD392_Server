@@ -169,6 +169,8 @@ public Order confirmSubOrder(int subOrderId) {
     BigDecimal newTotalPrice = calculateTotalPrice(order);
     order.setTotalPrice(newTotalPrice);
 
+    subOrder.setStatus(OrderStatus.CONFIRMED);
+
     return orderRepository.save(order);
 }
 
