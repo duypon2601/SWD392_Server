@@ -37,19 +37,22 @@ public class SecurityConfiguration {
     private final String[] PUBLIC_ENDPOINTS = {
             "/api/login",
             "/api/register",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/swagger-resources/**",
-//            "/ws/**",  // Bỏ qua authentication cho WebSocket
-//            "/topic/**",  // Cho phép client subscribe
-            "/app/**",
-            "/menu/restaurant/{restaurantId}",
+            "/v3/api-docs/",
+            "/swagger-ui/",
+            "/swagger-resources/",
+            "/app/",
+            "/menu/",
+            "/menu",
+            "/category/",
             "/category",
-            "/category/**",
-            "/menu/{id}"
-
-
-
+            "/dining-table/",
+            "/dining-table",
+            "/dining_table",
+            "/dining_table/",
+            "/tables",
+            "/order/create",
+            "/restaurant/",
+            "/restaurant"
     };
 
 

@@ -16,7 +16,7 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/dining_table")
+@RequestMapping("/dining-table")
 @SecurityRequirement(name = "api")
 public class DiningTableController {
 
