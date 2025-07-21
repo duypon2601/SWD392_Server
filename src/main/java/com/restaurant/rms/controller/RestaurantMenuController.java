@@ -56,7 +56,7 @@ public class RestaurantMenuController {
     }
 
     //  Lấy thông tin thực đơn theo nhà hàng
-    @GetMapping("/restaurant/{restaurantId}")
+    @GetMapping("/restaurant/menu/{restaurantId}")
     public ResponseEntity<?> getMenuByRestaurantId(@PathVariable Integer restaurantId) {
         try {
             List<RestaurantMenuDTO> menus = restaurantMenuService.getMenuByRestaurantId(restaurantId);
@@ -70,8 +70,13 @@ public class RestaurantMenuController {
     }
 
     //  Lấy danh sách tất cả thực đơn
-    @GetMapping
+    @GetMapping("/restaurant/menu/all")
     public ResponseEntity<List<RestaurantMenuDTO>> getAllRestaurantMenus() {
+        return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<RestaurantMenuDTO>> getAllMenusSimple() {
         return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
     }
 

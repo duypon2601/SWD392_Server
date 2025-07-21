@@ -16,14 +16,19 @@ import java.util.List;
 @CrossOrigin("*")
 @RestController
 @AllArgsConstructor
-@RequestMapping("/dining_table")
+@RequestMapping("/dining-table")
 @SecurityRequirement(name = "api")
 public class DiningTableController {
 
     private final DiningTableService diningTableService;
 
-    @GetMapping
+    @GetMapping("/restaurant/dn/all")
     public ResponseEntity<List<DiningTableDTO>> getAllDiningTables() {
+        return ResponseEntity.ok(diningTableService.getAllDiningTables());
+    }
+
+    @GetMapping
+    public ResponseEntity<List<DiningTableDTO>> getAllDiningTablesSimple() {
         return ResponseEntity.ok(diningTableService.getAllDiningTables());
     }
 

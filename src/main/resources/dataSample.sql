@@ -58,7 +58,15 @@ INSERT INTO dining_table (is_deleted, qr_code, status, restaurant_id) VALUES
                                                                           (0, '77c558e877aa45e8b0504737c2ce343f', 'AVAILABLE', 1),
                                                                           (0, 'a80beb25bc044d6f90bfbd9e47816e62', 'AVAILABLE', 1),
                                                                           (0, 'bf4d09a345a34b918ed4d8fe4629bd79', 'AVAILABLE', 2),
-                                                                          (0, 'efa504c077654806803ad625552d43c9', 'AVAILABLE', 2);
+                                                                          (0, 'efa504c077654806803ad625552d43c9', 'AVAILABLE', 2),
+  (0, 'qr_extra_01', 'AVAILABLE', 1),
+  (0, 'qr_extra_02', 'AVAILABLE', 1),
+  (0, 'qr_extra_03', 'AVAILABLE', 1),
+  (0, 'qr_extra_04', 'AVAILABLE', 1),
+  (0, 'qr_extra_05', 'AVAILABLE', 1),
+  (0, 'qr_extra_06', 'OCCUPIED', 2),
+  (0, 'qr_extra_07', 'OCCUPIED', 2),
+  (0, 'qr_extra_08', 'OCCUPIED', 2);
 
 -- 5. Bảng `orders`
 INSERT INTO orders (created_at, status, total_price, updated_at, table_id) VALUES

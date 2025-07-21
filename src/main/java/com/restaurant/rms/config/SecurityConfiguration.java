@@ -44,12 +44,17 @@ public class SecurityConfiguration {
 //            "/topic/**",  // Cho phép client subscribe
             "/app/**",
             "/menu/restaurant/{restaurantId}",
+            "/restaurant/dn/all",
+            "/restaurant/menu/{restaurantId}",
+            "/restaurant/menu/all",
+            "/menu/restaurant/",
             "/category",
             "/category/**",
-            "/menu/{id}"
-
-
-
+            "/menu/{id}",
+            // Thêm các endpoint public cho mobile app
+            "/dining-table",
+            "/menu",
+            "/order/create"
     };
 
 
