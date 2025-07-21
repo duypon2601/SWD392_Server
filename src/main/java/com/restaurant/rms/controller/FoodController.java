@@ -23,25 +23,25 @@ public class FoodController {
     private final FoodService foodService;
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN') ")
+//    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<FoodDTO> createFood(@RequestBody CreateFoodDTO createFoodDTO) throws IdInvalidException {
         return ResponseEntity.ok(foodService.createFood(createFoodDTO));
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     public ResponseEntity<FoodDTO> getFoodById(@PathVariable("id") Integer foodId) throws IdInvalidException {
         return ResponseEntity.ok(foodService.getFoodById(foodId));
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
+//    @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER') ")
     public ResponseEntity<List<FoodDTO>> getAllFood() {
         return ResponseEntity.ok(foodService.getAllFood());
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN') ")
+//    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<FoodDTO> updateFood(@RequestBody FoodDTO foodDTO, @PathVariable("id") Integer foodId) throws IdInvalidException {
         return ResponseEntity.ok(foodService.updateFood(foodDTO, foodId));
     }
@@ -59,7 +59,7 @@ public class FoodController {
 //    }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN') ")
+//    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<String> deleteFood(@PathVariable("id") Integer foodId) {
         try {
             foodService.deleteFood(foodId);
@@ -72,13 +72,13 @@ public class FoodController {
     }
 
     @GetMapping("/deleted")
-    @PreAuthorize("hasAnyRole('ADMIN') ")
+//    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<List<FoodDTO>> getAllDeletedFood() {
         return ResponseEntity.ok(foodService.getAllDeletedFood());
     }
 
     @PutMapping("/{id}/restore")
-    @PreAuthorize("hasAnyRole('ADMIN') ")
+//    @PreAuthorize("hasAnyRole('ADMIN') ")
     public ResponseEntity<FoodDTO> restoreFood(@PathVariable("id") Integer foodId) throws IdInvalidException {
         try {
             FoodDTO restoredFood = foodService.restoreFood(foodId);
