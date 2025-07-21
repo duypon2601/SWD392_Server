@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.beans.factory.annotation.Value;
+import java.io.File;
+import java.io.FileInputStream;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -18,18 +21,18 @@ import java.util.Base64;
 @Configuration
 public class FirebaseConfig {
 
+    @Value("${firebase.credentials.path}")
+    private String firebaseCredentialsPath;
+
     @Bean
     public FirebaseApp firebaseApp() throws IOException {
-        String firebaseConfigJson = System.getenv("FIREBASE_CREDENTIALS");
-
-        if (firebaseConfigJson == null || firebaseConfigJson.isEmpty()) {
-            throw new IOException("Firebase credentials environment variable not set");
+        // Đọc file credentials từ đường dẫn cấu hình
+        File credentialsFile = new File(firebaseCredentialsPath);
+        if (!credentialsFile.exists()) {
+            throw new IOException("Firebase credentials file not found: " + firebaseCredentialsPath);
         }
 
-        // Chuyển JSON thô thành stream
-        GoogleCredentials credentials = GoogleCredentials.fromStream(
-                new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8))
-        );
+        GoogleCredentials credentials = GoogleCredentials.fromStream(new FileInputStream(credentialsFile));
 
         FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(credentials)

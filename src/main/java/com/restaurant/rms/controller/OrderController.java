@@ -8,7 +8,7 @@ import com.restaurant.rms.dto.request.orderDTO.SubOrderDTO;
 import com.restaurant.rms.dto.request.orderDTO.UpdateOrderItemDTO;
 import com.restaurant.rms.entity.NotificationEntity;
 import com.restaurant.rms.mapper.NotificationMapper;
-import com.restaurant.rms.service.notificationService.NotificationService;
+//import com.restaurant.rms.service.notificationService.NotificationService;
 import com.restaurant.rms.service.orderService.OrderService;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.AllArgsConstructor;
@@ -30,7 +30,7 @@ import java.util.List;
 @SecurityRequirement(name = "api")
 public class OrderController {
     private final OrderService orderService;
-    private final NotificationService notificationService; // Thêm NotificationService
+//    private final NotificationService notificationService; // Thêm NotificationService
     private final NotificationMapper notificationMapper;   // Thêm NotificationMapper
 
     // API tạo Order hoặc SubOrder
