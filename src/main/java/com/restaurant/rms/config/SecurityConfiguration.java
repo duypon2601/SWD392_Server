@@ -51,6 +51,7 @@ public class SecurityConfiguration {
             "/category",
             "/category/**",
             "/menu/{id}",
+            "/menu/{id}/items",
             // Thêm các endpoint public cho mobile app
             "/dining-table",
             "/menu",

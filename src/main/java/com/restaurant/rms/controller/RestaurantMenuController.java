@@ -80,6 +80,17 @@ public class RestaurantMenuController {
         return ResponseEntity.ok(restaurantMenuService.getAllRestaurantMenus());
     }
 
+    // Lấy toàn bộ menu item của một menu cụ thể
+    @GetMapping("/{id}/items")
+    public ResponseEntity<?> getMenuItemsByMenuId(@PathVariable int id) {
+        try {
+            RestaurantMenuDTO menu = restaurantMenuService.getRestaurantMenuById(id);
+            return ResponseEntity.ok(menu.getMenuItems());
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Không tìm thấy thực đơn với ID: " + id);
+        }
+    }
+
     //  Xóa thực đơn theo ID
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRestaurantMenu(@PathVariable int id) {
